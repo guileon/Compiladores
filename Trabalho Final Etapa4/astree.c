@@ -89,6 +89,15 @@ void printToFile(FILE * pfile,char* string)
 	
 }
 
+void setId(int token, struct a_NODE * node, int type)
+{
+	if(node)
+	{
+		node->type = token;
+		node->dataType = type;
+	}
+}
+
 void verify(struct a_NODE * node_p)
 {
 
@@ -169,23 +178,25 @@ void verify(struct a_NODE * node_p)
 				verify((node_.sons[1]));
 			break;
 		case DECLARATION:
-			setId(node_.sons[0]->token,node_.sons[1],node_.sons[2],ID_SCALAR);
+			setId(node_.sons[0]->token,node_.sons[1],ID_SCALAR);
+			if(!(
+				(node_.sons[0]->token == KW_BOOL && (node_.sons[1]->token == LIT_TRUE || node_.sons[1]->token == LIT_FALSE)) ||
+				(((node_.sons[0]->token == KW_WORD) || (node_.sons[0]->token == KW_BYTE)) && (node_.sons[1]->token == LIT_INTEGER))))
+				printf("Semantic error on line %d: Scalar initialized wrong.",getLineNumber()));
+				
 			break;
 		case DECLARATION_POINTER:
-			setId(node_.sons[0]->token,node_.sons[1],node_.sons[2],ID_POINTER);
+			setId(node_.sons[0]->token,node_.sons[1],ID_POINTER);
 			break;
 		case DECLARATION_VEC:
-			setId(node_.sons[0]->token,node_.sons[1],node_.sons[2],ID_VECTOR);
+			setId(node_.sons[0]->token,node_.sons[1],ID_VECTOR);
 			break;
 		case DECLARATION_VEC_INIT:
-			verify((node_.sons[0])); 
-			verify((node_.sons[1]));
-			printToFile(pfile,"[");
-			verify((node_.sons[2]));
-			printToFile(pfile,"]");
-			printToFile(pfile,":");
-			verify((node_.sons[3]));
-			printToFile(pfile,";");
+			if(!isInt(node_.sons[2]))
+				printf("Semantic error on line %d: Vector with not-integer size",getLineNumber());
+			setId(node_.sons[0]->token,node_.sons[1],ID_VECTOR);
+			if(!(node_.sons[3]->token == LIST))
+				printf("Semantic error on line %d: Vector initialized wrong.",getLineNumber());
 			break;
 	
 		// EXPRESSION

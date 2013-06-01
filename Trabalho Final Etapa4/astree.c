@@ -89,6 +89,307 @@ void printToFile(FILE * pfile,char* string)
 	
 }
 
+void verify(struct a_NODE * node_p)
+{
+
+	FILE *pfile;
+	if(node_p)
+	{
+	struct a_NODE node_ = *node_p;
+
+	switch(node_.token)
+	{	
+		// TOKENS
+		case LIT_TRUE:
+			
+			break;
+		case LIT_FALSE:
+			
+			break;
+		case LIT_INTEGER:
+			
+			break;
+		case TK_IDENTIFIER: 
+			
+			break;
+		case LIT_CHAR: 
+			
+			break;
+		case LIT_STRING: 
+			
+			break;
+		// LIST
+		case LIST:
+			verify((node_.sons[0]));
+			if((node_.sons[1])!=NULL)
+			{
+				printToFile(pfile," ");
+				verify((node_.sons[1]));
+				
+			}
+			break;
+		// TYPE
+		case KW_BOOL:
+			break;
+		case KW_WORD:
+			break;
+		case KW_BYTE:
+			break;
+		// FUNC_DECLARATION
+		case ARGUMENTS:
+			verify((node_.sons[0]));
+			verify((node_.sons[1]));
+			if((node_.sons[2])!=NULL)
+			{
+				printToFile(pfile,",");
+				verify((node_.sons[2]));
+			}
+			break;
+		case D_NODE: // GAMBIARRATION
+			if((node_.sons[0])!=NULL)
+				verify((node_.sons[0]));
+			verify((node_.sons[1]));
+			break;
+		case FUNC_DECLARATION:
+			verify((node_.sons[0])); 
+			verify((node_.sons[1]));
+			printToFile(pfile,"(");	
+			if((node_.sons[2])!=NULL)
+				verify((node_.sons[2])); 
+			printToFile(pfile,")");
+			
+			verify((node_.sons[3])); // SEMPRE D_NODE , GAMBIARRATIONN
+			
+			break;
+		// DECLARATIONS
+		case PROG:
+			verify((node_.sons[0]));
+			//printToFile(pfile,";");
+			if((node_.sons[1])!=NULL)
+				verify((node_.sons[1]));
+			break;
+		case DECLARATION:
+			setId(node_.sons[0]->token,node_.sons[1],node_.sons[2],ID_SCALAR);
+			break;
+		case DECLARATION_POINTER:
+			setId(node_.sons[0]->token,node_.sons[1],node_.sons[2],ID_POINTER);
+			break;
+		case DECLARATION_VEC:
+			setId(node_.sons[0]->token,node_.sons[1],node_.sons[2],ID_VECTOR);
+			break;
+		case DECLARATION_VEC_INIT:
+			verify((node_.sons[0])); 
+			verify((node_.sons[1]));
+			printToFile(pfile,"[");
+			verify((node_.sons[2]));
+			printToFile(pfile,"]");
+			printToFile(pfile,":");
+			verify((node_.sons[3]));
+			printToFile(pfile,";");
+			break;
+	
+		// EXPRESSION
+		case '&': 
+			printToFile(pfile,"&");
+			verify((node_.sons[0])); 
+			break;
+		case POINTER: 
+			printToFile(pfile,"*");
+			verify((node_.sons[0])); 
+			break;
+		case '*': 
+			//printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,"*");
+			verify((node_.sons[1]));
+			//printToFile(pfile,")");
+			break;
+		case '(': 
+			printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,")");
+			break;
+		case '+':
+			//printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,"+");
+			verify((node_.sons[1]));
+			//printToFile(pfile,")");
+			break;
+		case '-':
+			//printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,"-");
+			verify((node_.sons[1]));
+			//printToFile(pfile,")");
+			break;
+		case '/': 
+			//printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,"/");
+			verify((node_.sons[1]));
+			//printToFile(pfile,")");
+			break;
+		case OR: 
+			//printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,"||");
+			verify((node_.sons[1]));
+			//printToFile(pfile,")");
+			break;
+		case AND: 
+			//printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,"&&");
+			verify((node_.sons[1]));
+			//printToFile(pfile,")");
+			break;
+		case LE: 
+			//printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,"<=");
+			verify((node_.sons[1]));
+			//printToFile(pfile,")");
+			break;
+		case EQ: 
+			//printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,"==");
+			verify((node_.sons[1]));
+			//printToFile(pfile,")");
+			break;
+		case GE: 
+			//printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,">=");
+			verify((node_.sons[1]));
+			//printToFile(pfile,")");
+			break;
+		case NE: 
+			//printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,"!=");
+			verify((node_.sons[1]));
+			//printToFile(pfile,")");
+			break;
+		case '>': 
+			//printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,">");
+			verify((node_.sons[1]));
+			//printToFile(pfile,")");
+			break;
+		case '<': 
+			//printToFile(pfile,"(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,"<");
+			verify((node_.sons[1]));
+			//printToFile(pfile,")");
+			break;
+		case VECCALL:
+			verify((node_.sons[0])); 
+			printToFile(pfile,"[");
+			verify((node_.sons[1]));
+			printToFile(pfile,"]");
+			break;
+		// FUNCALL ARGCALL CMD_SEQ
+		case FUNCALL:	
+			verify((node_.sons[0])); 
+			printToFile(pfile,"("); 
+			if((node_.sons[1])!=NULL) 
+				verify((node_.sons[1])) ;
+			printToFile(pfile,")");  
+			break;
+		case ARGCALL:
+			verify((node_.sons[0]));
+			if(node_.sons[1]!=NULL)
+			{
+				printToFile(pfile,",");
+				verify((node_.sons[1]));
+			}
+			break;
+		case CMD_SEQ:
+			verify((node_.sons[0]));
+			printToFile(pfile,";");
+			if(node_.sons[1]!=NULL)
+			{
+				verify((node_.sons[1]));
+			}
+			break;
+		// OUTPUT
+		case OUTPUT_L:
+			verify((node_.sons[0]));
+			if(node_.sons[1]!=NULL)
+			{
+				printToFile(pfile,",");
+				verify((node_.sons[1]));
+			}
+			break;
+		// CMD
+		case INPUT: 
+			printToFile(pfile,"input ");
+			verify((node_.sons[0]));
+			printToFile(pfile," ");
+			break;
+		case OUTPUT:
+			printToFile(pfile,"output ");
+			verify((node_.sons[0]));
+			printToFile(pfile," ");
+			break;
+		case RETURN:
+			printToFile(pfile,"return ");
+			verify((node_.sons[0]));
+			printToFile(pfile," ");
+			break;
+		case BLOCK:
+			printToFile(pfile,"{");
+			verify((node_.sons[0]));
+			printToFile(pfile,"}");
+			printToFile(pfile," ");
+			break;
+		case '=':
+			verify((node_.sons[0]));
+			printToFile(pfile,"=");
+			verify((node_.sons[1]));
+			printToFile(pfile," ");
+			break;
+		case IF_THEN: 
+			printToFile(pfile,"if(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,")then ");
+			verify((node_.sons[1]));
+			printToFile(pfile," ");
+			break;
+		case IF_THEN_ELSE: 
+			printToFile(pfile,"if(");
+			verify((node_.sons[0])); 
+			printToFile(pfile,")then ");
+			verify((node_.sons[1]));
+			printToFile(pfile,"else ");
+			verify((node_.sons[2]));
+			printToFile(pfile," ");
+			break;
+		case LOOP :
+			printToFile(pfile,"loop");
+			printToFile(pfile,"(");
+			verify((node_.sons[0]));
+			printToFile(pfile,")");
+			verify((node_.sons[1]));
+			printToFile(pfile," ");
+			break;
+		// DEFAULT
+		default: 
+			printToFile(pfile,"DEFAULT");
+			break;
+		
+	} // switch
+	} // if node
+}
+
+#define TRUE 1
+#define FALSE 0
+
+
 void printNode(struct a_NODE * node_p)
 {
 
@@ -407,35 +708,3 @@ void printNode(struct a_NODE * node_p)
 	} // if node
 }
 
-#define TRUE 1
-#define FALSE 0
-
-int verify(struct a_NODE * node) // coloca os tipos e as naturezas nas variaveis e testa se variáveis foram redeclaradas
-{
-	if(node)
-	{
-	
-	}
-	else
-		return TRUE;
-	
-}
-
-int detectUndeclared() // testa se tem variáveis não declaradas
-{
-	return detect(SYMBOL_IDENTIFIER);
-}
-
-int testNature(struct a_NODE * node) // verifica as expressões, atribuições  usos
-{
-	
-}
-
-int verifyFunction(struct a_NODE * node) // verifica a entrada e os valores de retorno
-{
-}
-
-int verifyVecRead(struct a_NODE *node) // verifica se os índices dos vetores são inteiros
-{
-
-}

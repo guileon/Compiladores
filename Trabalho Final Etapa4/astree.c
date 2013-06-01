@@ -410,7 +410,7 @@ void printNode(struct a_NODE * node_p)
 #define TRUE 1
 #define FALSE 0
 
-int verify(struct a_NODE * node)
+int verify(struct a_NODE * node) // coloca os tipos e as naturezas nas variaveis e testa se variáveis foram redeclaradas
 {
 	if(node)
 	{
@@ -419,4 +419,23 @@ int verify(struct a_NODE * node)
 	else
 		return TRUE;
 	
+}
+
+int detectUndeclared() // testa se tem variáveis não declaradas
+{
+	return detect(SYMBOL_IDENTIFIER);
+}
+
+int testNature(struct a_NODE * node) // verifica as expressões, atribuições  usos
+{
+	
+}
+
+int verifyFunction(struct a_NODE * node) // verifica a entrada e os valores de retorno
+{
+}
+
+int verifyVecRead(struct a_NODE *node) // verifica se os índices dos vetores são inteiros
+{
+
 }

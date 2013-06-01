@@ -406,3 +406,17 @@ void printNode(struct a_NODE * node_p)
 	} // switch
 	} // if node
 }
+
+#define TRUE 1
+#define FALSE 0
+
+int verify(struct a_NODE * node)
+{
+	if(node)
+	{
+	
+	}
+	else
+		return TRUE;
+	
+}

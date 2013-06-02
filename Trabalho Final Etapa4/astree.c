@@ -98,6 +98,8 @@ void setId(int token, struct a_NODE * node, int type)
 	}
 }
 
+struct HNODE * currentFunction;
+ 
 void verify(struct a_NODE * node_p)
 {
 
@@ -107,35 +109,30 @@ void verify(struct a_NODE * node_p)
 	struct a_NODE node_ = *node_p;
 
 	switch(node_.token)
-	{
+	{	
 		// TOKENS
 		case LIT_TRUE:
-
+			
 			break;
 		case LIT_FALSE:
-
+			
 			break;
 		case LIT_INTEGER:
-
+			
 			break;
-		case TK_IDENTIFIER:
-
+		case TK_IDENTIFIER: 
+			
 			break;
-		case LIT_CHAR:
-
+		case LIT_CHAR: 
+			
 			break;
-		case LIT_STRING:
-
+		case LIT_STRING: 
+			
 			break;
 		// LIST
 		case LIST:
 			verify((node_.sons[0]));
-			if((node_.sons[1])!=NULL)
-			{
-				printToFile(pfile," ");
-				verify((node_.sons[1]));
-
-			}
+			verify((node_.sons[1]));
 			break;
 		// TYPE
 		case KW_BOOL:
@@ -160,30 +157,37 @@ void verify(struct a_NODE * node_p)
 			verify((node_.sons[1]));
 			break;
 		case FUNC_DECLARATION:
-			verify((node_.sons[0]));
+			node_.sons[1]->node->type = ID_FUNC;
+			if(node_.sons[0]->token = KW_BOOL)
+				node_.sons[1]->node->dataType = ID_BOOL;
+			else if(node_.sons[0]->token = KW_WORD)
+				node_.sons[1]->node->dataType = ID_WORD;
+			else if(node_.sons[0]->token = KW_BYTE)
+				node_.sons[1]->node->dataType = ID_BYTE;
+				
+			currentFunction = node_.sons[1]->node;
+			verify((node_.sons[0])); 
 			verify((node_.sons[1]));
-			printToFile(pfile,"(");
+			printToFile(pfile,"(");	
 			if((node_.sons[2])!=NULL)
-				verify((node_.sons[2]));
+				verify((node_.sons[2])); 
 			printToFile(pfile,")");
-
+			
 			verify((node_.sons[3])); // SEMPRE D_NODE , GAMBIARRATIONN
-
+			
 			break;
 		// DECLARATIONS
 		case PROG:
 			verify((node_.sons[0]));
-			//printToFile(pfile,";");
-			if((node_.sons[1])!=NULL)
-				verify((node_.sons[1]));
+			verify((node_.sons[1]));
 			break;
 		case DECLARATION:
 			setId(node_.sons[0]->token,node_.sons[1],ID_SCALAR);
 			if(!(
 				(node_.sons[0]->token == KW_BOOL && (node_.sons[1]->token == LIT_TRUE || node_.sons[1]->token == LIT_FALSE)) ||
 				(((node_.sons[0]->token == KW_WORD) || (node_.sons[0]->token == KW_BYTE)) && (node_.sons[1]->token == LIT_INTEGER))))
-				printf("Semantic error on line %d: Scalar initialized wrong.",getLineNumber()));
-
+				printf("Semantic error on line %d: Scalar initialized wrong.\n",getLineNumber()));
+				
 			break;
 		case DECLARATION_POINTER:
 			setId(node_.sons[0]->token,node_.sons[1],ID_POINTER);
@@ -193,206 +197,124 @@ void verify(struct a_NODE * node_p)
 			break;
 		case DECLARATION_VEC_INIT:
 			if(!isInt(node_.sons[2]))
-				printf("Semantic error on line %d: Vector with not-integer size",getLineNumber());
+				printf("Semantic error on line %d: Vector with not-integer size\n",getLineNumber());
 			setId(node_.sons[0]->token,node_.sons[1],ID_VECTOR);
 			if(!(node_.sons[3]->token == LIST))
-				printf("Semantic error on line %d: Vector initialized wrong.",getLineNumber());
+				printf("Semantic error on line %d: Vector initialized wrong.\n",getLineNumber());
 			break;
-
+	
 		// EXPRESSION
-		case '&':
-			printToFile(pfile,"&");
-			verify((node_.sons[0]));
+		case '&': 
+			if(!(node_.sons[0]->node->type==ID_SCALAR)) 
+				printf("Semantic error: geting reference for not-scalar on line %d\n",getLineNumber());
 			break;
-		case POINTER:
-			printToFile(pfile,"*");
-			verify((node_.sons[0]));
+		case POINTER: 
+			if(!(node_.sons[0]->node->type==ID_POINTER))
+				printf("Semantic error: using not-pointer as pointer on line %d\n",getLineNumber());
 			break;
-		case '*':
-			//printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,"*");
-			verify((node_.sons[1]));
-			//printToFile(pfile,")");
+		case '*': 
+			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1]))
+				printf("Semantic error: multiplying not integer on line %d\n",getLineNumber());
 			break;
-		case '(':
-			printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,")");
+		case '(': 
+			verify((node_.sons[0])); 
 			break;
 		case '+':
-			//printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,"+");
-			verify((node_.sons[1]));
-			//printToFile(pfile,")");
+			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1]))
+				printf("Semantic error: adding not integer on line %d\n",getLineNumber());
 			break;
 		case '-':
-			//printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,"-");
-			verify((node_.sons[1]));
-			//printToFile(pfile,")");
+			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1]))
+				printf("Semantic error: subtracting not integer on line %d\n",getLineNumber());
 			break;
-		case '/':
-			//printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,"/");
-			verify((node_.sons[1]));
-			//printToFile(pfile,")");
+		case '/': 
+			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1]))
+				printf("Semantic error: dividing not integer on line %d\n",getLineNumber());
 			break;
-		case OR:
-			//printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,"||");
-			verify((node_.sons[1]));
-			//printToFile(pfile,")");
+		case OR: 
+			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1]))
+				printf("Semantic error: '||' with not boolean on line %d\n",getLineNumber());
 			break;
-		case AND:
-			//printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,"&&");
-			verify((node_.sons[1]));
-			//printToFile(pfile,")");
+		case AND: 
+			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1]))
+				printf("Semantic error: '&&' with not boolean on line %d\n",getLineNumber());
 			break;
-		case LE:
-			//printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,"<=");
-			verify((node_.sons[1]));
-			//printToFile(pfile,")");
+		case LE: 
+			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1]))
+				printf("Semantic error: '<=' with not boolean on line %d\n",getLineNumber());
 			break;
-		case EQ:
-			//printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,"==");
-			verify((node_.sons[1]));
-			//printToFile(pfile,")");
+		case EQ: 
+			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1]))
+				printf("Semantic error: '==' with not boolean on line %d\n",getLineNumber());
 			break;
-		case GE:
-			//printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,">=");
-			verify((node_.sons[1]));
-			//printToFile(pfile,")");
+		case GE: 
+			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1]))
+				printf("Semantic error: '>=' with not boolean on line %d\n",getLineNumber());
 			break;
-		case NE:
-			//printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,"!=");
-			verify((node_.sons[1]));
-			//printToFile(pfile,")");
+		case NE: 
+			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1]))
+				printf("Semantic error: '!=' with not boolean on line %d\n",getLineNumber());
 			break;
-		case '>':
-			//printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,">");
-			verify((node_.sons[1]));
-			//printToFile(pfile,")");
+		case '>': 
+			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1]))
+				printf("Semantic error: '>' with not boolean on line %d\n",getLineNumber());
 			break;
-		case '<':
-			//printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,"<");
-			verify((node_.sons[1]));
-			//printToFile(pfile,")");
+		case '<': 
+			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1]))
+				printf("Semantic error: '<' with not boolean on line %d\n",getLineNumber());
 			break;
 		case VECCALL:
-			verify((node_.sons[0]));
-			printToFile(pfile,"[");
-			verify((node_.sons[1]));
-			printToFile(pfile,"]");
+			if(!isInt(node_.sons[1])
+				printf("Semantic error: Vector index not integer on line %d\n",getLineNumber());
+			if(!(node_.sons[0]->node->type==ID_VECTOR))
+				printf("Semantic error: Something not-vector used as vector on line %d\n",getLineNumber());
 			break;
 		// FUNCALL ARGCALL CMD_SEQ
-		case FUNCALL:
-			verify((node_.sons[0]));
-			printToFile(pfile,"(");
-			if((node_.sons[1])!=NULL)
-				verify((node_.sons[1])) ;
-			printToFile(pfile,")");
+		case FUNCALL:	
+			if(!(node_.sons[0]->node->type==ID_FUNC))
+				printf("Semantic error: Something not-function used as function on line %d\n",getLineNumber());
+			testArguments(node_.sons[0]->node,node_.sons[1]); ////////////////////////////////////////////////////// TO DO
 			break;
 		case ARGCALL:
-			verify((node_.sons[0]));
-			if(node_.sons[1]!=NULL)
-			{
-				printToFile(pfile,",");
-				verify((node_.sons[1]));
-			}
 			break;
 		case CMD_SEQ:
 			verify((node_.sons[0]));
-			printToFile(pfile,";");
-			if(node_.sons[1]!=NULL)
-			{
-				verify((node_.sons[1]));
-			}
+			verify((node_.sons[1]));
 			break;
 		// OUTPUT
 		case OUTPUT_L:
-			verify((node_.sons[0]));
-			if(node_.sons[1]!=NULL)
-			{
-				printToFile(pfile,",");
-				verify((node_.sons[1]));
-			}
 			break;
 		// CMD
-		case INPUT:
-			printToFile(pfile,"input ");
-			verify((node_.sons[0]));
-			printToFile(pfile," ");
+		case INPUT: 
 			break;
 		case OUTPUT:
-			printToFile(pfile,"output ");
-			verify((node_.sons[0]));
-			printToFile(pfile," ");
 			break;
 		case RETURN:
-			printToFile(pfile,"return ");
-			verify((node_.sons[0]));
-			printToFile(pfile," ");
+			////////////////////////////////////////////////////////////////////////////////////////////////////////// TO DO
 			break;
 		case BLOCK:
-			printToFile(pfile,"{");
 			verify((node_.sons[0]));
-			printToFile(pfile,"}");
-			printToFile(pfile," ");
 			break;
 		case '=':
-			verify((node_.sons[0]));
-			printToFile(pfile,"=");
-			verify((node_.sons[1]));
-			printToFile(pfile," ");
+			////////////////////////////////////////////////////////////////////////////////////////////////////////// TO DO
 			break;
-		case IF_THEN:
-			printToFile(pfile,"if(");
-			verify((node_.sons[0]));
-			printToFile(pfile,")then ");
-			verify((node_.sons[1]));
-			printToFile(pfile," ");
+		case IF_THEN: 
+			if(!isBoolean(node_.sons[0]))
+				printf("Semantic error: if called with not-boolean on line %d\n",getLineNumber());
 			break;
-		case IF_THEN_ELSE:
-			printToFile(pfile,"if(");
-			verify((node_.sons[0]));
-			printToFile(pfile,")then ");
-			verify((node_.sons[1]));
-			printToFile(pfile,"else ");
-			verify((node_.sons[2]));
-			printToFile(pfile," ");
+		case IF_THEN_ELSE: 
+			if(!isBoolean(node_.sons[0]))
+				printf("Semantic error: if called with not-boolean on line %d\n",getLineNumber());
 			break;
 		case LOOP :
-			printToFile(pfile,"loop");
-			printToFile(pfile,"(");
-			verify((node_.sons[0]));
-			printToFile(pfile,")");
-			verify((node_.sons[1]));
-			printToFile(pfile," ");
+			if(!isBoolean(node_.sons[0]))
+				printf("Semantic error: loop called with not-boolean on line %d\n",getLineNumber());
 			break;
 		// DEFAULT
-		default:
+		default: 
 			printToFile(pfile,"DEFAULT");
 			break;
-
+		
 	} // switch
 	} // if node
 }

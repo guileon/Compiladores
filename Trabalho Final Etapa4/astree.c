@@ -290,7 +290,8 @@ void verify(struct a_NODE * node_p)
 		case OUTPUT:
 			break;
 		case RETURN:
-			////////////////////////////////////////////////////////////////////////////////////////////////////////// TO DO
+			if(!(node_.sons[0]->node->dataType == currentFunction->dataType))
+				printf("Semantic error: wrong return type for function %s, on line %d\n",currentFunction->value,getLineNumber());
 			break;
 		case BLOCK:
 			verify((node_.sons[0]));

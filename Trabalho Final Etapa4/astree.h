@@ -23,15 +23,18 @@ struct a_NODE{
 
 char *filename;
 
-	
+
 void a_setFile(char* file);
 
 struct a_NODE * newNode(
-	TOKEN _token, 
-	struct a_NODE * son1, 
-	struct a_NODE * son2, 
-	struct a_NODE * son3, 
+	TOKEN _token,
+	struct a_NODE * son1,
+	struct a_NODE * son2,
+	struct a_NODE * son3,
 	struct a_NODE * son4,
 	struct HNODE * value);
-	
+
 void printNode(struct a_NODE * node_p);
+int isBoolean(struct a_NODE *node);
+int isInt(struct a_NODE *node);
+int isPt(struct a_NODE *node);

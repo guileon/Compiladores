@@ -719,3 +719,21 @@ void printNode(struct a_NODE * node_p)
 	} // if node
 }
 
+int isBoolean(struct a_NODE *node)
+{
+	if((node->_token == LIT_TRUE) || (node->_token == LIT_FALSE))
+		return TRUE;
+	else if(node->value->dataType == id_BOOLEAN)
+		return TRUE; 
+	else return FALSE;
+}
+
+int isInt(struct a_NODE *node)
+{
+	if(node->_token == LIT_INTEGER)
+		return TRUE;
+	else if(node->value->dataType == id_INTEGER)
+		return TRUE
+	return FALSE;
+}
+

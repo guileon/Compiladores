@@ -13,10 +13,10 @@ void a_setFile(char* file)
 }
 
 struct a_NODE * newNode(
-	TOKEN _token, 
-	struct a_NODE * son1, 
-	struct a_NODE * son2, 
-	struct a_NODE * son3, 
+	TOKEN _token,
+	struct a_NODE * son1,
+	struct a_NODE * son2,
+	struct a_NODE * son3,
 	struct a_NODE * son4,
 	struct HNODE * value)
 {
@@ -64,7 +64,7 @@ struct a_NODE * newNode(
 		newNode->node = value;
 	}
 	return newNode;
-	
+
 }
 
 int firstTime = 1;
@@ -86,7 +86,7 @@ void printToFile(FILE * pfile,char* string)
 	pfile = fopen(filename,"a+");
 	fprintf(pfile,string);
 	fclose(pfile);
-	
+
 }
 
 void setId(int token, struct a_NODE * node, int type)
@@ -107,25 +107,25 @@ void verify(struct a_NODE * node_p)
 	struct a_NODE node_ = *node_p;
 
 	switch(node_.token)
-	{	
+	{
 		// TOKENS
 		case LIT_TRUE:
-			
+
 			break;
 		case LIT_FALSE:
-			
+
 			break;
 		case LIT_INTEGER:
-			
+
 			break;
-		case TK_IDENTIFIER: 
-			
+		case TK_IDENTIFIER:
+
 			break;
-		case LIT_CHAR: 
-			
+		case LIT_CHAR:
+
 			break;
-		case LIT_STRING: 
-			
+		case LIT_STRING:
+
 			break;
 		// LIST
 		case LIST:
@@ -134,7 +134,7 @@ void verify(struct a_NODE * node_p)
 			{
 				printToFile(pfile," ");
 				verify((node_.sons[1]));
-				
+
 			}
 			break;
 		// TYPE
@@ -160,15 +160,15 @@ void verify(struct a_NODE * node_p)
 			verify((node_.sons[1]));
 			break;
 		case FUNC_DECLARATION:
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			verify((node_.sons[1]));
-			printToFile(pfile,"(");	
+			printToFile(pfile,"(");
 			if((node_.sons[2])!=NULL)
-				verify((node_.sons[2])); 
+				verify((node_.sons[2]));
 			printToFile(pfile,")");
-			
+
 			verify((node_.sons[3])); // SEMPRE D_NODE , GAMBIARRATIONN
-			
+
 			break;
 		// DECLARATIONS
 		case PROG:
@@ -183,7 +183,7 @@ void verify(struct a_NODE * node_p)
 				(node_.sons[0]->token == KW_BOOL && (node_.sons[1]->token == LIT_TRUE || node_.sons[1]->token == LIT_FALSE)) ||
 				(((node_.sons[0]->token == KW_WORD) || (node_.sons[0]->token == KW_BYTE)) && (node_.sons[1]->token == LIT_INTEGER))))
 				printf("Semantic error on line %d: Scalar initialized wrong.",getLineNumber()));
-				
+
 			break;
 		case DECLARATION_POINTER:
 			setId(node_.sons[0]->token,node_.sons[1],ID_POINTER);
@@ -198,118 +198,118 @@ void verify(struct a_NODE * node_p)
 			if(!(node_.sons[3]->token == LIST))
 				printf("Semantic error on line %d: Vector initialized wrong.",getLineNumber());
 			break;
-	
+
 		// EXPRESSION
-		case '&': 
+		case '&':
 			printToFile(pfile,"&");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			break;
-		case POINTER: 
+		case POINTER:
 			printToFile(pfile,"*");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			break;
-		case '*': 
+		case '*':
 			//printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,"*");
 			verify((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case '(': 
+		case '(':
 			printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,")");
 			break;
 		case '+':
 			//printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,"+");
 			verify((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
 		case '-':
 			//printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,"-");
 			verify((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case '/': 
+		case '/':
 			//printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,"/");
 			verify((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case OR: 
+		case OR:
 			//printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,"||");
 			verify((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case AND: 
+		case AND:
 			//printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,"&&");
 			verify((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case LE: 
+		case LE:
 			//printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,"<=");
 			verify((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case EQ: 
+		case EQ:
 			//printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,"==");
 			verify((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case GE: 
+		case GE:
 			//printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,">=");
 			verify((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case NE: 
+		case NE:
 			//printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,"!=");
 			verify((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case '>': 
+		case '>':
 			//printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,">");
 			verify((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case '<': 
+		case '<':
 			//printToFile(pfile,"(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,"<");
 			verify((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
 		case VECCALL:
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,"[");
 			verify((node_.sons[1]));
 			printToFile(pfile,"]");
 			break;
 		// FUNCALL ARGCALL CMD_SEQ
-		case FUNCALL:	
-			verify((node_.sons[0])); 
-			printToFile(pfile,"("); 
-			if((node_.sons[1])!=NULL) 
+		case FUNCALL:
+			verify((node_.sons[0]));
+			printToFile(pfile,"(");
+			if((node_.sons[1])!=NULL)
 				verify((node_.sons[1])) ;
-			printToFile(pfile,")");  
+			printToFile(pfile,")");
 			break;
 		case ARGCALL:
 			verify((node_.sons[0]));
@@ -337,7 +337,7 @@ void verify(struct a_NODE * node_p)
 			}
 			break;
 		// CMD
-		case INPUT: 
+		case INPUT:
 			printToFile(pfile,"input ");
 			verify((node_.sons[0]));
 			printToFile(pfile," ");
@@ -364,16 +364,16 @@ void verify(struct a_NODE * node_p)
 			verify((node_.sons[1]));
 			printToFile(pfile," ");
 			break;
-		case IF_THEN: 
+		case IF_THEN:
 			printToFile(pfile,"if(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,")then ");
 			verify((node_.sons[1]));
 			printToFile(pfile," ");
 			break;
-		case IF_THEN_ELSE: 
+		case IF_THEN_ELSE:
 			printToFile(pfile,"if(");
-			verify((node_.sons[0])); 
+			verify((node_.sons[0]));
 			printToFile(pfile,")then ");
 			verify((node_.sons[1]));
 			printToFile(pfile,"else ");
@@ -389,10 +389,10 @@ void verify(struct a_NODE * node_p)
 			printToFile(pfile," ");
 			break;
 		// DEFAULT
-		default: 
+		default:
 			printToFile(pfile,"DEFAULT");
 			break;
-		
+
 	} // switch
 	} // if node
 }
@@ -410,7 +410,7 @@ void printNode(struct a_NODE * node_p)
 	struct a_NODE node_ = *node_p;
 
 	switch(node_.token)
-	{	
+	{
 		// TOKENS
 		case LIT_TRUE:
 			printToFile(pfile,(node_.node)->value);
@@ -421,15 +421,15 @@ void printNode(struct a_NODE * node_p)
 		case LIT_INTEGER:
 			printToFile(pfile,(node_.node)->value);
 			break;
-		case TK_IDENTIFIER: 
+		case TK_IDENTIFIER:
 			printToFile(pfile,(node_.node)->value);
 			break;
-		case LIT_CHAR: 
+		case LIT_CHAR:
 			printToFile(pfile,"'");
 			printToFile(pfile,(node_.node)->value);
 			printToFile(pfile,"'");
 			break;
-		case LIT_STRING: 
+		case LIT_STRING:
 			printToFile(pfile,"\"");
 			printToFile(pfile,(node_.node)->value);
 			printToFile(pfile,"\"");
@@ -441,7 +441,7 @@ void printNode(struct a_NODE * node_p)
 			{
 				printToFile(pfile," ");
 				printNode((node_.sons[1]));
-				
+
 			}
 			break;
 		// TYPE
@@ -470,15 +470,15 @@ void printNode(struct a_NODE * node_p)
 			printNode((node_.sons[1]));
 			break;
 		case FUNC_DECLARATION:
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printNode((node_.sons[1]));
-			printToFile(pfile,"(");	
+			printToFile(pfile,"(");
 			if((node_.sons[2])!=NULL)
-				printNode((node_.sons[2])); 
+				printNode((node_.sons[2]));
 			printToFile(pfile,")");
-			
+
 			printNode((node_.sons[3])); // SEMPRE D_NODE , GAMBIARRATIONN
-			
+
 			break;
 		// DECLARATIONS
 		case PROG:
@@ -488,22 +488,22 @@ void printNode(struct a_NODE * node_p)
 				printNode((node_.sons[1]));
 			break;
 		case DECLARATION:
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printNode((node_.sons[1]));
-			printToFile(pfile,":");			
+			printToFile(pfile,":");
 			printNode((node_.sons[2]));
 			printToFile(pfile,";");
 			break;
 		case DECLARATION_POINTER:
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,"$");
 			printNode((node_.sons[1]));
-			printToFile(pfile,":");			
+			printToFile(pfile,":");
 			printNode((node_.sons[2]));
 			printToFile(pfile,";");
 			break;
 		case DECLARATION_VEC:
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printNode((node_.sons[1]));
 			printToFile(pfile,"[");
 			printNode((node_.sons[2]));
@@ -511,7 +511,7 @@ void printNode(struct a_NODE * node_p)
 			printToFile(pfile,";");
 			break;
 		case DECLARATION_VEC_INIT:
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printNode((node_.sons[1]));
 			printToFile(pfile,"[");
 			printNode((node_.sons[2]));
@@ -520,118 +520,118 @@ void printNode(struct a_NODE * node_p)
 			printNode((node_.sons[3]));
 			printToFile(pfile,";");
 			break;
-	
+
 		// EXPRESSION
-		case '&': 
+		case '&':
 			printToFile(pfile,"&");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			break;
-		case POINTER: 
+		case POINTER:
 			printToFile(pfile,"*");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			break;
-		case '*': 
+		case '*':
 			//printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,"*");
 			printNode((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case '(': 
+		case '(':
 			printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,")");
 			break;
 		case '+':
 			//printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,"+");
 			printNode((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
 		case '-':
 			//printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,"-");
 			printNode((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case '/': 
+		case '/':
 			//printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,"/");
 			printNode((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case OR: 
+		case OR:
 			//printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,"||");
 			printNode((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case AND: 
+		case AND:
 			//printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,"&&");
 			printNode((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case LE: 
+		case LE:
 			//printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,"<=");
 			printNode((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case EQ: 
+		case EQ:
 			//printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,"==");
 			printNode((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case GE: 
+		case GE:
 			//printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,">=");
 			printNode((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case NE: 
+		case NE:
 			//printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,"!=");
 			printNode((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case '>': 
+		case '>':
 			//printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,">");
 			printNode((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
-		case '<': 
+		case '<':
 			//printToFile(pfile,"(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,"<");
 			printNode((node_.sons[1]));
 			//printToFile(pfile,")");
 			break;
 		case VECCALL:
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,"[");
 			printNode((node_.sons[1]));
 			printToFile(pfile,"]");
 			break;
 		// FUNCALL ARGCALL CMD_SEQ
-		case FUNCALL:	
-			printNode((node_.sons[0])); 
-			printToFile(pfile,"("); 
-			if((node_.sons[1])!=NULL) 
+		case FUNCALL:
+			printNode((node_.sons[0]));
+			printToFile(pfile,"(");
+			if((node_.sons[1])!=NULL)
 				printNode((node_.sons[1])) ;
-			printToFile(pfile,")");  
+			printToFile(pfile,")");
 			break;
 		case ARGCALL:
 			printNode((node_.sons[0]));
@@ -659,7 +659,7 @@ void printNode(struct a_NODE * node_p)
 			}
 			break;
 		// CMD
-		case INPUT: 
+		case INPUT:
 			printToFile(pfile,"input ");
 			printNode((node_.sons[0]));
 			printToFile(pfile," ");
@@ -686,16 +686,16 @@ void printNode(struct a_NODE * node_p)
 			printNode((node_.sons[1]));
 			printToFile(pfile," ");
 			break;
-		case IF_THEN: 
+		case IF_THEN:
 			printToFile(pfile,"if(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,")then ");
 			printNode((node_.sons[1]));
 			printToFile(pfile," ");
 			break;
-		case IF_THEN_ELSE: 
+		case IF_THEN_ELSE:
 			printToFile(pfile,"if(");
-			printNode((node_.sons[0])); 
+			printNode((node_.sons[0]));
 			printToFile(pfile,")then ");
 			printNode((node_.sons[1]));
 			printToFile(pfile,"else ");
@@ -711,10 +711,10 @@ void printNode(struct a_NODE * node_p)
 			printToFile(pfile," ");
 			break;
 		// DEFAULT
-		default: 
+		default:
 			printToFile(pfile,"DEFAULT");
 			break;
-		
+
 	} // switch
 	} // if node
 }
@@ -724,7 +724,7 @@ int isBoolean(struct a_NODE *node)
 	if((node->_token == LIT_TRUE) || (node->_token == LIT_FALSE))
 		return TRUE;
 	else if(node->value->dataType == id_BOOLEAN)
-		return TRUE; 
+		return TRUE;
 	else return FALSE;
 }
 
@@ -733,7 +733,16 @@ int isInt(struct a_NODE *node)
 	if(node->_token == LIT_INTEGER)
 		return TRUE;
 	else if(node->value->dataType == id_INTEGER)
-		return TRUE
+		return TRUE;
 	return FALSE;
 }
+
+
+int isPt(struct a_NODE *node)
+{
+	if(node->value->dataType == ID_POINTER)
+		return TRUE;
+	return FALSE;
+}
+
 

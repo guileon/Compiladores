@@ -1,8 +1,19 @@
+word vec[3]:1 2 3;
+word $x:2;
+bool xoro()
+{
+}
 
-bool main(byte b,word c,bool d)
+bool main(byte b, bool d)
 word a:0;
 bool c:true;
 {
-	c = a(2,2,2);
-	return c;
+	a = *x;
+	vec[2+3] = vec[1];
+	c = main(2,true);
+	c = xoro();
+	c = true || false;
+	return true;
+	loop(2==3)
+		c = main;
 }

@@ -1,1 +1,1 @@
-bool main(byte b,word c,bool d)word a:0;bool c:TRUE;{c=a(2,2,2) ;return c ;} 
+word vec[3]:1 2 3;word $x:2;bool xoro(){} bool main(byte b,bool d)word a:0;bool c:TRUE;{a=*x ;vec[2+3]=vec[1] ;c=main(2,TRUE) ;return TRUE ;loop(2==3)c=main  ;} 

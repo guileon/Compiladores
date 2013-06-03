@@ -269,7 +269,7 @@ void verify(struct a_NODE * node_p)
 					node_.sons[1]->node->dataType = ID_WORD;
 				else if(node_.sons[0]->token == KW_BYTE)
 					node_.sons[1]->node->dataType = ID_BYTE;
-				node_.sons[1]->node->type = ID_VECTOR;
+				node_.sons[1]->node->type = ID_POINTER;
 			}
 			break;
 		case DECLARATION_VEC:
@@ -360,38 +360,30 @@ void verify(struct a_NODE * node_p)
 			verify(node_.sons[1]);
 			break;
 		case LE: 
-			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
-				printf("Semantic error: '<=' with not boolean on line %d\n",getLineNumber());
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
 		case EQ: 
-			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
-				printf("Semantic error: '==' with not boolean on line %d\n",getLineNumber());
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
 		case GE: 
-			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
-				printf("Semantic error: '>=' with not boolean on line %d\n",getLineNumber());
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
 		case NE: 
-			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
-				printf("Semantic error: '!=' with not boolean on line %d\n",getLineNumber());
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
 		case '>': 		
-			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
-				printf("Semantic error: '>' with not boolean on line %d\n",getLineNumber());
+			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1])))
+				printf("Semantic error: '>' with not integer on line %d\n",getLineNumber());
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
 		case '<': 
-			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
-				printf("Semantic error: '<' with not boolean on line %d\n",getLineNumber());
+			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1])))
+				printf("Semantic error: '<' with not integer on line %d\n",getLineNumber());
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
@@ -447,8 +439,12 @@ void verify(struct a_NODE * node_p)
 			verify(node_.sons[1]); ////////////////////////////////////////////////////////////////////// REMEMBER
 			if(node_.sons[0]->token == VECCALL)
 			{
-				if(!isInt(node_.sons[1]))
+				if(!(node_.sons[0]->sons[0]->node->type == ID_VECTOR))
+					printf("Semantic error: not-vector used as vector on line %d\n",getLineNumber());
+					
+				if(!isInt(node_.sons[0]->sons[1]))
 					printf("Semantic error: vector index is not integer on line %d\n",getLineNumber());
+					
 				if(node_.sons[0]->sons[0]->node->dataType == ID_WORD)
 				{
 					if(!isInt(node_.sons[1]))
@@ -469,10 +465,13 @@ void verify(struct a_NODE * node_p)
 			}
 			else if(node_.sons[0]->token == POINTER)
 			{
-			
+				if(node_.sons[0]->sons[0]->node->type != ID_POINTER)
+					printf("Semantic error: dereferencing non-pointer on line %d\n",getLineNumber());
 			}
-			else
+			else if(node_.sons[0]->node->type == ID_SCALAR)
 			{
+				if(node_.sons[0]->node->type == ID_VECTOR)
+					printf("Semantic error: vector used as not-vector on line %d\n",getLineNumber());
 				if(node_.sons[0]->node->dataType == ID_WORD)
 				{
 					if(!isInt(node_.sons[1]))
@@ -490,6 +489,10 @@ void verify(struct a_NODE * node_p)
 				}
 				else 
 					printf("Semantic error: identifier %s not declared on line %d\n",node_.sons[0]->node->value,getLineNumber());
+			}
+			else
+			{
+				printf("Semantic error: atributing to non-variable on line %d\n",getLineNumber());
 			}
 			break;
 		case IF_THEN: 
@@ -836,32 +839,40 @@ void printNode(struct a_NODE * node_p)
 
 int isBoolean(struct a_NODE *node)
 {
-	if(!node)
+	if(!node) // testa se é nulo
 		return FALSE;
-	if(node->token == LIT_TRUE || node->token == LIT_FALSE)
-	{
-		return TRUE;	
-	}
 		
-	else if(node->token == TK_IDENTIFIER && node->node->dataType == ID_BOOL)
+	if(node->token == LIT_TRUE || node->token == LIT_FALSE) // testa os literais
+		return TRUE;	
+		
+	if(node->token == SYMBOL_IDENTIFIER && node->node->dataType == ID_BOOL) // testa variável
 		return TRUE;
 
-	if(node->token == FUNCALL && (node->sons[0]->node->dataType == ID_WORD || node->sons[0]->node->dataType == ID_BYTE))
-	{
+	if(node->token == POINTER) // testa ponteiro
+		return TRUE;
+		
+	if(node->token == FUNCALL && (node->sons[0]->node->dataType == ID_WORD || node->sons[0]->node->dataType == ID_BYTE)) // testa se é função
 		return FALSE;
-	}
 		
 	if(node->token == FUNCALL && node->sons[0]->node->dataType == ID_BOOL)
-	{
 		return TRUE;
-	}
-	
-	if(node->token == '+' || node->token == '-' || node->token == '*' || node->token == '/')
+		
+	if(node->token == VECCALL && node->sons[0]->node->dataType == ID_WORD) // testa vetor
 		return FALSE;
 		
+	if(node->token == VECCALL && node->sons[0]->node->dataType == ID_BYTE) // testa vetor
+		return FALSE;
+		
+	if(node->token == VECCALL && node->sons[0]->node->dataType == ID_BOOL) // testa vetor
+		return TRUE;
+	
+	if(node->token == '+' || node->token == '-' || node->token == '*' || node->token == '/') // testa os operadores que retornam inteiro
+		return FALSE;
+		
+	if(node->token == EQ || node->token == NE || node->token == GE || node->token == LE || node->token == '>' || node->token == '<') // testa os operadores que retornam booleano
+		return TRUE;
 
-
-	if(isBoolean(node->sons[0]) && isBoolean(node->sons[1]))
+	if(isBoolean(node->sons[0]) && isBoolean(node->sons[1])) // testa os filhos
 		return TRUE;
 	
 	return FALSE;
@@ -869,35 +880,39 @@ int isBoolean(struct a_NODE *node)
 
 int isInt(struct a_NODE *node)
 {
-	if(!node)
+	if(!node) // testa se o nodo é nulo
 		return FALSE;
-	if(node->token == LIT_TRUE || node->token == LIT_FALSE)
-		return FALSE;
-	if(node->token == LIT_INTEGER)
-	{
-		return TRUE;
-	}
 		
-	if(node->token == FUNCALL && (node->sons[0]->node->dataType == ID_WORD || node->sons[0]->node->dataType == ID_BYTE))
-	{
+	
+	if(node->token == LIT_INTEGER) // testa se é um literal inteiro
 		return TRUE;
-	}
 		
-	if(node->token == FUNCALL && node->sons[0]->node->dataType == ID_BOOL);
-	{
-		return FALSE;
-	}
-	if(node->token == EQ || node->token == NE || node->token == GE || node->token == LE || node->token == '>' || node->token == '<')
-		return FALSE;
-	if(node->token == LIT_INTEGER)
+	if(node->token == VECCALL && node->sons[0]->node->dataType == ID_WORD) // faz o teste para ver se são vetores do tipo certo
 		return TRUE;
-	else if(node->token == SYMBOL_IDENTIFIER && (node->node->dataType == ID_WORD || node->node->dataType == ID_BYTE))
+	if(node->token == VECCALL && node->sons[0]->node->dataType == ID_BYTE)
+		return TRUE;
+
+	if(node->token == POINTER) // testa se é um ponteiro desreferenciado
+		return TRUE;
+	if(node->token == FUNCALL && (node->sons[0]->node->dataType == ID_WORD || node->sons[0]->node->dataType == ID_BYTE)) // testa se é uma função com retorno correto
+		return TRUE;
+		
+	if(node->token == FUNCALL && node->sons[0]->node->dataType == ID_BOOL) // testa o oposto do anterior?
+		return FALSE;
+		
+	if(node->token == EQ || node->token == NE || node->token == GE || node->token == LE || node->token == '>' || node->token == '<') // testa se é um operador que retorna booleano
+		return FALSE;
+	if(node->token == '+' || node->token == '-' || node->token == '*' || node->token == '/') // testa se é um operador que rertorna inteiro
+		return TRUE;
+
+	if(node->token == SYMBOL_IDENTIFIER && (node->node->dataType == ID_WORD || node->node->dataType == ID_BYTE)) // testa se é uma variável do tipo correto
 		return TRUE;
 	
-	if(node->sons[1] && isInt(node->sons[0]) && isInt(node->sons[1]))
+	if(node->sons[1] && isInt(node->sons[0]) && isInt(node->sons[1])) // potencialmente bobagem
 		return TRUE;
-	else if(!node->sons[1] && isInt(node->sons[0]))
+	else if(!node->sons[1] && isInt(node->sons[0])) // testa os filhos
 		return TRUE;
+		
 	return FALSE;
 }
 

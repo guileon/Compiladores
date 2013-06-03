@@ -132,6 +132,7 @@ void table_print(void)
 				case ID_FUNC: printf("Valor: %s | Function %d | ",node->value,node->dataType); 
 					for(aux = node->args ; aux != NULL ; aux = aux->next)	printf(" %d, ",aux->v); printf("\n");
 					break;
+				case ID_VECTOR: printf("Valor: %s | Vector %d\n",node->value,node->dataType); break;
 			}
 		}
 	}

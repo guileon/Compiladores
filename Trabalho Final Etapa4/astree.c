@@ -737,19 +737,27 @@ void printNode(struct a_NODE * node_p)
 
 int isBoolean(struct a_NODE *node)
 {
-	if((node->_token == LIT_TRUE) || (node->_token == LIT_FALSE))
+	if(node->token == LIT_TRUE || node->token == LIT_FALSE)
 		return TRUE;
-	else if(node->value->dataType == id_BOOLEAN)
+	else if(node->token == TK_IDENTIFIER && node->node->dataType == ID_BOOL)
 		return TRUE;
-	else return FALSE;
+
+	if(isBoolean(node->sons[0]) && isBoolean(node->sons[1]))
+		return TRUE;
+	
+	return FALSE;
 }
 
 int isInt(struct a_NODE *node)
 {
-	if(node->_token == LIT_INTEGER)
+	if(node->token == LIT_INTEGER)
 		return TRUE;
-	else if(node->value->dataType == id_INTEGER)
+	else if(node->token == TK_IDENTIFIER && (node->node->dataType == ID_WORD || node->node->dataType == ID_BYTE))
 		return TRUE;
+	
+	if(isInt(node->sons[0]) && isInt(node->sons[1]))
+		return TRUE;
+	
 	return FALSE;
 }
 

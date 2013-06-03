@@ -1,4 +1,4 @@
-name = etapa3
+name = etapa4
 $(name): lex.yy.o main.o table.o parser.tab.o astree.o hex.o
 		gcc -o $(name) lex.yy.o main.o table.o parser.tab.o hex.o astree.o
 		

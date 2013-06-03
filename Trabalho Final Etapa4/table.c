@@ -136,7 +136,7 @@ void table_print(void)
 
 struct intList * insertInIntList(int value, struct intList * oldList)
 {
-	struct intList * new = calloc(1,sizeof(intList));
+	struct intList * new = (struct intList *)calloc(1,sizeof(struct intList));
 	struct intList * aux = oldList;
 	new->v = value;
 	new->next = NULL;

@@ -25,7 +25,7 @@ struct intList
 {
 	int v;
 	struct intList * next;
-}
+};
 
 struct HNODE;
 struct HNODE

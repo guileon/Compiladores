@@ -102,7 +102,7 @@ struct HNODE * currentFunction;
  
 void verify(struct a_NODE * node_p)
 {
-
+	struct a_NODE * aux;
 	FILE *pfile;
 	if(node_p)
 	{
@@ -167,7 +167,11 @@ void verify(struct a_NODE * node_p)
 			verify(node_.sons[3]->sons[1]);
 			currentFunction = node_.sons[1]->node;
 			
-			
+			aux = node_.sons[2];
+			for(aux = node_.sons[2] ; aux != NULL ; aux = aux->sons[3])
+			{
+				node_.sons[1]->node->args = insertInIntList(aux->sons[0]->token,node_.sons[1]->node->args);
+			}
 			verify((node_.sons[3])); // SEMPRE D_NODE , GAMBIARRATIONN
 			
 			break;

@@ -6,6 +6,8 @@
 #define NOW ); fprintf(pfile,"\n");
 #define SHOW_INT fprintf(pfile,"%d\n",
 
+#define TRUE 1
+#define FALSE 0
 
 void a_setFile(char* file)
 {
@@ -67,6 +69,8 @@ struct a_NODE * newNode(
 
 }
 
+
+
 int firstTime = 1;
 
 void clearFile(FILE* pfile)
@@ -89,13 +93,37 @@ void printToFile(FILE * pfile,char* string)
 
 }
 
-void setId(int token, struct a_NODE * node, int type)
+int testArguments(struct HNODE *node1, struct a_NODE *node2)
 {
-	if(node)
+    struct intList * aux;
+	struct a_NODE * aux2;
+	aux = node1->args;
+	aux2 = node2;
+	while(aux || aux2)
 	{
-		node->type = token;
-		node->dataType = type;
+		if(!aux && aux2)
+		{
+			printf("Semantic error: wrong number of arguments on function call on line %d\n",getLineNumber());
+			return FALSE;
+		}
+		else if(aux && !aux2)
+		{
+			printf("Semantic error: wrong number of arguments on function call on line %d\n",getLineNumber());
+			return FALSE;
+		}
+		else
+			if(aux->v != aux2->token)
+			{
+				printf("Semantic error arguments of function are of wrong type on line %d\n",getLineNumber());
+				return FALSE;
+			}
+			else
+			{
+				aux = aux->next;
+				aux2 = aux2->sons[1];
+			}
 	}
+	return TRUE;
 }
 
 struct HNODE * currentFunction;
@@ -349,17 +377,17 @@ void verify(struct a_NODE * node_p)
 		case '=':
 			if(node_.sons[0]->token == VECCALL)
 			{
-				if(node_.sons[0]->sons[0]->dataType == ID_WORD)
+				if(node_.sons[0]->sons[0]->node->dataType == ID_WORD)
 				{
 					if(!isInt(node_.sons[1]))
 						printf("Semantic error: atributing to integer vector from not-integer on line %d",getLineNumber());
 				}
-				else if(node_.sons[0]->sons[0]->dataType == ID_BYTE)
+				else if(node_.sons[0]->sons[0]->node->dataType == ID_BYTE)
 				{
 					if(!isInt(node_.sons[1]))
 						printf("Semantic error: atributing to integer vector from not-integer on line %d",getLineNumber());
 				}
-				else if(node_.sons[0]->sons[0]->dataType == ID_BOOL)
+				else if(node_.sons[0]->sons[0]->node->dataType == ID_BOOL)
 				{
 					if(!isBoolean(node_.sons[1]))
 						printf("Semantic error: atributing to boolean vector from not-boolean on line %d",getLineNumber());
@@ -373,17 +401,17 @@ void verify(struct a_NODE * node_p)
 			}
 			else
 			{
-				if(node_.sons[0]->dataType == ID_WORD)
+				if(node_.sons[0]->node->dataType == ID_WORD)
 				{
 					if(!isInt(node_.sons[1]))
 						printf("Semantic error: atributing to integer scalar from not-integer on line %d",getLineNumber());
 				}
-				else if(node_.sons[0]->dataType == ID_BYTE)
+				else if(node_.sons[0]->node->dataType == ID_BYTE)
 				{
 					if(!isInt(node_.sons[1]))
 						printf("Semantic error: atributing to integer scalar from not-integer on line %d",getLineNumber());
 				}
-				else if(node_.sons[0]->dataType == ID_BOOL)
+				else if(node_.sons[0]->node->dataType == ID_BOOL)
 				{
 					if(!isBoolean(node_.sons[1]))
 						printf("Semantic error: atributing to boolean scalar from not-boolean on line %d",getLineNumber());
@@ -413,8 +441,7 @@ void verify(struct a_NODE * node_p)
 	} // if node
 }
 
-#define TRUE 1
-#define FALSE 0
+
 
 
 void printNode(struct a_NODE * node_p)
@@ -764,7 +791,7 @@ int isInt(struct a_NODE *node)
 
 int isPt(struct a_NODE *node)
 {
-	if(node->value->dataType == ID_POINTER)
+	if(node->node->dataType == ID_POINTER)
 		return TRUE;
 	return FALSE;
 }

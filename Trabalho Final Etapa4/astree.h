@@ -19,6 +19,7 @@ struct a_NODE{
 	TOKEN token;
 	struct a_NODE ** sons;
 	struct HNODE * node;
+	int lineNumber;
 };
 
 char *filename;
@@ -32,7 +33,8 @@ struct a_NODE * newNode(
 	struct a_NODE * son2,
 	struct a_NODE * son3,
 	struct a_NODE * son4,
-	struct HNODE * value);
+	struct HNODE * value,
+	int lineN);
 
 void printNode(struct a_NODE * node_p);
 int isBoolean(struct a_NODE *node);

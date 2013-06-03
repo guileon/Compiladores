@@ -1517,14 +1517,14 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 79 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(PROG, (yyvsp[(1) - (2)].astreeNode), (yyvsp[(2) - (2)].astreeNode), NULL, NULL, NULL) ; ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(PROG, (yyvsp[(1) - (2)].astreeNode), (yyvsp[(2) - (2)].astreeNode), NULL, NULL, NULL,getLineNumber()) ; ;}
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
 #line 80 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(PROG, (yyvsp[(1) - (2)].astreeNode), (yyvsp[(2) - (2)].astreeNode), NULL, NULL, NULL) ; ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(PROG, (yyvsp[(1) - (2)].astreeNode), (yyvsp[(2) - (2)].astreeNode), NULL, NULL, NULL,getLineNumber()) ; ;}
     break;
 
   case 5:
@@ -1538,7 +1538,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 84 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(LIST, (yyvsp[(1) - (2)].astreeNode), (yyvsp[(2) - (2)].astreeNode), NULL, NULL, NULL) ; ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(LIST, (yyvsp[(1) - (2)].astreeNode), (yyvsp[(2) - (2)].astreeNode), NULL, NULL, NULL,getLineNumber()) ; ;}
     break;
 
   case 7:
@@ -1552,105 +1552,105 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 88 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(KW_BOOL,NULL,NULL,NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(KW_BOOL,NULL,NULL,NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
 #line 89 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(KW_WORD,NULL,NULL,NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(KW_WORD,NULL,NULL,NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
 #line 90 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(KW_BYTE,NULL,NULL,NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(KW_BYTE,NULL,NULL,NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
 #line 93 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(TK_IDENTIFIER,NULL,NULL,NULL,NULL,(yyvsp[(1) - (1)].node)); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(TK_IDENTIFIER,NULL,NULL,NULL,NULL,(yyvsp[(1) - (1)].node),getLineNumber()); ;}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
 #line 96 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(LIT_INTEGER,NULL,NULL,NULL,NULL,(yyvsp[(1) - (1)].node)); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(LIT_INTEGER,NULL,NULL,NULL,NULL,(yyvsp[(1) - (1)].node),getLineNumber()); ;}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
 #line 97 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(LIT_FALSE,NULL,NULL,NULL,NULL,(yyvsp[(1) - (1)].node)); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(LIT_FALSE,NULL,NULL,NULL,NULL,(yyvsp[(1) - (1)].node),getLineNumber()); ;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
 #line 98 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(LIT_TRUE,NULL,NULL,NULL,NULL,(yyvsp[(1) - (1)].node)); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(LIT_TRUE,NULL,NULL,NULL,NULL,(yyvsp[(1) - (1)].node),getLineNumber()); ;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
 #line 99 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(LIT_STRING,NULL,NULL,NULL,NULL,(yyvsp[(1) - (1)].node)); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(LIT_STRING,NULL,NULL,NULL,NULL,(yyvsp[(1) - (1)].node),getLineNumber()); ;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
 #line 100 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(LIT_CHAR,NULL,NULL,NULL,NULL,(yyvsp[(1) - (1)].node)); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(LIT_CHAR,NULL,NULL,NULL,NULL,(yyvsp[(1) - (1)].node),getLineNumber()); ;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
 #line 103 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(DECLARATION,(yyvsp[(1) - (5)].astreeNode),(yyvsp[(2) - (5)].astreeNode),(yyvsp[(4) - (5)].astreeNode),NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(DECLARATION,(yyvsp[(1) - (5)].astreeNode),(yyvsp[(2) - (5)].astreeNode),(yyvsp[(4) - (5)].astreeNode),NULL,NULL,getLineNumber()); ;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
 #line 104 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(DECLARATION_POINTER,(yyvsp[(1) - (6)].astreeNode),(yyvsp[(3) - (6)].astreeNode),(yyvsp[(5) - (6)].astreeNode),NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(DECLARATION_POINTER,(yyvsp[(1) - (6)].astreeNode),(yyvsp[(3) - (6)].astreeNode),(yyvsp[(5) - (6)].astreeNode),NULL,NULL,getLineNumber()); ;}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
 #line 105 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(DECLARATION_VEC_INIT,(yyvsp[(1) - (8)].astreeNode),(yyvsp[(2) - (8)].astreeNode),(yyvsp[(4) - (8)].astreeNode),(yyvsp[(7) - (8)].astreeNode),NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(DECLARATION_VEC_INIT,(yyvsp[(1) - (8)].astreeNode),(yyvsp[(2) - (8)].astreeNode),(yyvsp[(4) - (8)].astreeNode),(yyvsp[(7) - (8)].astreeNode),NULL,getLineNumber()); ;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
 #line 106 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(DECLARATION_VEC,(yyvsp[(1) - (6)].astreeNode),(yyvsp[(2) - (6)].astreeNode),(yyvsp[(4) - (6)].astreeNode),NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(DECLARATION_VEC,(yyvsp[(1) - (6)].astreeNode),(yyvsp[(2) - (6)].astreeNode),(yyvsp[(4) - (6)].astreeNode),NULL,NULL,getLineNumber()); ;}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
 #line 110 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(PROG,newNode(DECLARATION,(yyvsp[(1) - (6)].astreeNode),(yyvsp[(2) - (6)].astreeNode),(yyvsp[(4) - (6)].astreeNode),NULL,NULL),(yyvsp[(6) - (6)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(PROG,newNode(DECLARATION,(yyvsp[(1) - (6)].astreeNode),(yyvsp[(2) - (6)].astreeNode),(yyvsp[(4) - (6)].astreeNode),NULL,NULL,getLineNumber()),(yyvsp[(6) - (6)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
 #line 111 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(PROG,newNode(DECLARATION_POINTER,(yyvsp[(1) - (7)].astreeNode),(yyvsp[(3) - (7)].astreeNode),(yyvsp[(5) - (7)].astreeNode),NULL,NULL),(yyvsp[(7) - (7)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(PROG,newNode(DECLARATION_POINTER,(yyvsp[(1) - (7)].astreeNode),(yyvsp[(3) - (7)].astreeNode),(yyvsp[(5) - (7)].astreeNode),NULL,NULL,getLineNumber()),(yyvsp[(7) - (7)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 23:
@@ -1664,42 +1664,42 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 115 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(FUNC_DECLARATION,(yyvsp[(1) - (7)].astreeNode),(yyvsp[(2) - (7)].astreeNode),(yyvsp[(4) - (7)].astreeNode),newNode(D_NODE,(yyvsp[(6) - (7)].astreeNode),(yyvsp[(7) - (7)].astreeNode),NULL,NULL,NULL),NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(FUNC_DECLARATION,(yyvsp[(1) - (7)].astreeNode),(yyvsp[(2) - (7)].astreeNode),(yyvsp[(4) - (7)].astreeNode),newNode(D_NODE,(yyvsp[(6) - (7)].astreeNode),(yyvsp[(7) - (7)].astreeNode),NULL,NULL,NULL,getLineNumber()),NULL,getLineNumber()); ;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
 #line 116 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(FUNC_DECLARATION,(yyvsp[(1) - (6)].astreeNode),(yyvsp[(2) - (6)].astreeNode),NULL,newNode(D_NODE,(yyvsp[(5) - (6)].astreeNode),(yyvsp[(6) - (6)].astreeNode),NULL,NULL,NULL),NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(FUNC_DECLARATION,(yyvsp[(1) - (6)].astreeNode),(yyvsp[(2) - (6)].astreeNode),NULL,newNode(D_NODE,(yyvsp[(5) - (6)].astreeNode),(yyvsp[(6) - (6)].astreeNode),NULL,NULL,NULL,getLineNumber()),NULL,getLineNumber()); ;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
 #line 119 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(ARGUMENTS,(yyvsp[(1) - (2)].astreeNode),(yyvsp[(2) - (2)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(ARGUMENTS,(yyvsp[(1) - (2)].astreeNode),(yyvsp[(2) - (2)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
 #line 120 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(ARGUMENTS,(yyvsp[(1) - (4)].astreeNode),(yyvsp[(2) - (4)].astreeNode),(yyvsp[(4) - (4)].astreeNode),NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(ARGUMENTS,(yyvsp[(1) - (4)].astreeNode),(yyvsp[(2) - (4)].astreeNode),(yyvsp[(4) - (4)].astreeNode),NULL,NULL,getLineNumber()); ;}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
 #line 123 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(ARGCALL,(yyvsp[(1) - (1)].astreeNode),NULL,NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(ARGCALL,(yyvsp[(1) - (1)].astreeNode),NULL,NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
 #line 124 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(ARGCALL,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(ARGCALL,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 30:
@@ -1720,21 +1720,21 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 129 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(VECCALL,(yyvsp[(1) - (4)].astreeNode),(yyvsp[(3) - (4)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(VECCALL,(yyvsp[(1) - (4)].astreeNode),(yyvsp[(3) - (4)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
 #line 130 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode('&',(yyvsp[(2) - (2)].astreeNode),NULL,NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode('&',(yyvsp[(2) - (2)].astreeNode),NULL,NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
 #line 131 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(POINTER,(yyvsp[(2) - (2)].astreeNode),NULL,NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(POINTER,(yyvsp[(2) - (2)].astreeNode),NULL,NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 35:
@@ -1748,161 +1748,161 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 133 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode('(',(yyvsp[(2) - (3)].astreeNode),NULL,NULL,NULL,NULL);;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode('(',(yyvsp[(2) - (3)].astreeNode),NULL,NULL,NULL,NULL,getLineNumber());;}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
 #line 134 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode('*',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode('*',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
 #line 135 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode('+',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode('+',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
 #line 136 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode('/',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode('/',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
 #line 137 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode('-',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode('-',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
 #line 138 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(FUNCALL,(yyvsp[(1) - (4)].astreeNode),(yyvsp[(3) - (4)].astreeNode),NULL,NULL,NULL);;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(FUNCALL,(yyvsp[(1) - (4)].astreeNode),(yyvsp[(3) - (4)].astreeNode),NULL,NULL,NULL,getLineNumber());;}
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
 #line 139 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(OR,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(OR,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
 #line 140 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(AND,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(AND,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
 #line 141 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(LE,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(LE,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
 #line 142 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(GE,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(GE,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
 #line 143 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(EQ,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(EQ,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
 #line 144 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(NE,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(NE,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
 #line 145 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode('<',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode('<',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
 #line 146 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode('>',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode('>',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
 #line 149 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(BLOCK,(yyvsp[(2) - (3)].astreeNode),NULL,NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(BLOCK,(yyvsp[(2) - (3)].astreeNode),NULL,NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
 #line 152 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(OUTPUT_L,(yyvsp[(1) - (1)].astreeNode),NULL,NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(OUTPUT_L,(yyvsp[(1) - (1)].astreeNode),NULL,NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
 #line 153 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(OUTPUT_L,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(OUTPUT_L,(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
 #line 156 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode('=',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode('=',(yyvsp[(1) - (3)].astreeNode),(yyvsp[(3) - (3)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
 #line 157 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode('=',newNode(VECCALL,(yyvsp[(1) - (6)].astreeNode),(yyvsp[(3) - (6)].astreeNode),NULL,NULL,NULL),(yyvsp[(6) - (6)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode('=',newNode(VECCALL,(yyvsp[(1) - (6)].astreeNode),(yyvsp[(3) - (6)].astreeNode),NULL,NULL,NULL,getLineNumber()),(yyvsp[(6) - (6)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
 #line 158 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode('=',newNode(POINTER,(yyvsp[(2) - (4)].astreeNode),NULL,NULL,NULL,NULL),(yyvsp[(4) - (4)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode('=',newNode(POINTER,(yyvsp[(2) - (4)].astreeNode),NULL,NULL,NULL,NULL,getLineNumber()),(yyvsp[(4) - (4)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
 #line 159 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(INPUT,(yyvsp[(2) - (2)].astreeNode),NULL,NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(INPUT,(yyvsp[(2) - (2)].astreeNode),NULL,NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
 #line 160 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(OUTPUT, (yyvsp[(2) - (2)].astreeNode), NULL, NULL, NULL, NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(OUTPUT, (yyvsp[(2) - (2)].astreeNode), NULL, NULL, NULL, NULL,getLineNumber()); ;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
 #line 161 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(RETURN, (yyvsp[(2) - (2)].astreeNode), NULL, NULL, NULL, NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(RETURN, (yyvsp[(2) - (2)].astreeNode), NULL, NULL, NULL, NULL,getLineNumber()); ;}
     break;
 
   case 59:
@@ -1916,21 +1916,21 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 163 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(IF_THEN, (yyvsp[(3) - (6)].astreeNode), (yyvsp[(6) - (6)].astreeNode), NULL, NULL, NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(IF_THEN, (yyvsp[(3) - (6)].astreeNode), (yyvsp[(6) - (6)].astreeNode), NULL, NULL, NULL,getLineNumber()); ;}
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
 #line 164 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(IF_THEN_ELSE, (yyvsp[(3) - (8)].astreeNode), (yyvsp[(6) - (8)].astreeNode), (yyvsp[(8) - (8)].astreeNode), NULL, NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(IF_THEN_ELSE, (yyvsp[(3) - (8)].astreeNode), (yyvsp[(6) - (8)].astreeNode), (yyvsp[(8) - (8)].astreeNode), NULL, NULL,getLineNumber()); ;}
     break;
 
   case 62:
 
 /* Line 1455 of yacc.c  */
 #line 165 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(LOOP,(yyvsp[(3) - (5)].astreeNode),(yyvsp[(5) - (5)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(LOOP,(yyvsp[(3) - (5)].astreeNode),(yyvsp[(5) - (5)].astreeNode),NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 63:
@@ -1944,7 +1944,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 170 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(CMD_SEQ, (yyvsp[(1) - (3)].astreeNode), (yyvsp[(3) - (3)].astreeNode), NULL, NULL, NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(CMD_SEQ, (yyvsp[(1) - (3)].astreeNode), (yyvsp[(3) - (3)].astreeNode), NULL, NULL, NULL,getLineNumber()); ;}
     break;
 
   case 65:

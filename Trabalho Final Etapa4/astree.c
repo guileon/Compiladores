@@ -847,7 +847,7 @@ int isBoolean(struct a_NODE *node)
 	if(node->token == LIT_TRUE || node->token == LIT_FALSE) // testa os literais
 		return TRUE;	
 		
-	if(node->token == SYMBOL_IDENTIFIER && node->node->dataType == ID_BOOL) // testa variável
+	if(node->token == TK_IDENTIFIER && node->node->dataType == ID_BOOL) // testa variável
 		return TRUE;
 
 	if(node->token == POINTER) // testa ponteiro
@@ -884,7 +884,7 @@ int isInt(struct a_NODE *node)
 {
 	if(!node) // testa se o nodo é nulo
 		return FALSE;
-		
+	
 	
 	if(node->token == LIT_INTEGER) // testa se é um literal inteiro
 		return TRUE;
@@ -907,7 +907,7 @@ int isInt(struct a_NODE *node)
 	if(node->token == '+' || node->token == '-' || node->token == '*' || node->token == '/') // testa se é um operador que rertorna inteiro
 		return TRUE;
 
-	if(node->token == SYMBOL_IDENTIFIER && (node->node->dataType == ID_WORD || node->node->dataType == ID_BYTE)) // testa se é uma variável do tipo correto
+	if(node->token == TK_IDENTIFIER && (node->node->dataType == ID_WORD || node->node->dataType == ID_BYTE)) // testa se é uma variável do tipo correto
 		return TRUE;
 	
 	if(node->sons[1] && isInt(node->sons[0]) && isInt(node->sons[1])) // potencialmente bobagem

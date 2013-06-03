@@ -1,1 +1,1 @@
-word a:0;bool c:TRUE;byte r:2;byte catchucia(byte b){return b ;} bool main(byte b,word c,bool d){r=catchucia(r) ;return c ;} 
+word a:0;bool c:TRUE;byte r:2;byte catchucia(byte b){b=2 ;r=b ;return b ;} word main(byte b,word c,bool d)bool d1:TRUE;byte b1:0;{r=catchucia(r) ;d1=d ;b1=b ;return b1 ;} 

@@ -4,11 +4,17 @@ byte r:2;
 
 byte catchucia(byte b)
 {
+	b = 2;
+	r = b;
 	return b;
 }
 
-bool main(byte b,word c,bool d)
+word main(byte b,word c,bool d)
+bool d1:true;
+byte b1:0;
 {
 	r = catchucia(r);
-	return c;
+	d1 = d;
+	b1 = b;
+	return b1;
 }

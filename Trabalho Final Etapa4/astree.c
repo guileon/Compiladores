@@ -152,8 +152,7 @@ void verify(struct a_NODE * node_p)
 			}
 			break;
 		case D_NODE: // GAMBIARRATION
-			if((node_.sons[0])!=NULL)
-				verify((node_.sons[0]));
+			verify((node_.sons[0]));
 			verify((node_.sons[1]));
 			break;
 		case FUNC_DECLARATION:
@@ -164,14 +163,10 @@ void verify(struct a_NODE * node_p)
 				node_.sons[1]->node->dataType = ID_WORD;
 			else if(node_.sons[0]->token = KW_BYTE)
 				node_.sons[1]->node->dataType = ID_BYTE;
-				
+			verify(node_.sons[3]->sons[0]);
+			verify(node_.sons[3]->sons[1]);
 			currentFunction = node_.sons[1]->node;
-			verify((node_.sons[0])); 
-			verify((node_.sons[1]));
-			printToFile(pfile,"(");	
-			if((node_.sons[2])!=NULL)
-				verify((node_.sons[2])); 
-			printToFile(pfile,")");
+			
 			
 			verify((node_.sons[3])); // SEMPRE D_NODE , GAMBIARRATIONN
 			
@@ -182,25 +177,76 @@ void verify(struct a_NODE * node_p)
 			verify((node_.sons[1]));
 			break;
 		case DECLARATION:
-			setId(node_.sons[0]->token,node_.sons[1],ID_SCALAR);
-			if(!(
-				(node_.sons[0]->token == KW_BOOL && (node_.sons[1]->token == LIT_TRUE || node_.sons[1]->token == LIT_FALSE)) ||
-				(((node_.sons[0]->token == KW_WORD) || (node_.sons[0]->token == KW_BYTE)) && (node_.sons[1]->token == LIT_INTEGER))))
-				printf("Semantic error on line %d: Scalar initialized wrong.\n",getLineNumber()));
+			if(node_.sons[1]->node->type != TK_IDENTIFIER)
+				printf("Semantic error: variable already declared on line %d",getLineNumber());
+			else
+			{
+				if(node_.sons[0]->token = KW_BOOL)
+					node_.sons[1]->node->dataType = ID_BOOL;
+				if(node_.sons[0]->token = KW_WORD)
+					node_.sons[1]->node->dataType = ID_WORD;
+				if(node_.sons[0]->token = KW_BYTE)
+					node_.sons[1]->node->dataType = ID_BYTE;
+				node_.sons[1]->node->type = ID_SCALAR;
+
+				if(!(
+					(node_.sons[0]->token == KW_BOOL && (node_.sons[1]->token == LIT_TRUE || node_.sons[1]->token == LIT_FALSE)) ||
+					(((node_.sons[0]->token == KW_WORD) || (node_.sons[0]->token == KW_BYTE)) && (node_.sons[1]->token == LIT_INTEGER))))
+					printf("Semantic error on line %d: Scalar initialized wrong.\n",getLineNumber()));
+			}
 				
 			break;
 		case DECLARATION_POINTER:
-			setId(node_.sons[0]->token,node_.sons[1],ID_POINTER);
+			if(node_.sons[1]->node->type != TK_IDENTIFIER)
+				printf("Semantic error: variable already declared on line %d",getLineNumber());
+			else
+			{
+				if(node_.sons[0]->token = KW_BOOL)
+					node_.sons[1]->node->dataType = ID_BOOL;
+				if(node_.sons[0]->token = KW_WORD)
+					node_.sons[1]->node->dataType = ID_WORD;
+				if(node_.sons[0]->token = KW_BYTE)
+					node_.sons[1]->node->dataType = ID_BYTE;
+				node_.sons[1]->node->type = ID_POINTER;
+			}
 			break;
 		case DECLARATION_VEC:
-			setId(node_.sons[0]->token,node_.sons[1],ID_VECTOR);
+			if(node_.sons[1]->node->type != TK_IDENTIFIER)
+				printf("Semantic error: variable already declared on line %d",getLineNumber());
+			else
+			{
+				if(node_.sons[0]->token = KW_BOOL)
+					node_.sons[1]->node->dataType = ID_BOOL;
+				if(node_.sons[0]->token = KW_WORD)
+					node_.sons[1]->node->dataType = ID_WORD;
+				if(node_.sons[0]->token = KW_BYTE)
+					node_.sons[1]->node->dataType = ID_BYTE;
+				node_.sons[1]->node->type = ID_VECTOR;
+
+				if(!(
+					(node_.sons[0]->token == KW_BOOL && (node_.sons[1]->token == LIT_TRUE || node_.sons[1]->token == LIT_FALSE)) ||
+					(((node_.sons[0]->token == KW_WORD) || (node_.sons[0]->token == KW_BYTE)) && (node_.sons[1]->token == LIT_INTEGER))))
+					printf("Semantic error on line %d: Scalar initialized wrong.\n",getLineNumber()));
+			}
 			break;
 		case DECLARATION_VEC_INIT:
-			if(!isInt(node_.sons[2]))
-				printf("Semantic error on line %d: Vector with not-integer size\n",getLineNumber());
-			setId(node_.sons[0]->token,node_.sons[1],ID_VECTOR);
-			if(!(node_.sons[3]->token == LIST))
-				printf("Semantic error on line %d: Vector initialized wrong.\n",getLineNumber());
+			if(node_.sons[1]->node->type != TK_IDENTIFIER)
+				printf("Semantic error: variable already declared on line %d",getLineNumber());
+			else
+			{
+				if(node_.sons[0]->token = KW_BOOL)
+					node_.sons[1]->node->dataType = ID_BOOL;
+				if(node_.sons[0]->token = KW_WORD)
+					node_.sons[1]->node->dataType = ID_WORD;
+				if(node_.sons[0]->token = KW_BYTE)
+					node_.sons[1]->node->dataType = ID_BYTE;
+				node_.sons[1]->node->type = ID_VECTOR;
+					
+				if(!isInt(node_.sons[2]))
+					printf("Semantic error on line %d: Vector with not-integer size\n",getLineNumber());
+				if(!(node_.sons[3]->token == LIST))
+					printf("Semantic error on line %d: Vector initialized wrong.\n",getLineNumber());
+			}
 			break;
 	
 		// EXPRESSION
@@ -314,6 +360,8 @@ void verify(struct a_NODE * node_p)
 					if(!isBoolean(node_.sons[1]))
 						printf("Semantic error: atributing to boolean vector from not-boolean on line %d",getLineNumber());
 				}
+				else
+					printf("Semantic error: identifier not declared on line %d",getLineNumber());
 			}
 			else if(node_.sons[0]->token == POINTER)
 			{
@@ -336,6 +384,8 @@ void verify(struct a_NODE * node_p)
 					if(!isBoolean(node_.sons[1]))
 						printf("Semantic error: atributing to boolean scalar from not-boolean on line %d",getLineNumber());
 				}
+				else 
+					printf("Semantic error: identifier not declared on line %d",getLineNumber());
 			}
 			break;
 		case IF_THEN: 

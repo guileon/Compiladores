@@ -39,6 +39,7 @@ struct HNODE *table_insertTable(char *text, int type)
 	new = (struct HNODE*) calloc(1,sizeof(struct HNODE));
 	new->type = type;
 	new->dataType = 0;
+	new->args = NULL;
 	switch(type)
 	{
 		case SYMBOL_UNDEFINED: 
@@ -130,4 +131,19 @@ void table_print(void)
 		}
 	}
 	printf("...fim do print.\n");
+}
+
+
+struct intList * insertInIntList(int value, struct intList * oldList)
+{
+	struct intList * new = calloc(1,sizeof(intList));
+	struct intList * aux = oldList;
+	new->v = value;
+	new->next = NULL;
+	if(oldList)
+	{
+		for(aux = oldList ; aux->next != NULL ; aux = aux->next);	
+		aux->next = new;
+	}
+	return new;
 }

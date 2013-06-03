@@ -73,7 +73,7 @@ void yyerror();
 %type <astreeNode> CMD_SEQ
 %%
 
-START:		PROG 		{ printNode($1); }
+START:		PROG 		{ printNode($1);verify($1); }
 	;
 
 PROG:		DECLARATION PROG  							{ $$ = (struct a_NODE*)newNode(PROG, $1, $2, NULL, NULL, NULL) ; }
@@ -135,7 +135,7 @@ EXPRESSION:		IDENTIFIER 							{ $$ = $1; }
 	|			EXPRESSION '+' EXPRESSION 			{ $$ = (struct a_NODE*)newNode('+',$1,$3,NULL,NULL,NULL); }
 	|			EXPRESSION '/' EXPRESSION 			{ $$ = (struct a_NODE*)newNode('/',$1,$3,NULL,NULL,NULL); }
 	|			EXPRESSION '-' EXPRESSION 			{ $$ = (struct a_NODE*)newNode('-',$1,$3,NULL,NULL,NULL); }
-	|			IDENTIFIER '(' ARGUMENTS_CALL ')' 	{ $$ = (struct a_NODE*)newNode(FUNCALL,$1,$3,NULL,NULL,NULL); }
+	|			IDENTIFIER '(' ARGUMENTS_CALL ')' 	{ $$ = (struct a_NODE*)newNode(FUNCALL,$1,$3,NULL,NULL,NULL);}
 	|			EXPRESSION OPERATOR_OR EXPRESSION 	{ $$ = (struct a_NODE*)newNode(OR,$1,$3,NULL,NULL,NULL); }
 	|			EXPRESSION OPERATOR_AND EXPRESSION 	{ $$ = (struct a_NODE*)newNode(AND,$1,$3,NULL,NULL,NULL); }
 	|			EXPRESSION OPERATOR_LE EXPRESSION 	{ $$ = (struct a_NODE*)newNode(LE,$1,$3,NULL,NULL,NULL); }

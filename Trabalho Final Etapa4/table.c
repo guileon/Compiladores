@@ -113,6 +113,7 @@ void table_print(void)
 {
 	int i=0;
 	struct HNODE* node;
+	struct intList * aux;
 	printf("Iniciando print...\n");
 	for(i=0 ; i<HASH_SIZE ; i++)
 	{
@@ -127,6 +128,10 @@ void table_print(void)
 				case SYMBOL_LIT_TRUE: printf("Valor: %s | Tipo: TRUE\n",node->value); break;
 				case SYMBOL_LIT_CHAR: printf("Valor: %s | Tipo: CHAR\n",node->value); break;
 				case SYMBOL_LIT_STRING: printf("Valor: %s | Tipo: STRING\n",node->value); break;
+				case ID_SCALAR: printf("Valor: %s | Scalar %d\n",node->value,node->dataType); break;
+				case ID_FUNC: printf("Valor: %s | Function %d | ",node->value,node->dataType); 
+					for(aux = node->args ; aux != NULL ; aux = aux->next)	printf(" %d, ",aux->v); printf("\n");
+					break;
 			}
 		}
 	}
@@ -144,6 +149,7 @@ struct intList * insertInIntList(int value, struct intList * oldList)
 	{
 		for(aux = oldList ; aux->next != NULL ; aux = aux->next);	
 		aux->next = new;
+		return oldList;
 	}
 	return new;
 }

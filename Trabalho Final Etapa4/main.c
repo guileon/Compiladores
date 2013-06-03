@@ -59,7 +59,8 @@ int main(int argc, char ** argv)
 	//getchar();
 	//printHash();
 	//printf("oi");
-	system(ret);
+	//system(ret);
+	printHash();
 	exit(0);
 	//getchar();
 	

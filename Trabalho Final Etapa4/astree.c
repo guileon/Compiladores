@@ -95,6 +95,7 @@ void printToFile(FILE * pfile,char* string)
 
 int testArguments(struct HNODE *node1, struct a_NODE *node2)
 {
+	int argNumber =1;
     struct intList * aux;
 	struct a_NODE * aux2;
 	aux = node1->args;
@@ -103,24 +104,42 @@ int testArguments(struct HNODE *node1, struct a_NODE *node2)
 	{
 		if(!aux && aux2)
 		{
-			printf("Semantic error: wrong number of arguments on function call on line %d\n",getLineNumber());
+			printf("Semantic error: wrong number of arguments(given %d, should be less) on function call on line %d\n",argNumber,getLineNumber());
 			return FALSE;
 		}
 		else if(aux && !aux2)
 		{
-			printf("Semantic error: wrong number of arguments on function call on line %d\n",getLineNumber());
+			printf("Semantic error: wrong number of arguments(given %d, should be more) on function call on line %d\n",argNumber-1,getLineNumber());
 			return FALSE;
 		}
 		else
-			if(aux->v != aux2->token)
+			if(aux->v == KW_BOOL)
 			{
-				printf("Semantic error arguments of function are of wrong type on line %d\n",getLineNumber());
-				return FALSE;
+				if(!isBoolean(aux2->sons[0]))
+				{
+					printf("Semantic error: argument of number %d is of wrong type(should be boolean) on line %d\n",argNumber,getLineNumber());
+					return FALSE;
+				}
+				else
+				{
+					argNumber++;
+					aux = aux->next;
+					aux2 = aux2->sons[1];
+				}
 			}
-			else
+			else if(aux->v == KW_WORD || aux->v == KW_BYTE)
 			{
-				aux = aux->next;
-				aux2 = aux2->sons[1];
+				if(!isInt(aux2->sons[0]))
+				{
+					printf("Semantic error: argument number %d is of wrong type(should be integer) on line %d\n",argNumber,getLineNumber());
+					return FALSE;
+				}
+				else
+				{
+					argNumber++;
+					aux = aux->next;
+					aux2 = aux2->sons[1];
+				}
 			}
 	}
 	return TRUE;
@@ -149,7 +168,6 @@ void verify(struct a_NODE * node_p)
 			
 			break;
 		case TK_IDENTIFIER: 
-			
 			break;
 		case LIT_CHAR: 
 			
@@ -185,19 +203,32 @@ void verify(struct a_NODE * node_p)
 			break;
 		case FUNC_DECLARATION:
 			node_.sons[1]->node->type = ID_FUNC;
-			if(node_.sons[0]->token = KW_BOOL)
+			if(node_.sons[0]->token == KW_BOOL)
 				node_.sons[1]->node->dataType = ID_BOOL;
-			else if(node_.sons[0]->token = KW_WORD)
+			else if(node_.sons[0]->token == KW_WORD)
 				node_.sons[1]->node->dataType = ID_WORD;
-			else if(node_.sons[0]->token = KW_BYTE)
+			else if(node_.sons[0]->token == KW_BYTE)
 				node_.sons[1]->node->dataType = ID_BYTE;
-			verify(node_.sons[3]->sons[0]);
-			verify(node_.sons[3]->sons[1]);
-			currentFunction = node_.sons[1]->node;
+			
+			currentFunction = node_.sons[1]->node;		
 			
 			aux = node_.sons[2];
-			for(aux = node_.sons[2] ; aux != NULL ; aux = aux->sons[3])
+			for(aux = node_.sons[2] ; aux != NULL ; aux = aux->sons[2])
 			{
+				aux->sons[1]->node->type = ID_SCALAR;
+				if(aux->sons[0]->token == KW_BOOL)
+				{
+					aux->sons[1]->node->dataType = ID_BOOL;
+				}
+				else if(aux->sons[0]->token == KW_WORD)
+				{
+					aux->sons[1]->node->dataType = ID_WORD;
+				}
+				else if(aux->sons[0]->token == KW_BYTE)
+				{
+					aux->sons[1]->node->dataType = ID_BYTE;
+				}
+				
 				node_.sons[1]->node->args = insertInIntList(aux->sons[0]->token,node_.sons[1]->node->args);
 			}
 			verify((node_.sons[3])); // SEMPRE D_NODE , GAMBIARRATIONN
@@ -209,68 +240,65 @@ void verify(struct a_NODE * node_p)
 			verify((node_.sons[1]));
 			break;
 		case DECLARATION:
-			if(node_.sons[1]->node->type != TK_IDENTIFIER)
-				printf("Semantic error: variable already declared on line %d",getLineNumber());
+			if(node_.sons[1]->node->type != SYMBOL_IDENTIFIER)
+				printf("Semantic error: variable %s already declared on line %d\n",node_.sons[1]->node->value,getLineNumber());
 			else
 			{
-				if(node_.sons[0]->token = KW_BOOL)
+				if(node_.sons[0]->token == KW_BOOL)
 					node_.sons[1]->node->dataType = ID_BOOL;
-				if(node_.sons[0]->token = KW_WORD)
+				else if(node_.sons[0]->token == KW_WORD)
 					node_.sons[1]->node->dataType = ID_WORD;
-				if(node_.sons[0]->token = KW_BYTE)
+				else if(node_.sons[0]->token == KW_BYTE)
 					node_.sons[1]->node->dataType = ID_BYTE;
 				node_.sons[1]->node->type = ID_SCALAR;
-
 				if(!(
-					(node_.sons[0]->token == KW_BOOL && (node_.sons[1]->token == LIT_TRUE || node_.sons[1]->token == LIT_FALSE)) ||
-					(((node_.sons[0]->token == KW_WORD) || (node_.sons[0]->token == KW_BYTE)) && (node_.sons[1]->token == LIT_INTEGER))))
+					(node_.sons[0]->token == KW_BOOL && (node_.sons[2]->token == LIT_TRUE || node_.sons[2]->token == LIT_FALSE)) ||
+					(((node_.sons[0]->token == KW_WORD) || (node_.sons[0]->token == KW_BYTE)) && (node_.sons[2]->token == LIT_INTEGER))))
 					printf("Semantic error on line %d: Scalar initialized wrong.\n",getLineNumber());
 			}
 				
 			break;
 		case DECLARATION_POINTER:
-			if(node_.sons[1]->node->type != TK_IDENTIFIER)
+			if(node_.sons[1]->node->type != SYMBOL_IDENTIFIER)
 				printf("Semantic error: variable already declared on line %d",getLineNumber());
 			else
 			{
-				if(node_.sons[0]->token = KW_BOOL)
+				if(node_.sons[0]->token == KW_BOOL)
 					node_.sons[1]->node->dataType = ID_BOOL;
-				if(node_.sons[0]->token = KW_WORD)
+				else if(node_.sons[0]->token == KW_WORD)
 					node_.sons[1]->node->dataType = ID_WORD;
-				if(node_.sons[0]->token = KW_BYTE)
+				else if(node_.sons[0]->token == KW_BYTE)
 					node_.sons[1]->node->dataType = ID_BYTE;
-				node_.sons[1]->node->type = ID_POINTER;
+				node_.sons[1]->node->type = ID_VECTOR;
 			}
 			break;
 		case DECLARATION_VEC:
-			if(node_.sons[1]->node->type != TK_IDENTIFIER)
+			if(node_.sons[1]->node->type != SYMBOL_IDENTIFIER)
 				printf("Semantic error: variable already declared on line %d",getLineNumber());
 			else
 			{
-				if(node_.sons[0]->token = KW_BOOL)
+				if(node_.sons[0]->token == KW_BOOL)
 					node_.sons[1]->node->dataType = ID_BOOL;
-				if(node_.sons[0]->token = KW_WORD)
+				else if(node_.sons[0]->token == KW_WORD)
 					node_.sons[1]->node->dataType = ID_WORD;
-				if(node_.sons[0]->token = KW_BYTE)
+				else if(node_.sons[0]->token == KW_BYTE)
 					node_.sons[1]->node->dataType = ID_BYTE;
 				node_.sons[1]->node->type = ID_VECTOR;
-
-				if(!(
-					(node_.sons[0]->token == KW_BOOL && (node_.sons[1]->token == LIT_TRUE || node_.sons[1]->token == LIT_FALSE)) ||
-					(((node_.sons[0]->token == KW_WORD) || (node_.sons[0]->token == KW_BYTE)) && (node_.sons[1]->token == LIT_INTEGER))))
-					printf("Semantic error on line %d: Scalar initialized wrong.\n",getLineNumber());
+				
+				if(!isInt(node_.sons[2]))
+					printf("Semantic error on line %d: Vector with not-integer size\n",getLineNumber());
 			}
 			break;
 		case DECLARATION_VEC_INIT:
-			if(node_.sons[1]->node->type != TK_IDENTIFIER)
+			if(node_.sons[1]->node->type != SYMBOL_IDENTIFIER)
 				printf("Semantic error: variable already declared on line %d",getLineNumber());
 			else
 			{
-				if(node_.sons[0]->token = KW_BOOL)
+				if(node_.sons[0]->token == KW_BOOL)
 					node_.sons[1]->node->dataType = ID_BOOL;
-				if(node_.sons[0]->token = KW_WORD)
+				else if(node_.sons[0]->token == KW_WORD)
 					node_.sons[1]->node->dataType = ID_WORD;
-				if(node_.sons[0]->token = KW_BYTE)
+				else if(node_.sons[0]->token == KW_BYTE)
 					node_.sons[1]->node->dataType = ID_BYTE;
 				node_.sons[1]->node->type = ID_VECTOR;
 					
@@ -285,14 +313,18 @@ void verify(struct a_NODE * node_p)
 		case '&': 
 			if(!(node_.sons[0]->node->type==ID_SCALAR)) 
 				printf("Semantic error: geting reference for not-scalar on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
 			break;
 		case POINTER: 
 			if(!(node_.sons[0]->node->type==ID_POINTER))
 				printf("Semantic error: using not-pointer as pointer on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
 			break;
 		case '*': 
 			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1])))
 				printf("Semantic error: multiplying not integer on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
+			verify(node_.sons[1]);
 			break;
 		case '(': 
 			verify((node_.sons[0])); 
@@ -300,46 +332,68 @@ void verify(struct a_NODE * node_p)
 		case '+':
 			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1])))
 				printf("Semantic error: adding not integer on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
+			verify(node_.sons[1]);
 			break;
 		case '-':
 			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1])))
 				printf("Semantic error: subtracting not integer on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
+			verify(node_.sons[1]);
 			break;
 		case '/': 
 			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1])))
 				printf("Semantic error: dividing not integer on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
+			verify(node_.sons[1]);
 			break;
 		case OR: 
 			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
 				printf("Semantic error: '||' with not boolean on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
+			verify(node_.sons[1]);
 			break;
 		case AND: 
 			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
 				printf("Semantic error: '&&' with not boolean on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
+			verify(node_.sons[1]);
 			break;
 		case LE: 
 			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
 				printf("Semantic error: '<=' with not boolean on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
+			verify(node_.sons[1]);
 			break;
 		case EQ: 
 			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
 				printf("Semantic error: '==' with not boolean on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
+			verify(node_.sons[1]);
 			break;
 		case GE: 
 			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
 				printf("Semantic error: '>=' with not boolean on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
+			verify(node_.sons[1]);
 			break;
 		case NE: 
 			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
 				printf("Semantic error: '!=' with not boolean on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
+			verify(node_.sons[1]);
 			break;
-		case '>': 
+		case '>': 		
 			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
 				printf("Semantic error: '>' with not boolean on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
+			verify(node_.sons[1]);
 			break;
 		case '<': 
 			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
 				printf("Semantic error: '<' with not boolean on line %d\n",getLineNumber());
+			verify(node_.sons[0]);
+			verify(node_.sons[1]);
 			break;
 		case VECCALL:
 			if(!isInt(node_.sons[1]))
@@ -348,10 +402,10 @@ void verify(struct a_NODE * node_p)
 				printf("Semantic error: Something not-vector used as vector on line %d\n",getLineNumber());
 			break;
 		// FUNCALL ARGCALL CMD_SEQ
-		case FUNCALL:	
+		case FUNCALL:
 			if(!(node_.sons[0]->node->type==ID_FUNC))
 				printf("Semantic error: Something not-function used as function on line %d\n",getLineNumber());
-			testArguments(node_.sons[0]->node,node_.sons[1]); ////////////////////////////////////////////////////// TO DO
+			testArguments(node_.sons[0]->node,node_.sons[1]); 
 			break;
 		case ARGCALL:
 			break;
@@ -368,32 +422,50 @@ void verify(struct a_NODE * node_p)
 		case OUTPUT:
 			break;
 		case RETURN:
-			if(!(node_.sons[0]->node->dataType == currentFunction->dataType))
-				printf("Semantic error: wrong return type for function %s, on line %d\n",currentFunction->value,getLineNumber());
+			if(!currentFunction)
+				printf("Semantic error: 'return' in wrong place on line %d\n",getLineNumber());
+			else if(currentFunction->dataType == ID_WORD)
+			{
+				if(!isInt(node_.sons[0]))
+					printf("Semantic error: wrong return type for function %s, on line %d\n",currentFunction->value,getLineNumber());
+			}
+			else if(currentFunction->dataType == ID_BYTE)
+			{
+				if(!isInt(node_.sons[0]))
+					printf("Semantic error: wrong return type for function %s, on line %d\n",currentFunction->value,getLineNumber());
+			}
+			else if(currentFunction->dataType == ID_BOOL)
+			{
+				if(!isBoolean(node_.sons[0]))
+					printf("Semantic error: wrong return type for function %s, should be boolean, on line %d\n",currentFunction->value,getLineNumber());
+			}
 			break;
 		case BLOCK:
 			verify((node_.sons[0]));
 			break;
 		case '=':
+			verify(node_.sons[1]); ////////////////////////////////////////////////////////////////////// REMEMBER
 			if(node_.sons[0]->token == VECCALL)
 			{
+				if(!isInt(node_.sons[1]))
+					printf("Semantic error: vector index is not integer on line %d\n",getLineNumber());
 				if(node_.sons[0]->sons[0]->node->dataType == ID_WORD)
 				{
 					if(!isInt(node_.sons[1]))
-						printf("Semantic error: atributing to integer vector from not-integer on line %d",getLineNumber());
+						printf("Semantic error: atributing to integer vector from not-integer on line %d\n",getLineNumber());
 				}
 				else if(node_.sons[0]->sons[0]->node->dataType == ID_BYTE)
 				{
 					if(!isInt(node_.sons[1]))
-						printf("Semantic error: atributing to integer vector from not-integer on line %d",getLineNumber());
+						printf("Semantic error: atributing to integer vector from not-integer on line %d\n",getLineNumber());
 				}
 				else if(node_.sons[0]->sons[0]->node->dataType == ID_BOOL)
 				{
 					if(!isBoolean(node_.sons[1]))
-						printf("Semantic error: atributing to boolean vector from not-boolean on line %d",getLineNumber());
+						printf("Semantic error: atributing to boolean vector from not-boolean on line %d\n",getLineNumber());
 				}
 				else
-					printf("Semantic error: identifier not declared on line %d",getLineNumber());
+					printf("Semantic error: identifier %s not declared on line %d\n",node_.sons[0]->node->value,getLineNumber());
 			}
 			else if(node_.sons[0]->token == POINTER)
 			{
@@ -404,20 +476,20 @@ void verify(struct a_NODE * node_p)
 				if(node_.sons[0]->node->dataType == ID_WORD)
 				{
 					if(!isInt(node_.sons[1]))
-						printf("Semantic error: atributing to integer scalar from not-integer on line %d",getLineNumber());
+						printf("Semantic error: atributing to integer scalar from not-integer on line %d\n",getLineNumber());
 				}
 				else if(node_.sons[0]->node->dataType == ID_BYTE)
 				{
 					if(!isInt(node_.sons[1]))
-						printf("Semantic error: atributing to integer scalar from not-integer on line %d",getLineNumber());
+						printf("Semantic error: atributing to integer scalar from not-integer on line %d\n",getLineNumber());
 				}
 				else if(node_.sons[0]->node->dataType == ID_BOOL)
 				{
 					if(!isBoolean(node_.sons[1]))
-						printf("Semantic error: atributing to boolean scalar from not-boolean on line %d",getLineNumber());
+						printf("Semantic error: atributing to boolean scalar from not-boolean on line %d\n",getLineNumber());
 				}
 				else 
-					printf("Semantic error: identifier not declared on line %d",getLineNumber());
+					printf("Semantic error: identifier %s not declared on line %d\n",node_.sons[0]->node->value,getLineNumber());
 			}
 			break;
 		case IF_THEN: 
@@ -764,10 +836,30 @@ void printNode(struct a_NODE * node_p)
 
 int isBoolean(struct a_NODE *node)
 {
+	if(!node)
+		return FALSE;
 	if(node->token == LIT_TRUE || node->token == LIT_FALSE)
-		return TRUE;
+	{
+		return TRUE;	
+	}
+		
 	else if(node->token == TK_IDENTIFIER && node->node->dataType == ID_BOOL)
 		return TRUE;
+
+	if(node->token == FUNCALL && (node->sons[0]->node->dataType == ID_WORD || node->sons[0]->node->dataType == ID_BYTE))
+	{
+		return FALSE;
+	}
+		
+	if(node->token == FUNCALL && node->sons[0]->node->dataType == ID_BOOL)
+	{
+		return TRUE;
+	}
+	
+	if(node->token == '+' || node->token == '-' || node->token == '*' || node->token == '/')
+		return FALSE;
+		
+
 
 	if(isBoolean(node->sons[0]) && isBoolean(node->sons[1]))
 		return TRUE;
@@ -777,21 +869,48 @@ int isBoolean(struct a_NODE *node)
 
 int isInt(struct a_NODE *node)
 {
+	if(!node)
+		return FALSE;
+	if(node->token == LIT_TRUE || node->token == LIT_FALSE)
+		return FALSE;
+	if(node->token == LIT_INTEGER)
+	{
+		return TRUE;
+	}
+		
+	if(node->token == FUNCALL && (node->sons[0]->node->dataType == ID_WORD || node->sons[0]->node->dataType == ID_BYTE))
+	{
+		return TRUE;
+	}
+		
+	if(node->token == FUNCALL && node->sons[0]->node->dataType == ID_BOOL);
+	{
+		return FALSE;
+	}
+	if(node->token == EQ || node->token == NE || node->token == GE || node->token == LE || node->token == '>' || node->token == '<')
+		return FALSE;
 	if(node->token == LIT_INTEGER)
 		return TRUE;
-	else if(node->token == TK_IDENTIFIER && (node->node->dataType == ID_WORD || node->node->dataType == ID_BYTE))
+	else if(node->token == SYMBOL_IDENTIFIER && (node->node->dataType == ID_WORD || node->node->dataType == ID_BYTE))
 		return TRUE;
 	
-	if(isInt(node->sons[0]) && isInt(node->sons[1]))
+	if(node->sons[1] && isInt(node->sons[0]) && isInt(node->sons[1]))
 		return TRUE;
-	
+	else if(!node->sons[1] && isInt(node->sons[0]))
+		return TRUE;
 	return FALSE;
 }
 
 
 int isPt(struct a_NODE *node)
 {
+	if(node->token == '&')
+		return TRUE;
 	if(node->node->dataType == ID_POINTER)
+		return TRUE;
+	if(node->token == '+' && isPt(node->sons[0]) && isInt(node->sons[1]))
+		return TRUE;
+	if(node->token == '+' && isPt(node->sons[1]) && isInt(node->sons[0]))
 		return TRUE;
 	return FALSE;
 }

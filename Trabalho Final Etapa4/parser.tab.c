@@ -1510,7 +1510,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 76 "parser.y"
-    { printNode((yyvsp[(1) - (1)].astreeNode)); ;}
+    { printNode((yyvsp[(1) - (1)].astreeNode));verify((yyvsp[(1) - (1)].astreeNode)); ;}
     break;
 
   case 3:
@@ -1783,7 +1783,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 138 "parser.y"
-    { (yyval.astreeNode) = (struct a_NODE*)newNode(FUNCALL,(yyvsp[(1) - (4)].astreeNode),(yyvsp[(3) - (4)].astreeNode),NULL,NULL,NULL); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(FUNCALL,(yyvsp[(1) - (4)].astreeNode),(yyvsp[(3) - (4)].astreeNode),NULL,NULL,NULL);;}
     break;
 
   case 42:

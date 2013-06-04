@@ -8,20 +8,18 @@ word main()
   bool x:true;
   bool b:FALSE;
   {
-  pt = &a;
-  a = *pt;
-  a = *pt;
-  if (x) then
-	a = salsicha;
-  if (x)
-  then if (a<2*5) 
-    then a = 5
-    else a = 2 + 'x'
-  else a = 7;
-  output "A resposta eh",i,nada(),2f,"\n";
+  	pt = &a;
+  	if(x == (a == v)) then
+  	{
+ 		 a = i + 3;
+  	}
+  	else
+ 	{
+		a = nada();
+  	};
   }
-
 word nada ()
+word ll:0;
   {
-	
+	return ll;
   }

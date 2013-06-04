@@ -16,6 +16,7 @@ word main()
     a = incn();
     i = i + 1;
     };
+  i = outra();
   if (x)
   then a = 5
   else a = 7;

@@ -157,41 +157,6 @@ void semanticEvaluation(struct a_NODE *node)
 
 struct HNODE * currentFunction;
 
-void testReturn(struct a_NODE *node)
-{
-	if(node)
-	{
-		if(node->token == RETURN)
-		{
-			if(!currentFunction)
-				printf("Semantic error: 'return' in wrong place on line %d\n",node->lineNumber);
-			else if(currentFunction->dataType == ID_WORD)
-			{
-				if(!isInt(node->sons[0]))
-					printf("Semantic error: wrong return type for function %s, on line %d\n",currentFunction->value,node->lineNumber);
-			}
-			else if(currentFunction->dataType == ID_BYTE)
-			{
-				if(!isInt(node->sons[0]))
-					printf("Semantic error: wrong return type for function %s, on line %d\n",currentFunction->value,node->lineNumber);
-			}
-			else if(currentFunction->dataType == ID_BOOL)
-			{
-				if(!isBoolean(node->sons[0]))
-					printf("Semantic error: wrong return type for function %s, should be boolean, on line %d\n",currentFunction->value,node->lineNumber);
-			}
-		}
-		else
-		{
-			testReturn(node->sons[0]);
-			testReturn(node->sons[1]);
-			testReturn(node->sons[2]);
-			testReturn(node->sons[3]);
-			
-		}
-	}
-}
-
 void declareFunctions(struct a_NODE *node)
 {
 	struct a_NODE * aux;
@@ -228,7 +193,6 @@ void declareFunctions(struct a_NODE *node)
 				
 				node->sons[1]->node->args = insertInIntList(aux->sons[0]->token,node->sons[1]->node->args);
 			}
-			testReturn(node->sons[3]); // SEMPRE D_NODE , GAMBIARRATIONN
 		}
 		else
 		{
@@ -324,6 +288,7 @@ void verify(struct a_NODE * node_p)
 				node_.sons[1]->node->args = insertInIntList(aux->sons[0]->token,node_.sons[1]->node->args);
 			}
 			*/
+			currentFunction = node_.sons[1]->node;
 			verify((node_.sons[3])); // SEMPRE D_NODE , GAMBIARRATIONN
 			
 			break;
@@ -517,7 +482,7 @@ void verify(struct a_NODE * node_p)
 		case OUTPUT:
 			break;
 		case RETURN:
-			/*if(!currentFunction)
+			if(!currentFunction)
 				printf("Semantic error: 'return' in wrong place on line %d\n",node_.lineNumber);
 			else if(currentFunction->dataType == ID_WORD)
 			{
@@ -533,7 +498,7 @@ void verify(struct a_NODE * node_p)
 			{
 				if(!isBoolean(node_.sons[0]))
 					printf("Semantic error: wrong return type for function %s, should be boolean, on line %d\n",currentFunction->value,node_.lineNumber);
-			}*/
+			}
 			break;
 		case BLOCK:
 			verify((node_.sons[0]));

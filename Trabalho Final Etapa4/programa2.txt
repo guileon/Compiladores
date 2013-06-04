@@ -7,7 +7,7 @@ word $pt:0;
 
 word main()
   word i:'a';
-  byte a:5;
+  byte a2:5;
   {
   output "digite um numero";
   input i;
@@ -17,7 +17,7 @@ word main()
     i = i + 1;
     };
   i = outra();
-  if (x)
+  if (true)
   then a = 5
   else a = 7;
   output "A resposta eh",i,a,2f,"\n";

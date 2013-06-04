@@ -9,6 +9,8 @@
 #define TRUE 1
 #define FALSE 0
 
+int hasError =0;
+
 void a_setFile(char* file)
 {
 	filename = file;
@@ -108,12 +110,12 @@ int testArguments(struct HNODE *node1, struct a_NODE *node2)
 		if(!aux && aux2)
 		{
 			
-			printf("Semantic error: wrong number of arguments(given %d, should be less) on function call on line %d\n",argNumber,aux2->lineNumber);
+			hasError++;{hasError++;printf("Semantic error: wrong number of arguments(given %d, should be less) on function call on line %d\n",argNumber,aux2->lineNumber);}
 			return FALSE;
 		}
 		else if(aux && !aux2)
 		{
-			printf("Semantic error: wrong number of arguments(given %d, should be more) on function call\n",argNumber-1);
+			hasError++;{hasError++;printf("Semantic error: wrong number of arguments(given %d, should be more) on function call\n",argNumber-1);}
 			return FALSE;
 		}
 		else
@@ -121,7 +123,7 @@ int testArguments(struct HNODE *node1, struct a_NODE *node2)
 			{
 				if(!isBoolean(aux2->sons[0]))
 				{
-					printf("Semantic error: argument of number %d is of wrong type(should be boolean) on line %d\n",argNumber,aux2->lineNumber);
+					hasError++;{hasError++;printf("Semantic error: argument of number %d is of wrong type(should be boolean) on line %d\n",argNumber,aux2->lineNumber);}
 					return FALSE;
 				}
 				else
@@ -135,7 +137,7 @@ int testArguments(struct HNODE *node1, struct a_NODE *node2)
 			{
 				if(!isInt(aux2->sons[0]))
 				{
-					printf("Semantic error: argument number %d is of wrong type(should be integer) on line %d\n",argNumber,aux2->lineNumber);
+					hasError++;{hasError++;printf("Semantic error: argument number %d is of wrong type(should be integer) on line %d\n",argNumber,aux2->lineNumber);}
 					return FALSE;
 				}
 				else
@@ -153,6 +155,16 @@ void semanticEvaluation(struct a_NODE *node)
 {
 	declareFunctions(node);
 	verify(node);
+	if(hasError)
+	{
+		printf("\nFOUND %d ERRORS\n\n",hasError);
+		exit(3);	
+	}
+	else
+	{
+		printf("\nNO ERRORS\n\n");
+		exit(0);
+	}
 }
 
 struct HNODE * currentFunction;
@@ -299,7 +311,7 @@ void verify(struct a_NODE * node_p)
 			break;
 		case DECLARATION:
 			if(node_.sons[1]->node->type != SYMBOL_IDENTIFIER)
-				printf("Semantic error on line %d: variable %s already declared \n",node_.lineNumber,node_.sons[1]->node->value);
+				{hasError++;printf("Semantic error on line %d: variable %s already declared \n",node_.lineNumber,node_.sons[1]->node->value);}
 			else
 			{
 				if(node_.sons[0]->token == KW_BOOL)
@@ -312,13 +324,13 @@ void verify(struct a_NODE * node_p)
 				if(!(
 					(node_.sons[0]->token == KW_BOOL && (node_.sons[2]->token == LIT_TRUE || node_.sons[2]->token == LIT_FALSE)) ||
 					(((node_.sons[0]->token == KW_WORD) || (node_.sons[0]->token == KW_BYTE)) && ((node_.sons[2]->token == LIT_INTEGER)||(node_.sons[2]->token == LIT_CHAR)))))
-					printf("Semantic error on line %d: Scalar initialized wrong.\n",node_.lineNumber);
+					{hasError++;printf("Semantic error on line %d: Scalar initialized wrong.\n",node_.lineNumber);}
 			}
 				
 			break;
 		case DECLARATION_POINTER:
 			if(node_.sons[1]->node->type != SYMBOL_IDENTIFIER)
-				printf("Semantic error on line %d: variable already declared\n",node_.lineNumber);
+				{hasError++;printf("Semantic error on line %d: variable already declared\n",node_.lineNumber);}
 			else
 			{
 				if(node_.sons[0]->token == KW_BOOL)
@@ -332,7 +344,7 @@ void verify(struct a_NODE * node_p)
 			break;
 		case DECLARATION_VEC:
 			if(node_.sons[1]->node->type != SYMBOL_IDENTIFIER)
-				printf("Semantic error on line %d: variable already declared\n",node_.lineNumber);
+				{hasError++;printf("Semantic error on line %d: variable already declared\n",node_.lineNumber);}
 			else
 			{
 				if(node_.sons[0]->token == KW_BOOL)
@@ -344,12 +356,12 @@ void verify(struct a_NODE * node_p)
 				node_.sons[1]->node->type = ID_VECTOR;
 				
 				if(!isInt(node_.sons[2]))
-					printf("Semantic error on line %d: Vector with not-integer size\n",node_.lineNumber);
+					{hasError++;printf("Semantic error on line %d: Vector with not-integer size\n",node_.lineNumber);}
 			}
 			break;
 		case DECLARATION_VEC_INIT:
 			if(node_.sons[1]->node->type != SYMBOL_IDENTIFIER)
-				printf("Semantic error on line %d: variable already declared\n",node_.lineNumber);
+				{hasError++;printf("Semantic error on line %d: variable already declared\n",node_.lineNumber);}
 			else
 			{
 				if(node_.sons[0]->token == KW_BOOL)
@@ -361,26 +373,26 @@ void verify(struct a_NODE * node_p)
 				node_.sons[1]->node->type = ID_VECTOR;
 					
 				if(!isInt(node_.sons[2]))
-					printf("Semantic error on line %d: Vector with not-integer size\n",node_.lineNumber);
+					{hasError++;printf("Semantic error on line %d: Vector with not-integer size\n",node_.lineNumber);}
 				if(!(node_.sons[3]->token == LIST))
-					printf("Semantic error on line %d: Vector initialized wrong.\n",node_.lineNumber);
+					{hasError++;printf("Semantic error on line %d: Vector initialized wrong.\n",node_.lineNumber);}
 			}
 			break;
 	
 		// EXPRESSION
 		case '&': 
 			if(!(node_.sons[0]->node->type==ID_SCALAR)) 
-				printf("Semantic error: getting reference for not-scalar on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: getting reference for not-scalar on line %d\n",node_.lineNumber);}
 			verify(node_.sons[0]);
 			break;
 		case POINTER: 
 			if(!(node_.sons[0]->node->type==ID_POINTER))
-				printf("Semantic error: using not-pointer as pointer on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: using not-pointer as pointer on line %d\n",node_.lineNumber);}
 			verify(node_.sons[0]);
 			break;
 		case '*': 
 			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1])))
-				printf("Semantic error: multiplying not integer on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: multiplying not integer on line %d\n",node_.lineNumber);}
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
@@ -389,31 +401,31 @@ void verify(struct a_NODE * node_p)
 			break;
 		case '+':
 			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1])))
-				printf("Semantic error: adding not integer on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: adding not integer on line %d\n",node_.lineNumber);}
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
 		case '-':
 			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1])))
-				printf("Semantic error: subtracting not integer on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: subtracting not integer on line %d\n",node_.lineNumber);}
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
 		case '/': 
 			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1])))
-				printf("Semantic error: dividing not integer on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: dividing not integer on line %d\n",node_.lineNumber);}
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
 		case OR: 
 			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
-				printf("Semantic error: '||' with not boolean on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: '||' with not boolean on line %d\n",node_.lineNumber);}
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
 		case AND: 
 			if(!(isBoolean(node_.sons[0]) && isBoolean(node_.sons[1])))
-				printf("Semantic error: '&&' with not boolean on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: '&&' with not boolean on line %d\n",node_.lineNumber);}
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
@@ -435,36 +447,36 @@ void verify(struct a_NODE * node_p)
 			break;
 		case '>': 		
 			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1])))
-				printf("Semantic error: '>' with not integer on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: '>' with not integer on line %d\n",node_.lineNumber);}
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
 		case '<': 
 			if(!(isInt(node_.sons[0]) && isInt(node_.sons[1])))
-				printf("Semantic error: '<' with not integer on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: '<' with not integer on line %d\n",node_.lineNumber);}
 			verify(node_.sons[0]);
 			verify(node_.sons[1]);
 			break;
 		case VECCALL:
 			if(node_.sons[0]->node->type == SYMBOL_IDENTIFIER)
-				printf("Semantic error: Vector %s not declared used on line %d\n",node_.sons[0]->node->value,node_.lineNumber);
+				{hasError++;printf("Semantic error: Vector %s not declared used on line %d\n",node_.sons[0]->node->value,node_.lineNumber);}
 			if(!isInt(node_.sons[1]))
-				printf("Semantic error: Vector index not integer on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: Vector index not integer on line %d\n",node_.lineNumber);}
 			if(!(node_.sons[0]->node->type==ID_VECTOR))
-				printf("Semantic error: Something not-vector used as vector on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: Something not-vector used as vector on line %d\n",node_.lineNumber);}
 			break;
 		case NORMAL:
 			if(node_.sons[0]->node->type == SYMBOL_IDENTIFIER)
-				printf("Semantic error: Variable %s not declared used on line %d\n",node_.sons[0]->node->value,node_.lineNumber);
+				{hasError++;printf("Semantic error: Variable %s not declared used on line %d\n",node_.sons[0]->node->value,node_.lineNumber);}
 			if(node_.sons[0]->node->type != ID_SCALAR && node_.sons[0]->node->type != ID_POINTER)
-				printf("Semantic error: Something not-scalar used as scalar on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: Something not-scalar used as scalar on line %d\n",node_.lineNumber);}
 			break;
 		// FUNCALL ARGCALL CMD_SEQ
 		case FUNCALL:
 			if(node_.sons[0]->node->type == SYMBOL_IDENTIFIER)
-				printf("Semantic error: Function %s not yet declared used on line %d\n",node_.sons[0]->node->value,node_.lineNumber);
+				{hasError++;printf("Semantic error: Function %s not yet declared used on line %d\n",node_.sons[0]->node->value,node_.lineNumber);}
 			if(!(node_.sons[0]->node->type==ID_FUNC))
-				printf("Semantic error: Something not-function used as function on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: Something not-function used as function on line %d\n",node_.lineNumber);}
 			testArguments(node_.sons[0]->node,node_.sons[1]);
 			break;
 		case ARGCALL:
@@ -483,21 +495,21 @@ void verify(struct a_NODE * node_p)
 			break;
 		case RETURN:
 			if(!currentFunction)
-				printf("Semantic error: 'return' in wrong place on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: 'return' in wrong place on line %d\n",node_.lineNumber);}
 			else if(currentFunction->dataType == ID_WORD)
 			{
 				if(!isInt(node_.sons[0]))
-					printf("Semantic error: wrong return type for function %s, on line %d\n",currentFunction->value,node_.lineNumber);
+					{hasError++;printf("Semantic error: wrong return type for function %s, on line %d\n",currentFunction->value,node_.lineNumber);}
 			}
 			else if(currentFunction->dataType == ID_BYTE)
 			{
 				if(!isInt(node_.sons[0]))
-					printf("Semantic error: wrong return type for function %s, on line %d\n",currentFunction->value,node_.lineNumber);
+					{hasError++;printf("Semantic error: wrong return type for function %s, on line %d\n",currentFunction->value,node_.lineNumber);}
 			}
 			else if(currentFunction->dataType == ID_BOOL)
 			{
 				if(!isBoolean(node_.sons[0]))
-					printf("Semantic error: wrong return type for function %s, should be boolean, on line %d\n",currentFunction->value,node_.lineNumber);
+					{hasError++;printf("Semantic error: wrong return type for function %s, should be boolean, on line %d\n",currentFunction->value,node_.lineNumber);}
 			}
 			break;
 		case BLOCK:
@@ -508,101 +520,101 @@ void verify(struct a_NODE * node_p)
 			if(node_.sons[0]->token == VECCALL)
 			{
 				if(!(node_.sons[0]->sons[0]->node->type == ID_VECTOR))
-					printf("Semantic error: not-vector used as vector on line %d\n",node_.lineNumber);
+					{hasError++;printf("Semantic error: not-vector used as vector on line %d\n",node_.lineNumber);}
 					
 				if(!isInt(node_.sons[0]->sons[1]))
-					printf("Semantic error: vector index is not integer on line %d\n",node_.lineNumber);
+					{hasError++;printf("Semantic error: vector index is not integer on line %d\n",node_.lineNumber);}
 					
 				if(node_.sons[0]->sons[0]->node->dataType == ID_WORD)
 				{
 					if(!isInt(node_.sons[1]))
-						printf("Semantic error: atributing to integer vector from not-integer on line %d\n",node_.lineNumber);
+						{hasError++;printf("Semantic error: atributing to integer vector from not-integer on line %d\n",node_.lineNumber);}
 				}
 				else if(node_.sons[0]->sons[0]->node->dataType == ID_BYTE)
 				{
 					if(!isInt(node_.sons[1]))
-						printf("Semantic error: atributing to integer vector from not-integer on line %d\n",node_.lineNumber);
+						{hasError++;printf("Semantic error: atributing to integer vector from not-integer on line %d\n",node_.lineNumber);}
 				}
 				else if(node_.sons[0]->sons[0]->node->dataType == ID_BOOL)
 				{
 					if(!isBoolean(node_.sons[1]))
-						printf("Semantic error: atributing to boolean vector from not-boolean on line %d\n",node_.lineNumber);
+						{hasError++;printf("Semantic error: atributing to boolean vector from not-boolean on line %d\n",node_.lineNumber);}
 				}
 				else
-					printf("Semantic error: identifier %s not declared on line %d\n",node_.sons[0]->node->value,node_.lineNumber);
+					{hasError++;printf("Semantic error: identifier %s not declared on line %d\n",node_.sons[0]->node->value,node_.lineNumber);}
 			}
 			else if(node_.sons[0]->token == POINTER)
 			{
 				if(node_.sons[0]->sons[0]->node->type != ID_POINTER)
-					printf("Semantic error: dereferencing non-pointer on line %d\n",node_.lineNumber);
+					{hasError++;printf("Semantic error: dereferencing non-pointer on line %d\n",node_.lineNumber);}
 				if(node_.sons[0]->sons[0]->node->dataType == ID_WORD)
 				{
 					
 					if(!isInt(node_.sons[1]))
-						printf("Semantic error: atributing to integer scalar from not-integer on line %d\n",node_.lineNumber);
+						{hasError++;printf("Semantic error: atributing to integer scalar from not-integer on line %d\n",node_.lineNumber);}
 				}
 				else if(node_.sons[0]->sons[0]->node->dataType == ID_BYTE)
 				{
 					if(!isInt(node_.sons[1]))
-						printf("Semantic error: atributing to integer scalar from not-integer on line %d\n",node_.lineNumber);
+						{hasError++;printf("Semantic error: atributing to integer scalar from not-integer on line %d\n",node_.lineNumber);}
 				}
 				else if(node_.sons[0]->sons[0]->node->dataType == ID_BOOL)
 				{
 					if(!isBoolean(node_.sons[1]))
-						printf("Semantic error: atributing to boolean scalar from not-boolean on line %d\n",node_.lineNumber);
+						{hasError++;printf("Semantic error: atributing to boolean scalar from not-boolean on line %d\n",node_.lineNumber);}
 				}
 				else 
-					printf("Semantic error: identifier %s not declared on line %d\n",node_.sons[0]->node->value,node_.lineNumber);
+					{hasError++;printf("Semantic error: identifier %s not declared on line %d\n",node_.sons[0]->node->value,node_.lineNumber);}
 			}
 			else if(node_.sons[0]->node->type == ID_POINTER)
 			{
 				if(!isPt(node_.sons[1]))
 				{
-					printf("Semantic error: atributin a non-pointer to a pointer on line %d\n",node_.lineNumber);
+					{hasError++;printf("Semantic error: atributin a non-pointer to a pointer on line %d\n",node_.lineNumber);}
 				}
 				
 			}
 			else if(node_.sons[0]->node->type == ID_SCALAR)
 			{
 				if(node_.sons[0]->node->type == ID_VECTOR)
-					printf("Semantic error: vector used as not-vector on line %d\n",node_.lineNumber);
+					{hasError++;printf("Semantic error: vector used as not-vector on line %d\n",node_.lineNumber);}
 				if(node_.sons[0]->node->dataType == ID_WORD)
 				{
 					if(!isInt(node_.sons[1]))
-						printf("Semantic error: atributing to integer scalar from not-integer on line %d\n",node_.lineNumber);
+						{hasError++;printf("Semantic error: atributing to integer scalar from not-integer on line %d\n",node_.lineNumber);}
 				}
 				else if(node_.sons[0]->node->dataType == ID_BYTE)
 				{
 					if(!isInt(node_.sons[1]))
-						printf("Semantic error: atributing to integer scalar from not-integer on line %d\n",node_.lineNumber);
+						{hasError++;printf("Semantic error: atributing to integer scalar from not-integer on line %d\n",node_.lineNumber);}
 				}
 				else if(node_.sons[0]->node->dataType == ID_BOOL)
 				{
 					if(!isBoolean(node_.sons[1]))
-						printf("Semantic error: atributing to boolean scalar from not-boolean on line %d\n",node_.lineNumber);
+						{hasError++;printf("Semantic error: atributing to boolean scalar from not-boolean on line %d\n",node_.lineNumber);}
 				}
 				else 
-					printf("Semantic error: identifier %s not declared on line %d\n",node_.sons[0]->node->value,node_.lineNumber);
+					{hasError++;printf("Semantic error: identifier %s not declared on line %d\n",node_.sons[0]->node->value,node_.lineNumber);}
 			}
 			else
 			{
-				printf("Semantic error: atributing to non-variable on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: atributing to non-variable on line %d\n",node_.lineNumber);}
 			}
 			break;
 		case IF_THEN: 
 			if(!isBoolean(node_.sons[0]))
-				printf("Semantic error: if called with not-boolean on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: if called with not-boolean on line %d\n",node_.lineNumber);}
 			verify(node_.sons[1]);
 			break;
 		case IF_THEN_ELSE: 
 			if(!isBoolean(node_.sons[0]))
-				printf("Semantic error: if called with not-boolean on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: if called with not-boolean on line %d\n",node_.lineNumber);}
 			verify(node_.sons[1]);
 			verify(node_.sons[2]);
 			break;
 		case LOOP :
 			if(!isBoolean(node_.sons[0]))
-				printf("Semantic error: loop called with not-boolean on line %d\n",node_.lineNumber);
+				{hasError++;printf("Semantic error: loop called with not-boolean on line %d\n",node_.lineNumber);}
 			verify(node_.sons[1]);
 			break;
 		// DEFAULT

@@ -19,7 +19,6 @@ word main()
   	};
   }
 word nada ()
-word ll:0;
   {
-	return ll;
+	return a;
   }

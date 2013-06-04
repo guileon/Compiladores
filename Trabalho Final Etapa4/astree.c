@@ -334,7 +334,7 @@ void verify(struct a_NODE * node_p)
 			break;
 		case DECLARATION:
 			if(node_.sons[1]->node->type != SYMBOL_IDENTIFIER)
-				printf("Semantic error: variable %s already declared on line %d\n",node_.sons[1]->node->value,node_.lineNumber);
+				printf("Semantic error on line %d: variable %s already declared \n",node_.lineNumber,node_.sons[1]->node->value);
 			else
 			{
 				if(node_.sons[0]->token == KW_BOOL)
@@ -353,7 +353,7 @@ void verify(struct a_NODE * node_p)
 			break;
 		case DECLARATION_POINTER:
 			if(node_.sons[1]->node->type != SYMBOL_IDENTIFIER)
-				printf("Semantic error: variable already declared on line %d",node_.lineNumber);
+				printf("Semantic error on line %d: variable already declared\n",node_.lineNumber);
 			else
 			{
 				if(node_.sons[0]->token == KW_BOOL)
@@ -367,7 +367,7 @@ void verify(struct a_NODE * node_p)
 			break;
 		case DECLARATION_VEC:
 			if(node_.sons[1]->node->type != SYMBOL_IDENTIFIER)
-				printf("Semantic error: variable already declared on line %d",node_.lineNumber);
+				printf("Semantic error on line %d: variable already declared\n",node_.lineNumber);
 			else
 			{
 				if(node_.sons[0]->token == KW_BOOL)
@@ -384,7 +384,7 @@ void verify(struct a_NODE * node_p)
 			break;
 		case DECLARATION_VEC_INIT:
 			if(node_.sons[1]->node->type != SYMBOL_IDENTIFIER)
-				printf("Semantic error: variable already declared on line %d",node_.lineNumber);
+				printf("Semantic error on line %d: variable already declared\n",node_.lineNumber);
 			else
 			{
 				if(node_.sons[0]->token == KW_BOOL)

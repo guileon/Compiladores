@@ -133,6 +133,7 @@ void table_print(void)
 					for(aux = node->args ; aux != NULL ; aux = aux->next)	printf(" %d, ",aux->v); printf("\n");
 					break;
 				case ID_VECTOR: printf("Valor: %s | Vector %d\n",node->value,node->dataType); break;
+				case ID_POINTER:printf("Valor: %s | Pointer %d\n",node->value,node->dataType); break;
 			}
 		}
 	}

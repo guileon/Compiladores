@@ -469,6 +469,32 @@ void verify(struct a_NODE * node_p)
 			{
 				if(node_.sons[0]->sons[0]->node->type != ID_POINTER)
 					printf("Semantic error: dereferencing non-pointer on line %d\n",node_.lineNumber);
+				if(node_.sons[0]->sons[0]->node->dataType == ID_WORD)
+				{
+					
+					if(!isInt(node_.sons[1]))
+						printf("Semantic error: atributing to integer scalar from not-integer on line %d\n",node_.lineNumber);
+				}
+				else if(node_.sons[0]->sons[0]->node->dataType == ID_BYTE)
+				{
+					if(!isInt(node_.sons[1]))
+						printf("Semantic error: atributing to integer scalar from not-integer on line %d\n",node_.lineNumber);
+				}
+				else if(node_.sons[0]->sons[0]->node->dataType == ID_BOOL)
+				{
+					if(!isBoolean(node_.sons[1]))
+						printf("Semantic error: atributing to boolean scalar from not-boolean on line %d\n",node_.lineNumber);
+				}
+				else 
+					printf("Semantic error: identifier %s not declared on line %d\n",node_.sons[0]->node->value,node_.lineNumber);
+			}
+			else if(node_.sons[0]->node->type == ID_POINTER)
+			{
+				if(!isPt(node_.sons[1]))
+				{
+					printf("Semantic error: atributin a non-pointer to a pointer on line %d\n",node_.lineNumber);
+				}
+				
 			}
 			else if(node_.sons[0]->node->type == ID_SCALAR)
 			{
@@ -888,7 +914,10 @@ int isInt(struct a_NODE *node)
 	
 	if(node->token == LIT_INTEGER) // testa se é um literal inteiro
 		return TRUE;
-		
+	
+	if(node->token == LIT_CHAR)
+		return TRUE;
+	
 	if(node->token == VECCALL && node->sons[0]->node->dataType == ID_WORD) // faz o teste para ver se são vetores do tipo certo
 		return TRUE;
 	if(node->token == VECCALL && node->sons[0]->node->dataType == ID_BYTE)
@@ -921,10 +950,13 @@ int isInt(struct a_NODE *node)
 
 int isPt(struct a_NODE *node)
 {
+	if(!node)
+		return FALSE;
 	if(node->token == '&')
 		return TRUE;
-	if(node->node->dataType == ID_POINTER)
+	if(node->token == TK_IDENTIFIER && node->node->type == ID_POINTER)
 		return TRUE;
+	
 	if(node->token == '+' && isPt(node->sons[0]) && isInt(node->sons[1]))
 		return TRUE;
 	if(node->token == '+' && isPt(node->sons[1]) && isInt(node->sons[0]))

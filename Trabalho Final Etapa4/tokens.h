@@ -67,7 +67,7 @@
 #define OUTPUT_L 516
 #define VECCALL 517
 #define POINTER 518
-
+#define NORMAL 5180
 
 #define ID_WORD 519
 #define ID_BYTE 520

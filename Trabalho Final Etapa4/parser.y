@@ -125,7 +125,7 @@ ARGUMENTS_CALL: EXPRESSION 															{ $$ = (struct a_NODE*)newNode(ARGCALL
 	|																				{ $$ = NULL;}
 	;
 	
-EXPRESSION:		IDENTIFIER 							{ $$ = $1; }
+EXPRESSION:		IDENTIFIER 							{ $$ = (struct a_NODE*)newNode(NORMAL,$1,NULL,NULL,NULL,NULL,getLineNumber()); }//$1; }
 	|			IDENTIFIER '[' EXPRESSION ']'		{ $$ = (struct a_NODE*)newNode(VECCALL,$1,$3,NULL,NULL,NULL,getLineNumber()); }
 	|			'&' IDENTIFIER 						{ $$ = (struct a_NODE*)newNode('&',$2,NULL,NULL,NULL,NULL,getLineNumber()); }
 	|			'*' IDENTIFIER 						{ $$ = (struct a_NODE*)newNode(POINTER,$2,NULL,NULL,NULL,NULL,getLineNumber()); }

@@ -1713,7 +1713,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 128 "parser.y"
-    { (yyval.astreeNode) = (yyvsp[(1) - (1)].astreeNode); ;}
+    { (yyval.astreeNode) = (struct a_NODE*)newNode(NORMAL,(yyvsp[(1) - (1)].astreeNode),NULL,NULL,NULL,NULL,getLineNumber()); ;}
     break;
 
   case 32:

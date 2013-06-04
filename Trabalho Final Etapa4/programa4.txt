@@ -16,10 +16,11 @@ word $pt:0;
 word $pt2:0;
 {
 	r = *pt;
-	*pt = 2;
+	*pt = c;
+	r = vec[2]; // line 20
 	pt2 = pt;
 	r = catchucia(r);
 	d1 = d;
-	b1 = vec;
+	b1 = main(0,0,true);
 	return b1;
 }

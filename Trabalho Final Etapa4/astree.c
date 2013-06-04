@@ -314,7 +314,7 @@ void verify(struct a_NODE * node_p)
 		// EXPRESSION
 		case '&': 
 			if(!(node_.sons[0]->node->type==ID_SCALAR)) 
-				printf("Semantic error: geting reference for not-scalar on line %d\n",node_.lineNumber);
+				printf("Semantic error: getting reference for not-scalar on line %d\n",node_.lineNumber);
 			verify(node_.sons[0]);
 			break;
 		case POINTER: 
@@ -394,6 +394,11 @@ void verify(struct a_NODE * node_p)
 				printf("Semantic error: Vector index not integer on line %d\n",node_.lineNumber);
 			if(!(node_.sons[0]->node->type==ID_VECTOR))
 				printf("Semantic error: Something not-vector used as vector on line %d\n",node_.lineNumber);
+			break;
+		case NORMAL:
+			
+			if(node_.sons[0]->node->type != ID_SCALAR && node_.sons[0]->node->type != ID_POINTER)
+				printf("Semantic error: Something not-scalar used as scalar on line %d\n",node_.lineNumber);
 			break;
 		// FUNCALL ARGCALL CMD_SEQ
 		case FUNCALL:
@@ -771,6 +776,8 @@ void printNode(struct a_NODE * node_p)
 			printNode((node_.sons[1]));
 			printToFile(pfile,"]");
 			break;
+		case NORMAL:
+			printNode((node_.sons[0]));
 		// FUNCALL ARGCALL CMD_SEQ
 		case FUNCALL:
 			printNode((node_.sons[0]));
@@ -900,6 +907,9 @@ int isBoolean(struct a_NODE *node)
 	if(node->token == EQ || node->token == NE || node->token == GE || node->token == LE || node->token == '>' || node->token == '<') // testa os operadores que retornam booleano
 		return TRUE;
 
+	if(isBoolean(node->sons[0]))
+		return TRUE;
+		
 	if(isBoolean(node->sons[0]) && isBoolean(node->sons[1])) // testa os filhos
 		return TRUE;
 	
@@ -960,6 +970,8 @@ int isPt(struct a_NODE *node)
 	if(node->token == '+' && isPt(node->sons[0]) && isInt(node->sons[1]))
 		return TRUE;
 	if(node->token == '+' && isPt(node->sons[1]) && isInt(node->sons[0]))
+		return TRUE;
+	if(isPt(node->sons[0]))
 		return TRUE;
 	return FALSE;
 }

@@ -1,1 +1,1 @@
-word a:0;bool c:TRUE;byte r:2;byte vec[2]:0 0;byte catchucia(byte b){b=2 ;r=bb() ;return bb() ;} word main(byte b,word c,bool d)bool d1:TRUE;byte b1:0;word $pt:0;word $pt2:0;{r=*pt ;*pt=cc() ;r=vec[2] ;pt2=ptpt() ;r=catchucia(rr()) ;d1=dd() ;b1=main(0,0,TRUE) ;return b1b1() ;} 
+word a:'a';word v[10]:0 0 0 0 0 0 0 0 0 0;word mat[1000];word $pt:0;word main()word i:'a';bool x:TRUE;bool b:FALSE;{pt=&a ;a=ptpt() ;a=*pt ;if(xx())then if(aa()<2*5)then a=5 else a=2+'x'  else a=7  ;output "A resposta eh",ii(),nada(),2f,"\n" ;} word nada(){} 

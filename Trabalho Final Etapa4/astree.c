@@ -255,7 +255,7 @@ void verify(struct a_NODE * node_p)
 				node_.sons[1]->node->type = ID_SCALAR;
 				if(!(
 					(node_.sons[0]->token == KW_BOOL && (node_.sons[2]->token == LIT_TRUE || node_.sons[2]->token == LIT_FALSE)) ||
-					(((node_.sons[0]->token == KW_WORD) || (node_.sons[0]->token == KW_BYTE)) && (node_.sons[2]->token == LIT_INTEGER))))
+					(((node_.sons[0]->token == KW_WORD) || (node_.sons[0]->token == KW_BYTE)) && ((node_.sons[2]->token == LIT_INTEGER)||(node_.sons[2]->token == LIT_CHAR)))))
 					printf("Semantic error on line %d: Scalar initialized wrong.\n",node_.lineNumber);
 			}
 				
@@ -920,7 +920,6 @@ int isInt(struct a_NODE *node)
 {
 	if(!node) // testa se o nodo é nulo
 		return FALSE;
-	
 	
 	if(node->token == LIT_INTEGER) // testa se é um literal inteiro
 		return TRUE;

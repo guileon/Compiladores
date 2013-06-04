@@ -45,6 +45,6 @@ int atoh(char * val)
 char * htoa(int val)
 {
 	char * str = (char*)calloc(33,sizeof(char));
-	itoa(val,str,16);
+	//itoa(val,str,16);
 	return str;
 }

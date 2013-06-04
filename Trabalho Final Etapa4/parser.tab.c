@@ -1510,7 +1510,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 76 "parser.y"
-    { printNode((yyvsp[(1) - (1)].astreeNode));verify((yyvsp[(1) - (1)].astreeNode)); ;}
+    { printNode((yyvsp[(1) - (1)].astreeNode));semanticEvaluation((yyvsp[(1) - (1)].astreeNode)); ;}
     break;
 
   case 3:

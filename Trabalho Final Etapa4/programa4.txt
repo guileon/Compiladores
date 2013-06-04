@@ -9,8 +9,10 @@ word main()
   bool b:FALSE;
   {
   pt = &a;
-  a = pt;
   a = *pt;
+  a = *pt;
+  if (x) then
+	a = salsicha;
   if (x)
   then if (a<2*5) 
     then a = 5

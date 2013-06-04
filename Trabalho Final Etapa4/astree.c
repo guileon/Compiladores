@@ -104,14 +104,16 @@ int testArguments(struct HNODE *node1, struct a_NODE *node2)
 	aux2 = node2;
 	while(aux || aux2)
 	{
+		
 		if(!aux && aux2)
 		{
+			
 			printf("Semantic error: wrong number of arguments(given %d, should be less) on function call on line %d\n",argNumber,aux2->lineNumber);
 			return FALSE;
 		}
 		else if(aux && !aux2)
 		{
-			printf("Semantic error: wrong number of arguments(given %d, should be more) on function call on line %d\n",argNumber-1,aux2->lineNumber);
+			printf("Semantic error: wrong number of arguments(given %d, should be more) on function call\n",argNumber-1);
 			return FALSE;
 		}
 		else
@@ -147,12 +149,101 @@ int testArguments(struct HNODE *node1, struct a_NODE *node2)
 	return TRUE;
 }
 
+void semanticEvaluation(struct a_NODE *node)
+{
+	declareFunctions(node);
+	verify(node);
+}
+
 struct HNODE * currentFunction;
+
+void testReturn(struct a_NODE *node)
+{
+	if(node)
+	{
+		if(node->token == RETURN)
+		{
+			if(!currentFunction)
+				printf("Semantic error: 'return' in wrong place on line %d\n",node->lineNumber);
+			else if(currentFunction->dataType == ID_WORD)
+			{
+				if(!isInt(node->sons[0]))
+					printf("Semantic error: wrong return type for function %s, on line %d\n",currentFunction->value,node->lineNumber);
+			}
+			else if(currentFunction->dataType == ID_BYTE)
+			{
+				if(!isInt(node->sons[0]))
+					printf("Semantic error: wrong return type for function %s, on line %d\n",currentFunction->value,node->lineNumber);
+			}
+			else if(currentFunction->dataType == ID_BOOL)
+			{
+				if(!isBoolean(node->sons[0]))
+					printf("Semantic error: wrong return type for function %s, should be boolean, on line %d\n",currentFunction->value,node->lineNumber);
+			}
+		}
+		else
+		{
+			testReturn(node->sons[0]);
+			testReturn(node->sons[1]);
+			testReturn(node->sons[2]);
+			testReturn(node->sons[3]);
+			
+		}
+	}
+}
+
+void declareFunctions(struct a_NODE *node)
+{
+	struct a_NODE * aux;
+	if(node)
+	{
+		if(node->token == FUNC_DECLARATION)
+		{
+			node->sons[1]->node->type = ID_FUNC;
+			if(node->sons[0]->token == KW_BOOL)
+				node->sons[1]->node->dataType = ID_BOOL;
+			else if(node->sons[0]->token == KW_WORD)
+				node->sons[1]->node->dataType = ID_WORD;
+			else if(node->sons[0]->token == KW_BYTE)
+				node->sons[1]->node->dataType = ID_BYTE;
+			
+			currentFunction = node->sons[1]->node;		
+			
+			aux = node->sons[2];
+			for(aux = node->sons[2] ; aux != NULL ; aux = aux->sons[2])
+			{
+				aux->sons[1]->node->type = ID_SCALAR;
+				if(aux->sons[0]->token == KW_BOOL)
+				{
+					aux->sons[1]->node->dataType = ID_BOOL;
+				}
+				else if(aux->sons[0]->token == KW_WORD)
+				{
+					aux->sons[1]->node->dataType = ID_WORD;
+				}
+				else if(aux->sons[0]->token == KW_BYTE)
+				{
+					aux->sons[1]->node->dataType = ID_BYTE;
+				}
+				
+				node->sons[1]->node->args = insertInIntList(aux->sons[0]->token,node->sons[1]->node->args);
+			}
+			testReturn(node->sons[3]); // SEMPRE D_NODE , GAMBIARRATIONN
+		}
+		else
+		{
+			declareFunctions(node->sons[0]);
+			declareFunctions(node->sons[1]);
+			declareFunctions(node->sons[2]);
+			declareFunctions(node->sons[3]);
+		}
+	}
+}
+
  
 void verify(struct a_NODE * node_p)
 {
 	struct a_NODE * aux;
-	FILE *pfile;
 	if(node_p)
 	{
 	struct a_NODE node_ = *node_p;
@@ -195,7 +286,6 @@ void verify(struct a_NODE * node_p)
 			verify((node_.sons[1]));
 			if((node_.sons[2])!=NULL)
 			{
-				printToFile(pfile,",");
 				verify((node_.sons[2]));
 			}
 			break;
@@ -204,7 +294,7 @@ void verify(struct a_NODE * node_p)
 			verify((node_.sons[1]));
 			break;
 		case FUNC_DECLARATION:
-			node_.sons[1]->node->type = ID_FUNC;
+			/*node_.sons[1]->node->type = ID_FUNC;
 			if(node_.sons[0]->token == KW_BOOL)
 				node_.sons[1]->node->dataType = ID_BOOL;
 			else if(node_.sons[0]->token == KW_WORD)
@@ -233,6 +323,7 @@ void verify(struct a_NODE * node_p)
 				
 				node_.sons[1]->node->args = insertInIntList(aux->sons[0]->token,node_.sons[1]->node->args);
 			}
+			*/
 			verify((node_.sons[3])); // SEMPRE D_NODE , GAMBIARRATIONN
 			
 			break;
@@ -390,21 +481,26 @@ void verify(struct a_NODE * node_p)
 			verify(node_.sons[1]);
 			break;
 		case VECCALL:
+			if(node_.sons[0]->node->type == SYMBOL_IDENTIFIER)
+				printf("Semantic error: Vector %s not declared used on line %d\n",node_.sons[0]->node->value,node_.lineNumber);
 			if(!isInt(node_.sons[1]))
 				printf("Semantic error: Vector index not integer on line %d\n",node_.lineNumber);
 			if(!(node_.sons[0]->node->type==ID_VECTOR))
 				printf("Semantic error: Something not-vector used as vector on line %d\n",node_.lineNumber);
 			break;
 		case NORMAL:
-			
+			if(node_.sons[0]->node->type == SYMBOL_IDENTIFIER)
+				printf("Semantic error: Variable %s not declared used on line %d\n",node_.sons[0]->node->value,node_.lineNumber);
 			if(node_.sons[0]->node->type != ID_SCALAR && node_.sons[0]->node->type != ID_POINTER)
 				printf("Semantic error: Something not-scalar used as scalar on line %d\n",node_.lineNumber);
 			break;
 		// FUNCALL ARGCALL CMD_SEQ
 		case FUNCALL:
+			if(node_.sons[0]->node->type == SYMBOL_IDENTIFIER)
+				printf("Semantic error: Function %s not yet declared used on line %d\n",node_.sons[0]->node->value,node_.lineNumber);
 			if(!(node_.sons[0]->node->type==ID_FUNC))
 				printf("Semantic error: Something not-function used as function on line %d\n",node_.lineNumber);
-			testArguments(node_.sons[0]->node,node_.sons[1]); 
+			testArguments(node_.sons[0]->node,node_.sons[1]);
 			break;
 		case ARGCALL:
 			break;
@@ -421,7 +517,7 @@ void verify(struct a_NODE * node_p)
 		case OUTPUT:
 			break;
 		case RETURN:
-			if(!currentFunction)
+			/*if(!currentFunction)
 				printf("Semantic error: 'return' in wrong place on line %d\n",node_.lineNumber);
 			else if(currentFunction->dataType == ID_WORD)
 			{
@@ -437,7 +533,7 @@ void verify(struct a_NODE * node_p)
 			{
 				if(!isBoolean(node_.sons[0]))
 					printf("Semantic error: wrong return type for function %s, should be boolean, on line %d\n",currentFunction->value,node_.lineNumber);
-			}
+			}*/
 			break;
 		case BLOCK:
 			verify((node_.sons[0]));
@@ -531,18 +627,21 @@ void verify(struct a_NODE * node_p)
 		case IF_THEN: 
 			if(!isBoolean(node_.sons[0]))
 				printf("Semantic error: if called with not-boolean on line %d\n",node_.lineNumber);
+			verify(node_.sons[1]);
 			break;
 		case IF_THEN_ELSE: 
 			if(!isBoolean(node_.sons[0]))
 				printf("Semantic error: if called with not-boolean on line %d\n",node_.lineNumber);
+			verify(node_.sons[1]);
+			verify(node_.sons[2]);
 			break;
 		case LOOP :
 			if(!isBoolean(node_.sons[0]))
 				printf("Semantic error: loop called with not-boolean on line %d\n",node_.lineNumber);
+			verify(node_.sons[1]);
 			break;
 		// DEFAULT
 		default: 
-			printToFile(pfile,"DEFAULT");
 			break;
 		
 	} // switch

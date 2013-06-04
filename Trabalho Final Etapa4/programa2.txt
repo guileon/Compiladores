@@ -22,8 +22,10 @@ word main()
   output "A resposta eh",i,a,2f,"\n";
   }
 
-word incn (word x, word n)
-  { return x+n; }
+word incn()
+{
+	return 1;
+}
   
 word outra () {}
 

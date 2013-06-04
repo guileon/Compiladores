@@ -73,7 +73,7 @@ void yyerror();
 %type <astreeNode> CMD_SEQ
 %%
 
-START:		PROG 		{ printNode($1);verify($1); }
+START:		PROG 		{ printNode($1);semanticEvaluation($1); }
 	;
 
 PROG:		DECLARATION PROG  							{ $$ = (struct a_NODE*)newNode(PROG, $1, $2, NULL, NULL, NULL,getLineNumber()) ; }

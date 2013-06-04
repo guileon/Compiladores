@@ -1,1 +1,1 @@
-word a:'a';word v[10]:0 0 0 0 0 0 0 0 0 0;word mat[1000];word $pt:0;word main()word i:'a';bool x:TRUE;bool b:FALSE;{pt=&a ;a=ptpt() ;a=*pt ;if(xx())then if(aa()<2*5)then a=5 else a=2+'x'  else a=7  ;output "A resposta eh",ii(),nada(),2f,"\n" ;} word nada(){} 
+word a:0;word v[10]:0 0 0 0 0 0 0 0 0 0;word mat[1000];word $pt:0;word main()word i:'a';byte a:5;{output "digite um numero" ;input i ;loop(ii()+10){a=incn() ;i=ii()+1 ;}  ;if(xx())then a=5 else a=7  ;output "A resposta eh",ii(),aa(),2f,"\n" ;} word incn(){return 1 ;} word outra(){} word maisuma(){} 

@@ -35,7 +35,8 @@ struct a_NODE * newNode(
 	struct a_NODE * son4,
 	struct HNODE * value,
 	int lineN);
-
+void declareFunctions(struct a_NODE *node);	
+void verify(struct a_NODE * node_p);
 void printNode(struct a_NODE * node_p);
 int isBoolean(struct a_NODE *node);
 int isInt(struct a_NODE *node);

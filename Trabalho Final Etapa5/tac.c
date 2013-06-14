@@ -25,15 +25,30 @@ tac * generateTac(struct a_NODE * astree)
 	tac * auxResult;
 	switch(astree->token)
 	{
-		case LITERAL: 
+		case LITERAL:
 			return newTac(LITERAL, astree->node, 0, 0, 0);
 			break;
-		case '+': 
+		case '+':
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
 			return newTac('+',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
 			break;
+        case '-':
+			aux[0] = generateTac(astree->sons[0]);
+			aux[1] = generateTac(astree->sons[1]);
+			auxResult = appendTac(aux[1],aux[0]);
+			return newTac('-',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+        case '*':
+			aux[0] = generateTac(astree->sons[0]);
+			aux[1] = generateTac(astree->sons[1]);
+			auxResult = appendTac(aux[1],aux[0]);
+			return newTac('*',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+        case '/':
+			aux[0] = generateTac(astree->sons[0]);
+			aux[1] = generateTac(astree->sons[1]);
+			auxResult = appendTac(aux[1],aux[0]);
+			return newTac('/',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
 		default:
 			break;
 	}

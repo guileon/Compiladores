@@ -20,3 +20,4 @@ typedef struct tac_s tac;
 tac * newTac(int type_, hashNode * target_, hashNode * op1_, hashNode op2_, tac_s * prev_);
 tac * appendTac(tac * tac1, tac* tac2);
 tac * generateTac(struct a_NODE * astree);
+void printTac(tac * tac1);

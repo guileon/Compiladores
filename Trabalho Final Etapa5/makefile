@@ -1,7 +1,8 @@
 name = etapa4
-$(name): lex.yy.o main.o table.o parser.tab.o astree.o
-		gcc -o $(name) lex.yy.o main.o table.o parser.tab.o astree.o
-		
+$(name): lex.yy.o main.o table.o parser.tab.o astree.o tac.o
+		gcc -o $(name) lex.yy.o main.o table.o parser.tab.o astree.o tac.o
+tac.o: tac.c
+		gcc -c tac.c
 parser.tab.o: parser.tab.c
 		gcc -c parser.tab.c
 lex.yy.o: lex.yy.c  parser.tab.h

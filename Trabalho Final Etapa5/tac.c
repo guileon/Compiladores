@@ -50,7 +50,16 @@ tac * generateTac(struct a_NODE * astree)
 			auxResult = appendTac(aux[1],aux[0]);
 			return newTac('/',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
 		default:
+			for(i=0 ; i<4 ; i++)
+				generateTac(astree->sons[i]);
 			break;
 	}
 	}
 }
+
+void printTac(tac * tac1)
+{
+	printTac(tac1->prev);
+	printf("Tipo: %d, Target: %s, Op1: %s, Op2: %s\n",tac1->type, tac1->target->value, tac1->op1->value, tac1->op2->value);
+}
+

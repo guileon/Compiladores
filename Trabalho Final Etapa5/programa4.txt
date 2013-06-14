@@ -1,0 +1,24 @@
+word a:'a';
+word v[10]:0 0 0 0 0 0 0 0 0 0; 
+word mat[1000];
+word $pt:0;
+
+word main()
+  word i:'a';
+  bool x:true;
+  bool b:FALSE;
+  {
+  	pt = &a;
+  	if(x == (a == v)) then
+  	{
+ 		 a = i + 3;
+  	}
+  	else
+ 	{
+		a = nada();
+  	};
+  }
+word nada ()
+  {
+	return a;
+  }

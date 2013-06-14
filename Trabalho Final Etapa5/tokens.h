@@ -78,6 +78,8 @@
 #define ID_POINTER 524
 #define ID_FUNC 525
 
+#define TEMP 526
+#define LABEL 527
 //#define TOKEN_ERROR   1000
 
 /* END OF FILE */

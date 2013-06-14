@@ -69,6 +69,9 @@ struct HNODE *table_insertTable(char *text, int type)
 		case SYMBOL_IDENTIFIER:	
 				new->value = addTerminator(text);
 				break;
+		default:
+				new->value = text;
+				break;
 	}
 	new->next = table[add];
 	
@@ -160,5 +163,8 @@ int nextTempNumber = 0;
 
 struct HNODE * newTemp(int type)
 {
-	
+	char[20] tempName;
+	sprintf(tempName,"___TEMP___%d",nexTempNumber);
+	nextTempNumber++;
+	return table_insertTable(tempName,type);
 }

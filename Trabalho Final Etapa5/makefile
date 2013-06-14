@@ -18,4 +18,4 @@ parser.tab.c parser.tab.h: parser.y
 lex.yy.c: scanner.l
 		flex scanner.l
 clean:
-		rm main.o lex.yy.o lex.yy.c table.o parser.tab.o astree.o parser.tab.c parser.tab.h $(name) 
+		del main.o lex.yy.o lex.yy.c table.o parser.tab.o astree.o parser.tab.c parser.tab.h $(name).exe

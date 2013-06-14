@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "parser.tab.h"
 #include "table.h"
-#include "parser.tab.h"
 #include "tokens.h"
 #define SYMBOL_UNDEFINED 0
 #define SYMBOL_LIT_INTEGER 1
@@ -24,6 +23,7 @@ struct a_NODE{
 
 char *filename;
 
+void doAll(struct a_NODE * node);
 
 void a_setFile(char* file);
 
@@ -41,3 +41,4 @@ void printNode(struct a_NODE * node_p);
 int isBoolean(struct a_NODE *node);
 int isInt(struct a_NODE *node);
 int isPt(struct a_NODE *node);
+void semanticEvaluation(struct a_NODE *node);

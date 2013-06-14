@@ -163,8 +163,8 @@ int nextTempNumber = 0;
 
 struct HNODE * newTemp(int type)
 {
-	char[20] tempName;
-	sprintf(tempName,"___TEMP___%d",nexTempNumber);
+	char tempName[20];
+	sprintf(tempName,"___TEMP___%d",nextTempNumber);
 	nextTempNumber++;
 	return table_insertTable(tempName,type);
 }

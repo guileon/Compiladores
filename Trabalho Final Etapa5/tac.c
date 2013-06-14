@@ -1,6 +1,6 @@
 #include "tac.h"
 
-tac * newTac(int type_, hashNode * target_, hashNode * op1_, hashNode op2_, tac_s * prev_)
+tac * newTac(int type_, hashNode * target_, hashNode * op1_, hashNode * op2_, tac * prev_)
 {
 	tac * new = (tac*)calloc(1,sizeof(tac));
 	new->type = type_;
@@ -21,6 +21,7 @@ tac * appendTac(tac * tac1, tac* tac2)
 tac * generateTac(struct a_NODE * astree)
 {
 	if(astree){
+<<<<<<< HEAD
         tac * aux[4];
         tac * auxResult;
         switch(astree->token)
@@ -54,6 +55,42 @@ tac * generateTac(struct a_NODE * astree)
                     generateTac(astree->sons[i]);
                 break;
         }
+=======
+	tac * aux[4];
+	tac * auxResult;
+	int i;
+	switch(astree->token)
+	{
+		case LIT_INTEGER:
+			return newTac(astree->token, astree->node, NULL, NULL, NULL);
+			break;
+		case '+':
+			aux[0] = generateTac(astree->sons[0]);
+			aux[1] = generateTac(astree->sons[1]);
+			auxResult = appendTac(aux[1],aux[0]);
+			return newTac('+',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+			break;
+        case '-':
+			aux[0] = generateTac(astree->sons[0]);
+			aux[1] = generateTac(astree->sons[1]);
+			auxResult = appendTac(aux[1],aux[0]);
+			return newTac('-',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+        case '*':
+			aux[0] = generateTac(astree->sons[0]);
+			aux[1] = generateTac(astree->sons[1]);
+			auxResult = appendTac(aux[1],aux[0]);
+			return newTac('*',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+        case '/':
+			aux[0] = generateTac(astree->sons[0]);
+			aux[1] = generateTac(astree->sons[1]);
+			auxResult = appendTac(aux[1],aux[0]);
+			return newTac('/',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+		default:
+			for(i=0 ; i<4 ; i++)
+				generateTac(astree->sons[i]);
+			break;
+	}
+>>>>>>> ARRUMEI OS ERROS
 	}
 }
 

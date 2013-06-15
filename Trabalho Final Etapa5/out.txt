@@ -1,1 +1,1 @@
-word xx:0;word a(){return 1 ;} word main(){output a() ;output b() ;output c() ;return 1 ;} word b(){return 1 ;} 
+word a:5;word b:6;word main(){a=aa()+bb() ;} 

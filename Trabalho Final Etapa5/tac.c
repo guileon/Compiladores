@@ -13,8 +13,12 @@ tac * newTac(int type_, hashNode * target_, hashNode * op1_, hashNode * op2_, ta
 tac * appendTac(tac * tac1, tac* tac2)
 {
 	tac * aux;
+	if(tac1 == NULL)
+        return tac2;
+    if(tac2 == NULL)
+        return tac1;
 	for(aux = tac2 ; aux->prev ; aux = aux->prev);
-	aux->prev = tac1;
+        aux->prev = tac1;
 	return tac2;
 }
 
@@ -33,7 +37,9 @@ tac * generateTac(struct a_NODE * astree)
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
+            fprintf(stderr, "generate4\n");
 			return newTac('+',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+            fprintf(stderr, "generate5\n");
 			break;
         case '-':
 			aux[0] = generateTac(astree->sons[0]);
@@ -57,6 +63,7 @@ tac * generateTac(struct a_NODE * astree)
 	}
 	}
 }
+
 
 void printTac(tac * tac1)
 {

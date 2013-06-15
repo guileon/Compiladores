@@ -1,0 +1,7 @@
+word a:5;
+word b:6;
+
+word main()
+  {
+	a = a + b;
+  }

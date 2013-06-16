@@ -75,7 +75,13 @@ void printTac(tac * tac1)
 	if(tac1)
 	{
 		printTac(tac1->prev);
-		printf("Tipo: %d, Target: %s, Op1: %s, Op2: %s\n",tac1->type, tac1->target->value, tac1->op1->value, tac1->op2->value);
+		printf("Tipo: %d |",tac1->type);
+		if(tac1->target)
+			printf("Target: %s |",tac1->target->value);
+		if(tac1->op1)
+			printf("OP1: %s |",tac1->op1->value);
+		if(tac1->op2)
+			printf("OP2: %s |",tac1->op2->value);
 	}
 }
 

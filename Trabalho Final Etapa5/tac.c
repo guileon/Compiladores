@@ -24,6 +24,7 @@ tac * appendTac(tac * tac1, tac* tac2)
 
 tac * generateTac(struct a_NODE * astree)
 {
+	
 	if(astree){
 	tac * retvalue;
 	tac * aux[4];
@@ -33,11 +34,9 @@ tac * generateTac(struct a_NODE * astree)
 	switch(astree->token)
 	{
 		case LIT_INTEGER:
-			printf("LIT_INTEGER: %s\n",astree->node->value);
 			retvalue = newTac(astree->token, astree->node, NULL, NULL, NULL);
 			break;
 		case '+':
-			printf("+\n");
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
@@ -67,6 +66,7 @@ tac * generateTac(struct a_NODE * astree)
 	}
 		return retvalue;
 	}
+	return NULL;
 }
 
 
@@ -75,13 +75,14 @@ void printTac(tac * tac1)
 	if(tac1)
 	{
 		printTac(tac1->prev);
-		printf("Tipo: %d |",tac1->type);
+		fprintf(stderr,"Tipo: %c |",tac1->type);
 		if(tac1->target)
-			printf("Target: %s |",tac1->target->value);
+			fprintf(stderr,"Target: %s |",tac1->target->value);
 		if(tac1->op1)
-			printf("OP1: %s |",tac1->op1->value);
+			fprintf(stderr,"OP1: %s |",tac1->op1->value);
 		if(tac1->op2)
-			printf("OP2: %s |",tac1->op2->value);
+			fprintf(stderr,"OP2: %s |",tac1->op2->value);
+		printf("\n");
 	}
 }
 

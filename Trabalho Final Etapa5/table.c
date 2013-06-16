@@ -42,20 +42,20 @@ struct HNODE *table_insertTable(char *text, int type)
 	new->args = NULL;
 	switch(type)
 	{
-		case SYMBOL_UNDEFINED: 
+		case SYMBOL_UNDEFINED:
 				break;
 		case SYMBOL_LIT_INTEGER:
 				new->value = addTerminator(text);
 				break;
-		case SYMBOL_LIT_FLOATING: 
+		case SYMBOL_LIT_FLOATING:
 				break;
-		case SYMBOL_LIT_TRUE:	
+		case SYMBOL_LIT_TRUE:
 				new->value = "TRUE";
 				break;
 		case SYMBOL_LIT_FALSE:
 				new->value = "FALSE";
 				break;
-		case SYMBOL_LIT_CHAR:	
+		case SYMBOL_LIT_CHAR:
 				new->value = (char*)calloc(2,sizeof(char));
 				new->value[0] = text[1];
 				new->value[1] = '\0';
@@ -66,7 +66,7 @@ struct HNODE *table_insertTable(char *text, int type)
 					new->value[j-1]=text[j];
 				new->value[strlen(text)-2]='\0';
 				break;
-		case SYMBOL_IDENTIFIER:	
+		case SYMBOL_IDENTIFIER:
 				new->value = addTerminator(text);
 				break;
 		default:
@@ -74,9 +74,9 @@ struct HNODE *table_insertTable(char *text, int type)
 				break;
 	}
 	new->next = table[add];
-	
-	
-	
+
+
+
 	if(!table_isInTable(text))
 	{
 		table[add] = new;
@@ -85,7 +85,7 @@ struct HNODE *table_insertTable(char *text, int type)
 	{
 		return table_find(text);
 	}
-		
+
 	return new;
 
 }
@@ -98,7 +98,7 @@ struct HNODE *table_find(char * text)
 	for(node=table[i]; node && strcmp(node->value,text)!=0 ; node = node->next);
 	retNode=node;
 	return retNode;
-	
+
 }
 
 int table_isInTable(char* text)
@@ -106,7 +106,7 @@ int table_isInTable(char* text)
 	int i;
 	int retValue=0;
 	struct HNODE* node;
-	
+
 	for (i=0; i<HASH_SIZE; i++)
 		for(node=table[i]; node; node = node->next)
 			{
@@ -138,7 +138,7 @@ void table_print(void)
 				case SYMBOL_LIT_CHAR: printf("Valor: %s | Tipo: CHAR\n",node->value); break;
 				case SYMBOL_LIT_STRING: printf("Valor: %s | Tipo: STRING\n",node->value); break;
 				case ID_SCALAR: printf("Valor: %s | Scalar %d\n",node->value,node->dataType); break;
-				case ID_FUNC: printf("Valor: %s | Function %d | ",node->value,node->dataType); 
+				case ID_FUNC: printf("Valor: %s | Function %d | ",node->value,node->dataType);
 					for(aux = node->args ; aux != NULL ; aux = aux->next)	printf(" %d, ",aux->v); printf("\n");
 					break;
 				case ID_VECTOR: printf("Valor: %s | Vector %d\n",node->value,node->dataType); break;
@@ -158,7 +158,7 @@ struct intList * insertInIntList(int value, struct intList * oldList)
 	new->next = NULL;
 	if(oldList)
 	{
-		for(aux = oldList ; aux->next != NULL ; aux = aux->next);	
+		for(aux = oldList ; aux->next != NULL ; aux = aux->next);
 		aux->next = new;
 		return oldList;
 	}
@@ -172,6 +172,7 @@ struct HNODE * newTemp(int type)
 	struct HNODE * aux;
 	char tempName[20];
 	sprintf(tempName,"___TEMP___%d",nextTempNumber);
+	//fprintf(stderr, "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%s", tempName);
 	nextTempNumber++;
 	aux = table_insertTable(tempName,type);
 	return aux;

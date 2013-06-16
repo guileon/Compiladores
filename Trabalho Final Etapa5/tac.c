@@ -24,7 +24,7 @@ tac * appendTac(tac * tac1, tac* tac2)
 
 tac * generateTac(struct a_NODE * astree)
 {
-	
+    tac * childTac[4];
 	if(astree){
 	tac * retvalue;
 	tac * aux[4];
@@ -40,28 +40,33 @@ tac * generateTac(struct a_NODE * astree)
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
-			retvalue = newTac('+',auxNode,aux[0]->target,aux[1]->target,auxResult);
+			retvalue = newTac('+',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+			//printTac(retvalue);
 			break;
         case '-':
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
 			retvalue = newTac('-',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+			break;
         case '*':
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
 			retvalue = newTac('*',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+			break;
         case '/':
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
 			retvalue = newTac('/',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+			break;
 		default:
-			
 			for(i=0 ; i<4 ; i++)
-				generateTac(astree->sons[i]);
-			retvalue = appendTac(generateTac(astree->sons[0]),appendTac(generateTac(astree->sons[1]),appendTac(generateTac(astree->sons[2]),generateTac(astree->sons[3]))));
+				childTac[i] = generateTac(astree->sons[i]);
+			//retvalue = appendTac(generateTac(astree->sons[0]),appendTac(generateTac(astree->sons[1]),appendTac(generateTac(astree->sons[2]),generateTac(astree->sons[3]))));
+			retvalue = appendTac(childTac[0], appendTac(childTac[1], appendTac(childTac[2], childTac[3])));
+
 			break;
 	}
 		return retvalue;
@@ -77,7 +82,7 @@ void printTac(tac * tac1)
 		printTac(tac1->prev);
 		fprintf(stderr,"Tipo: %c |",tac1->type);
 		if(tac1->target)
-			fprintf(stderr,"Target: %s |",tac1->target->value);
+            fprintf(stderr,"Target: %s |",tac1->target->value);
 		if(tac1->op1)
 			fprintf(stderr,"OP1: %s |",tac1->op1->value);
 		if(tac1->op2)

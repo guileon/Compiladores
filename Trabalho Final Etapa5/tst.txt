@@ -1,5 +1,5 @@
-word a:0;
-word b:0;
+word a:5;
+word b:10;
 
 word main()
   {

@@ -15,7 +15,8 @@ void doAll(struct a_NODE * node)
 {
 	printNode(node);
 	semanticEvaluation(node);
-	printTac(generateTac(node));
+	generateTac(node);
+	//printTac(generateTac(node));
 }
 
 void a_setFile(char* file)

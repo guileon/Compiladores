@@ -7,7 +7,7 @@ tac * newTac(int type_, hashNode * target_, hashNode * op1_, hashNode * op2_, ta
 	new->target = target_;
 	new->op1 = op1_;
 	new->op2 = op2_;
-	new->prev = prev_;
+	new->prev = prev_;\
 	return new;
 }
 tac * appendTac(tac * tac1, tac* tac2)
@@ -25,51 +25,47 @@ tac * appendTac(tac * tac1, tac* tac2)
 tac * generateTac(struct a_NODE * astree)
 {
 	if(astree){
+	tac * retvalue;
 	tac * aux[4];
 	tac * auxResult;
+	struct HNODE * auxNode;
 	int i;
 	switch(astree->token)
 	{
 		case LIT_INTEGER:
-			return newTac(astree->token, astree->node, NULL, NULL, NULL);
+			printf("LIT_INTEGER: %s\n",astree->node->value);
+			retvalue = newTac(astree->token, astree->node, NULL, NULL, NULL);
 			break;
 		case '+':
+			printf("+\n");
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
-			if(!generateTac(astree->sons[0]))
-				printf("!generateTac(astree->sons[0]);\n");
-			if(!aux[0]->target)
-				printf("!aux[0]->target\n");
-			if(!aux[1]->target)
-				printf("!aux[1]->target\n");
-            fprintf(stderr, "generate4\n");
-			
-			return newTac('+',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+			retvalue = newTac('+',auxNode,aux[0]->target,aux[1]->target,auxResult);
 			break;
         case '-':
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
-			return newTac('-',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+			retvalue = newTac('-',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
         case '*':
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
-			return newTac('*',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+			retvalue = newTac('*',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
         case '/':
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
-			return newTac('/',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
+			retvalue = newTac('/',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
 		default:
 			
 			for(i=0 ; i<4 ; i++)
 				generateTac(astree->sons[i]);
-			printf("returning NULL...\n");
-			return appendTac(generateTac(astree->sons[0]),appendTac(generateTac(astree->sons[1]),appendTac(generateTac(astree->sons[2]),generateTac(astree->sons[3]))));
+			retvalue = appendTac(generateTac(astree->sons[0]),appendTac(generateTac(astree->sons[1]),appendTac(generateTac(astree->sons[2]),generateTac(astree->sons[3]))));
 			break;
 	}
+		return retvalue;
 	}
 }
 

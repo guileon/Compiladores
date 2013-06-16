@@ -1,1 +1,1 @@
-word a:5;word b:6;word main(){a=aa()+bb() ;} 
+word a:0;word b:0;word main(){a=1+2 ;} 

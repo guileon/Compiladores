@@ -76,10 +76,16 @@ struct HNODE *table_insertTable(char *text, int type)
 	new->next = table[add];
 	
 	
+	
 	if(!table_isInTable(text))
+	{
 		table[add] = new;
+	}
 	else
+	{
 		return table_find(text);
+	}
+		
 	return new;
 
 }
@@ -89,7 +95,7 @@ struct HNODE *table_find(char * text)
 	struct HNODE* node;
 	struct HNODE* retNode;
 	i = table_address(text);
-	for(node=table[i]; strcmp(node->value,text)!=0 ; node = node->next);
+	for(node=table[i]; node && strcmp(node->value,text)!=0 ; node = node->next);
 	retNode=node;
 	return retNode;
 	
@@ -163,8 +169,10 @@ int nextTempNumber = 0;
 
 struct HNODE * newTemp(int type)
 {
+	struct HNODE * aux;
 	char tempName[20];
 	sprintf(tempName,"___TEMP___%d",nextTempNumber);
 	nextTempNumber++;
-	return table_insertTable(tempName,type);
+	aux = table_insertTable(tempName,type);
+	return aux;
 }

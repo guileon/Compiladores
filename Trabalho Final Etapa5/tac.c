@@ -37,9 +37,15 @@ tac * generateTac(struct a_NODE * astree)
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
+			if(!generateTac(astree->sons[0]))
+				printf("!generateTac(astree->sons[0]);\n");
+			if(!aux[0]->target)
+				printf("!aux[0]->target\n");
+			if(!aux[1]->target)
+				printf("!aux[1]->target\n");
             fprintf(stderr, "generate4\n");
+			
 			return newTac('+',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
-            fprintf(stderr, "generate5\n");
 			break;
         case '-':
 			aux[0] = generateTac(astree->sons[0]);
@@ -57,8 +63,11 @@ tac * generateTac(struct a_NODE * astree)
 			auxResult = appendTac(aux[1],aux[0]);
 			return newTac('/',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
 		default:
+			
 			for(i=0 ; i<4 ; i++)
 				generateTac(astree->sons[i]);
+			printf("returning NULL...\n");
+			return appendTac(generateTac(astree->sons[0]),appendTac(generateTac(astree->sons[1]),appendTac(generateTac(astree->sons[2]),generateTac(astree->sons[3]))));
 			break;
 	}
 	}
@@ -67,7 +76,10 @@ tac * generateTac(struct a_NODE * astree)
 
 void printTac(tac * tac1)
 {
-	printTac(tac1->prev);
-	printf("Tipo: %d, Target: %s, Op1: %s, Op2: %s\n",tac1->type, tac1->target->value, tac1->op1->value, tac1->op2->value);
+	if(tac1)
+	{
+		printTac(tac1->prev);
+		printf("Tipo: %d, Target: %s, Op1: %s, Op2: %s\n",tac1->type, tac1->target->value, tac1->op1->value, tac1->op2->value);
+	}
 }
 

@@ -1,0 +1,20 @@
+word aVar : 4;
+byte aVar2 : 2;
+bool myVar : TRUE;
+
+word main (word a, byte b)
+word i:1;
+byte c:5;
+bool d:FALSE;
+{
+	a = 1 + 2;
+	d = TRUE;
+	
+	if (d) then
+		a = 2;
+	
+	loop (TRUE)
+	{
+		a = 1 + 2;
+	};
+}

@@ -1,0 +1,75 @@
+
+programa = 
+  *globaldeclaraçao;
+  *funçao
+ 
+globaldeclaraçao =
+  tipo identificador:identificador;
+  | tipo $identificador:identificador;
+  | tipo identificador[numero];
+  | tipo identificador[numero]: lista;
+  
+lista =
+  valor lista
+  | 
+
+tipo =
+  word
+  | byte
+  | bool
+  
+valor =
+  numero
+  | ascii
+  | string
+  | bool 
+
+funçao =
+  tipo identificador()
+  *localdeclaraçao
+  bloco
+  
+localdeclaraçao =
+  tipo identificador:valor;
+  | tipo $identificador:valor;
+  
+bloco =
+  {
+  *comando;
+  }
+  
+comando =
+  variavel = expressao
+  | vetor[expressao] = expressao
+  | input variavel
+  | output listout
+  | return expressao;
+  | if (expressao) then comando
+  | if (expressao) then comando else comando
+  | loop (expressao) comando
+  
+listout =
+	string, listout
+	| expressao, listout
+	| string
+	| expressao
+
+expressao =
+  identificador
+  | identificador[expressao]
+  | valor
+  | (expressao)
+  | expressao operador expressao
+  | identificador(expressao)
+  | *identificador
+  | $identificador
+  
+  
+  
+  
+  listout: LIT_STRING ',' listout
+	| exp ',' listout
+	| LIT_STRING
+	| exp
+	;
+  

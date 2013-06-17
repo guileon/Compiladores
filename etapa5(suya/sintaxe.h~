@@ -1,0 +1,9 @@
+#ifndef _sintaxe_h_
+#define _sintaxe_h_
+
+#include "declarations.h"
+
+BOOL Verifica(ASTREE * node);
+void imprimeDeclaracoes();
+
+#endif 

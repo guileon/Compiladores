@@ -1,0 +1,81 @@
+#include <stdio.h>
+
+#ifndef ASTREE_HEADER
+#define ASTREE_HEADER
+
+#include "hash.h"
+
+#define MAX_SONS 5
+#define ASTREE_ADD 3
+#define ASTREE_SUB 4
+#define ASTREE_MUL 5
+#define ASTREE_DIV 6
+#define ASTREE_VARDEC_VAR 7
+#define ASTREE_VARDEC_PTR 8
+#define ASTREE_VARDEC_VECTOR 9
+#define ASTREE_VARDEC_VECTOR_INITIALIZED 10
+#define ASTREE_IDENTIFIER 11
+#define ASTREE_INTEGERLIT 12
+#define ASTREE_LISTLIT	13
+#define ASTREE_VARLIT_INTEGER 14
+#define ASTREE_VARLIT_FALSE 15
+#define ASTREE_VARLIT_TRUE 16
+#define ASTREE_VARLIT_CHAR 17
+#define ASTREE_VARLIT_STRING 18
+#define ASTREE_VARTYPE_WORD 19
+#define ASTREE_VARTYPE_BOOL 20
+#define ASTREE_VARTYPE_BYTE 21
+
+#define ASTREE_ARG_LIST	23
+#define ASTREE_LIST_LOCAL 24
+#define ASTREE_BODY 25
+#define ASTREE_FUNC 26
+#define ASTREE_PROGRAM 27
+#define ASTREE_LISTARG 28
+#define ASTREE_LISTARG_VIRG 29
+#define ASTREE_LOCALDEC_VAR 30
+#define ASTREE_LOCALDEC_PTR 31
+#define ASTREE_LISTCOM 32
+#define ASTREE_COM_ATR 33
+#define ASTREE_COM_ATR_VECTOR 34
+#define ASTREE_COM_INPUT 35
+#define ASTREE_COM_OUTPUT 36
+#define ASTREE_COM_RETURN 37
+#define ASTREE_COM_IFTHEN 38
+#define ASTREE_COM_IFTHENELSE 39
+#define ASTREE_COM_LOOP 40
+#define ASTREE_LISTOUT 41
+#define ASTREE_EXP_VECTOR 42
+#define ASTREE_EXP_PARENTESES 43
+
+#define ASTREE_EXP_LESSER 44
+#define ASTREE_EXP_GREATER 45
+#define ASTREE_EXP_SINGLEEQ 46
+#define ASTREE_EXP_NOT 47
+#define ASTREE_EXP_LE 48
+#define ASTREE_EXP_GE 49
+#define ASTREE_EXP_EQ 50
+#define ASTREE_EXP_NE 51
+#define ASTREE_EXP_AND 52
+#define ASTREE_EXP_OR 53
+#define ASTREE_EXP_FUNCALL 54
+#define ASTREE_EXP_ADDR 55
+#define ASTREE_EXP_PTRVALUE 56
+#define ASTREE_LISTPARAM 57
+
+typedef struct astree_node
+{
+	int lineNumber;	
+	int type;
+	HASH_NODE * hashNode;
+	struct astree_node * son[MAX_SONS];
+} ASTREE;
+
+ASTREE *astreeCreate(int type, ASTREE*s0, ASTREE*s1, ASTREE*s2, ASTREE*s3, ASTREE*s4, HASH_NODE * hashNode);
+
+void astreePrintTree(ASTREE *node);
+void astreePrintToFile(ASTREE *node, char * fileName);
+
+
+#endif
+

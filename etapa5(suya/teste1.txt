@@ -1,0 +1,4 @@
+word a:0;
+word $b:1;
+word c[2];
+word d[3]: 0 0 0;

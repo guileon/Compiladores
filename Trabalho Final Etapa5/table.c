@@ -70,7 +70,7 @@ struct HNODE *table_insertTable(char *text, int type)
 				new->value = addTerminator(text);
 				break;
 		default:
-				new->value = text;
+				new->value = addTerminator(text);
 				break;
 	}
 	new->next = table[add];
@@ -83,9 +83,11 @@ struct HNODE *table_insertTable(char *text, int type)
 	}
 	else
 	{
-		return table_find(text);
+		if(!table_find(text))
+			table[add] = new;
+		else
+			return table_find(text);
 	}
-
 	return new;
 
 }
@@ -143,6 +145,7 @@ void table_print(void)
 					break;
 				case ID_VECTOR: printf("Valor: %s | Vector %d\n",node->value,node->dataType); break;
 				case ID_POINTER:printf("Valor: %s | Pointer %d\n",node->value,node->dataType); break;
+				default: printf("Valor: %s\n",node->value);break;
 			}
 		}
 	}
@@ -172,7 +175,6 @@ struct HNODE * newTemp(int type)
 	struct HNODE * aux;
 	char tempName[20];
 	sprintf(tempName,"___TEMP___%d",nextTempNumber);
-	//fprintf(stderr, "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%s", tempName);
 	nextTempNumber++;
 	aux = table_insertTable(tempName,type);
 	return aux;

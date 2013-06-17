@@ -40,6 +40,7 @@ tac * generateTac(struct a_NODE * astree)
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
 			auxResult = appendTac(aux[1],aux[0]);
+			//auxNode = newTemp(TEMP);
 			retvalue = newTac('+',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
 			//printTac(retvalue);
 			break;

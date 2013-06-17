@@ -1,10 +1,13 @@
 word a:5;
 word b:10;
-
+word $pt:10;
 word main(word x)
+word kk:0;
+word kk2:1;
   {
 	input a;
 	output "oio oi",a;
 	a = main(a);
 	return a + 2;
+	*pt = 2;
   }

@@ -1,1 +1,1 @@
-word a:5;word b:10;word main(word x){input a ;output "oio oi",aa() ;a=main(aa()) ;return aa()+2 ;} 
+word a:5;word b:10;word $pt:10;word main(word x)word kk:0;word kk2:1;{input a ;output "oio oi",aa() ;a=main(aa()) ;return aa()+2 ;*pt=2 ;} 

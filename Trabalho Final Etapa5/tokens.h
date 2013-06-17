@@ -84,6 +84,7 @@
 #define TAC_JMP 528
 #define TAC_IFZ 529
 #define TAC_LABEL 530
+#define TAC_INDIRECT_ATT 531
 //#define TOKEN_ERROR   1000
 
 /* END OF FILE */

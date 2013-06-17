@@ -87,16 +87,21 @@ tac * generateTac(struct a_NODE * astree)
 			break;
 		// DECLARATIONS
 		case DECLARATION:
+			aux[0] = generateTac(astree->sons[1]);
+			aux[1] = generateTac(astree->sons[2]);
+			auxResult = appendTac(aux[1],aux[0]);
+			retvalue = newTac('=',aux[0]->target,aux[1]->target,NULL,auxResult);
+			break;
 		case DECLARATION_POINTER:
 			aux[0] = generateTac(astree->sons[1]);
 			aux[1] = generateTac(astree->sons[2]);
 			auxResult = appendTac(aux[1],aux[0]);
-			retvalue = newTac('=',aux[0]->target,aux[1]->target,0,auxResult);
+			retvalue = newTac(TAC_INDIRECT_ATT,aux[0]->target,aux[1]->target,NULL,auxResult);
 			break;
 		case FUNC_DECLARATION:
 			aux[0] = generateTac(astree->sons[3]->sons[0]);
 			aux[1] = generateTac(astree->sons[3]->sons[1]);
-			auxResult = appendTac(aux[1],aux[0]);
+			auxResult = appendTac(aux[0],aux[1]);
 			retvalue = appendTac(newTac(TAC_LABEL,astree->sons[1]->node,NULL,NULL,NULL),auxResult);
 			break;
 		// FLOW CONTROL

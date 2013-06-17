@@ -54,7 +54,7 @@ void printTokens(int t)
 	case TAC_JMP: fprintf(stderr,"JMP");break;
 	case TAC_IFZ : fprintf(stderr,"IFZ");break;
 	case TAC_LABEL: fprintf(stderr,"LABEL");break;
-
+	case TAC_INDIRECT_ATT: fprintf(stderr,"TAC_INDIRECT_ATT");break;
 
 	case KW_WORD: fprintf(stderr,"KW_WORD");break;      
 	case KW_BOOL: fprintf(stderr,"KW_BOOL");break;      

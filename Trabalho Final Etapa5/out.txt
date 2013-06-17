@@ -1,1 +1,1 @@
-word a:5;bool x:TRUE;word main(){loop(xx())a=2  ;} 
+word a:5;word b:10;word main(){input a ;output "oio oi" ;} 

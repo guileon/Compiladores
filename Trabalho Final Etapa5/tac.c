@@ -33,6 +33,12 @@ tac * generateTac(struct a_NODE * astree)
 	int i;
 	switch(astree->token)
 	{
+	    case OUTPUT:
+            retvalue = appendTac(generateTac(astree->sons[0]), newTac(KW_OUTPUT, NULL, NULL, NULL, NULL));
+            break;
+        case INPUT:
+            retvalue = newTac(KW_INPUT,astree->sons[0]->node, NULL, NULL, NULL);
+            break;
 		// LITERALS + IDENTIFIER
 		case LIT_INTEGER:
 		case LIT_CHAR:
@@ -94,9 +100,9 @@ tac * generateTac(struct a_NODE * astree)
 		case '=':
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
-			
+
 			auxResult = appendTac(aux[1],aux[0]);
-			
+
 			retvalue = newTac('=',aux[0]->target,aux[1]->target,0,auxResult);
 			break;
 		// ETC
@@ -117,7 +123,7 @@ tac * tacIf(tac * ifTac, tac * thenTac, tac * elseTac)
 	tac * result;
 	struct HNODE * testResult = ifTac->target;
 	struct HNODE * elseLabel = newTemp(LABEL);
-	
+
 	tac * ifThen = appendTac(appendTac(ifTac,newTac(TAC_IFZ,elseLabel,testResult,NULL,NULL)),thenTac);
 
 	if(elseTac == NULL)
@@ -128,7 +134,7 @@ tac * tacIf(tac * ifTac, tac * thenTac, tac * elseTac)
 	{
 		result = appendTac( ifThen,appendTac( newTac( TAC_LABEL,elseLabel,NULL,NULL,NULL ),elseTac ) );
 	}
-	return result;	
+	return result;
 }
 
 tac * tacLoop(tac * ifTac, tac * thenTac)
@@ -137,7 +143,7 @@ tac * tacLoop(tac * ifTac, tac * thenTac)
 	struct HNODE * testResult = ifTac->target;
 	struct HNODE * beginLoop = newTemp(LABEL);
 	struct HNODE * endLoop = newTemp(LABEL);
-	
+
 
 	tac * loop = appendTac(newTac(TAC_IFZ,endLoop,testResult,NULL,NULL),appendTac(thenTac,newTac(TAC_JMP,beginLoop,NULL,NULL,NULL)));
 
@@ -163,4 +169,4 @@ void printTac(tac * tac1)
 		printf("\n");
 	}
 }
-	
+

@@ -33,9 +33,26 @@ tac * generateTac(struct a_NODE * astree)
 	int i;
 	switch(astree->token)
 	{
+		// LITERALS + IDENTIFIER
 		case LIT_INTEGER:
 			retvalue = newTac(astree->token, astree->node, NULL, NULL, NULL);
 			break;
+		case LIT_CHAR:
+			retvalue = newTac(astree->token, astree->node, NULL, NULL, NULL);
+			break;
+		case LIT_TRUE:
+			retvalue = newTac(astree->token, astree->node, NULL, NULL, NULL);
+			break;
+		case LIT_FALSE:
+			retvalue = newTac(astree->token, astree->node, NULL, NULL, NULL);
+			break;
+		case TK_IDENTIFIER:
+			retvalue = newTac(astree->token, astree->node, NULL, NULL, NULL);
+			break;
+		case LIT_STRING:
+			retvalue = newTac(astree->token, astree->node, NULL, NULL, NULL);
+			break;
+		// EXPRESSIONS
 		case '+':
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
@@ -62,6 +79,10 @@ tac * generateTac(struct a_NODE * astree)
 			auxResult = appendTac(aux[1],aux[0]);
 			retvalue = newTac('/',newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
 			break;
+		// DECLARATIONS
+		// FLOW CONTROL
+		// ATTRIBUTION
+		// ETC
 		default:
 			for(i=0 ; i<4 ; i++)
 				childTac[i] = generateTac(astree->sons[i]);

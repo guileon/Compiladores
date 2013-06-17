@@ -1,7 +1,0 @@
-word a:5;
-word b:10;
-
-word main()
-  {
-	a = 1 + 2 + 3;
-  }

@@ -1,8 +1,0 @@
-word a:5;
-bool x:TRUE;
-word main()
-  {
-	if(x)then
-		a = 2;
-
-  }

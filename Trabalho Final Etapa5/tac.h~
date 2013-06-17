@@ -19,7 +19,6 @@ struct tac_s{
 };
 
 typedef struct tac_s tac;
-tac * tacLoop(tac * ifTac, tac * thenTac);
 tac * tacIf(tac * ifTac, tac * thenTac, tac * elseTac);
 tac * newTac(int type_, hashNode * target_, hashNode * op1_, hashNode * op2_, tac * prev_);
 tac * appendTac(tac * tac1, tac* tac2);

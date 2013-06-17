@@ -1,0 +1,8 @@
+word a:5;
+bool x:TRUE;
+word main()
+  {
+	loop(x)
+		a = 2;
+
+  }

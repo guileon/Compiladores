@@ -43,7 +43,6 @@ tac * generateTac(struct a_NODE * astree)
 			retvalue = newTac(astree->token, astree->node, NULL, NULL, NULL);
 			break;
 		// EXPRESSIONS
-		case '&':
 		case POINTER:
 			aux[0] = generateTac(astree->sons[0]);
 			retvalue = newTac(astree->token,newTemp(TEMP),aux[0]->target,NULL,aux[0]);

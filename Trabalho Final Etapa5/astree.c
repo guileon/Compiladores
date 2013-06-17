@@ -11,6 +11,83 @@
 
 int hasError =0;
 
+
+void printTokens(int t)
+{
+	switch(t)
+	{
+	case LE: fprintf(stderr,"LE"); break;
+	case GE: fprintf(stderr,"GE");break;
+	case EQ: fprintf(stderr,"EQ");break;
+	case NE: fprintf(stderr,"NE");break;
+	case AND: fprintf(stderr,"AND");break;
+	case OR: fprintf(stderr,"OR");break;
+
+	case IF_THEN: fprintf(stderr,"IF_THEN");break;
+	case IF_THEN_ELSE: fprintf(stderr,"IF_THEN_ELSE");break;
+	case LOOP: fprintf(stderr,"LOOP");break;
+
+	case FUNC_DECLARATION: fprintf(stderr,"FUNC_DECLARATION");break;
+	case DECLARATION:fprintf(stderr,"DECLARATION"); break;
+	case DECLARATION_POINTER: fprintf(stderr,"DECLARATION_POINTER");break;
+	case DECLARATION_VEC: fprintf(stderr,"DECLARATION_VEC");break;
+	case DECLARATION_VEC_INIT: fprintf(stderr,"DECLARATION_VEC_INIT");break;
+	case OUTPUT: fprintf(stderr,"OUTPUT");break;
+	case INPUT: fprintf(stderr,"INPUT");break;
+	case RETURN: fprintf(stderr,"RETURN");break;
+	case VECCALL: fprintf(stderr,"VECCAL");break;
+	case POINTER: fprintf(stderr,"POINTER");break;
+	case NORMAL : fprintf(stderr,"NORMAL");break;
+
+	case ID_WORD: fprintf(stderr,"WORD");break;
+	case ID_BYTE: fprintf(stderr,"BYTE");break;
+	case ID_BOOL: fprintf(stderr,"BOOL");break;
+
+	case ID_VECTOR: fprintf(stderr,"VECTOR");break;
+	case ID_SCALAR: fprintf(stderr,"SCALAR");break; 
+	case ID_POINTER: fprintf(stderr,"POINTER");break;
+	case ID_FUNC: fprintf(stderr,"FUNC");break;
+
+	case TEMP: fprintf(stderr,"TEMP");break;
+	case LABEL: fprintf(stderr,"LABEL");break;
+
+	case TAC_JMP: fprintf(stderr,"JMP");break;
+	case TAC_IFZ : fprintf(stderr,"IFZ");break;
+	case TAC_LABEL: fprintf(stderr,"LABEL");break;
+
+
+	case KW_WORD: fprintf(stderr,"KW_WORD");break;      
+	case KW_BOOL: fprintf(stderr,"KW_BOOL");break;      
+	case KW_BYTE: fprintf(stderr,"KW_BYTE");break;      
+	case KW_IF: fprintf(stderr,"KW_IF");break;        
+	case KW_THEN: fprintf(stderr,"KW_THEN");break;      
+	case KW_ELSE: fprintf(stderr,"KW_ELSE");break;      
+	case KW_LOOP: fprintf(stderr,"KW_LOOP");break;      
+	case KW_INPUT: fprintf(stderr,"KW_INPUT");break;     
+	case KW_RETURN:fprintf(stderr,"KW_RETURN"); break;    
+	case KW_OUTPUT: fprintf(stderr,"KW_OUTPUT");break;    
+
+	case OPERATOR_LE: fprintf(stderr,"OP_LE");break;  
+	case OPERATOR_GE: fprintf(stderr,"OP_GE");break;  
+	case OPERATOR_EQ: fprintf(stderr,"OP_EQ");break;  
+	case OPERATOR_NE: fprintf(stderr,"OP_NE");break;  
+	case OPERATOR_AND: fprintf(stderr,"OP_AND");break; 
+	case OPERATOR_OR: fprintf(stderr,"OP_OR");break;  
+
+
+	case TK_IDENTIFIER: fprintf(stderr,"TK_IDENTIFIER");break;
+	case LIT_INTEGER: fprintf(stderr,"LIT_INT");break;  
+	case LIT_FALSE: fprintf(stderr,"LIT_FALSE");break;    
+	case LIT_TRUE: fprintf(stderr,"LIT_TRUE");break;	    
+	case LIT_CHAR: fprintf(stderr,"LIT_CHAR");break;     
+	case LIT_STRING: fprintf(stderr,"LIT_STRING");break;   
+
+	case TOKEN_ERROR: break;
+
+	default: fprintf(stderr,"%c", t);break;
+	}
+}
+
 void doAll(struct a_NODE * node)
 {
 	printNode(node);
@@ -101,7 +178,7 @@ void printToFile(FILE * pfile,char* string)
 		firstTime=0;
 	}
 	pfile = fopen(filename,"a+");
-	fprintf(pfile,string);
+	fprintf(pfile,"%s",string);
 	fclose(pfile);
 
 }

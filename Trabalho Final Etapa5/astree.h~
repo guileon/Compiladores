@@ -21,9 +21,6 @@ struct a_NODE{
 	int lineNumber;
 };
 
-
-void printTokens(int t);
-
 char *filename;
 
 void doAll(struct a_NODE * node);

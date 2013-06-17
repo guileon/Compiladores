@@ -1,4 +1,11 @@
 name = etapa5
+ifeq ($(OS),Windows_NT)
+delete = del
+executable = $(name).exe
+else
+delete = rm
+executable = $(name)
+endif
 $(name): lex.yy.o main.o table.o parser.tab.o astree.o tac.o
 		gcc -o $(name) lex.yy.o main.o table.o parser.tab.o astree.o tac.o
 tac.o: tac.c
@@ -18,4 +25,4 @@ parser.tab.c parser.tab.h: parser.y
 lex.yy.c: scanner.l
 		flex scanner.l
 clean:
-		rm main.o lex.yy.o lex.yy.c table.o parser.tab.o astree.o parser.tab.c parser.tab.h $(name) tac.o
+		$(delete) main.o lex.yy.o lex.yy.c table.o parser.tab.o astree.o parser.tab.c parser.tab.h tac.o $(executable)

@@ -53,6 +53,11 @@ tac * generateTac(struct a_NODE * astree)
 			retvalue = newTac(astree->token, astree->node, NULL, NULL, NULL);
 			break;
 		// EXPRESSIONS
+		case '=':
+			aux[0] = generateTac(astree->sons[0]);
+			aux[1] = generateTac(astree->sons[1]);
+			auxResult = appendTac(aux[1],aux[0]);
+			retvalue = newTac('=',aux[0]->target,aux[1]->target,0,auxResult);
 		case '+':
 			aux[0] = generateTac(astree->sons[0]);
 			aux[1] = generateTac(astree->sons[1]);
@@ -92,6 +97,12 @@ tac * generateTac(struct a_NODE * astree)
 			retvalue = newTac(AND,newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
 			break;
 		// DECLARATIONS
+		case DECLARATION:
+			aux[0] = generateTac(astree->sons[1]);
+			aux[1] = generateTac(astree->sons[2]);
+			auxResult = appendTac(aux[1],aux[0]);
+			retvalue = newTac('=',aux[0]->target,aux[1]->target,0,auxResult);
+			break;
 		// FLOW CONTROL
 		// ATTRIBUTION
 		// ETC

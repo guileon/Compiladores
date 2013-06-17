@@ -78,6 +78,13 @@ tac * generateTac(struct a_NODE * astree)
 			auxResult = appendTac(aux[1],aux[0]);
 			retvalue = newTac(astree->token,newTemp(TEMP),aux[0]->target,aux[1]->target,auxResult);
 			break;
+		case ARGCALL:
+			retvalue = appendTac(generateTac(astree->sons[0]),generateTac(astree->sons[1]));
+			break;
+		case FUNCALL:
+			auxResult = generateTac(astree->sons[1]);
+			retvalue = newTac(TAC_JMP,astree->sons[0]->node,NULL,NULL,auxResult);
+			break;
 		// DECLARATIONS
 		case DECLARATION:
 		case DECLARATION_POINTER:
@@ -85,6 +92,12 @@ tac * generateTac(struct a_NODE * astree)
 			aux[1] = generateTac(astree->sons[2]);
 			auxResult = appendTac(aux[1],aux[0]);
 			retvalue = newTac('=',aux[0]->target,aux[1]->target,0,auxResult);
+			break;
+		case FUNC_DECLARATION:
+			aux[0] = generateTac(astree->sons[3]->sons[0]);
+			aux[1] = generateTac(astree->sons[3]->sons[1]);
+			auxResult = appendTac(aux[1],aux[0]);
+			retvalue = appendTac(newTac(TAC_LABEL,astree->sons[1]->node,NULL,NULL,NULL),auxResult);
 			break;
 		// FLOW CONTROL
 		case IF_THEN:
@@ -106,6 +119,10 @@ tac * generateTac(struct a_NODE * astree)
 			retvalue = newTac('=',aux[0]->target,aux[1]->target,0,auxResult);
 			break;
 		// ETC
+		case RETURN:
+			auxResult = generateTac(astree->sons[0]);
+			retvalue = newTac(RETURN,auxResult->target,NULL,NULL,auxResult);
+			break;
 		default:
 			for(i=0 ; i<4 ; i++)
 				childTac[i] = generateTac(astree->sons[i]);

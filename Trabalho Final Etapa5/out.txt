@@ -1,1 +1,1 @@
-word a:5;word b:10;word main(){input a ;output "oio oi" ;} 
+word a:5;word b:10;word main(word x){input a ;output "oio oi",aa() ;a=main(aa()) ;return aa()+2 ;} 

@@ -1,8 +1,10 @@
 word a:5;
 word b:10;
 
-word main()
+word main(word x)
   {
 	input a;
-	output "oio oi";
+	output "oio oi",a;
+	a = main(a);
+	return a + 2;
   }

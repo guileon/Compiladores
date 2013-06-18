@@ -945,6 +945,7 @@ void printNode(struct a_NODE * node_p)
 		case NORMAL:
 			printNode((node_.sons[0]));
 		// FUNCALL ARGCALL CMD_SEQ
+			break;
 		case FUNCALL:
 			printNode((node_.sons[0]));
 			printToFile(pfile,"(");

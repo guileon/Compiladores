@@ -1,0 +1,11 @@
+word a:0;
+word b:2;
+word main(byte k)
+{
+loop(a>b) {
+a = 2;
+
+}
+;
+
+}

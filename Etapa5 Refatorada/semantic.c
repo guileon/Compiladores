@@ -615,9 +615,9 @@ void evaluate(astreeNode * node)
 
 			/* expressões */
 			/* NOTA: as funçÕes auxiliares para avaliar os nodos NÃO CHAMAM evaluate para os nodos filhos, por isso o evaluate está aqui */
-			case ARGCALL: 			break;				
+			case ARGCALL: 		evaluate(node->sons[0]); evaluate(node->sons[1]);	break;				
 			case SCALAR_READ:	if(!isScalar(node->sons[0])) semanticError("Using non-scalar as scalar: ",node->sons[0]->hashPointer->value,node->lineNumber);			break;			
-			case VECTOR_READ: 	if(!isVector(node->sons[0])) semanticError("Using non-vector as vector: ",node->sons[0]->hashPointer->value,node->lineNumber);			break;			
+			case VECTOR_READ: 	if(!isVector(node->sons[0])) semanticError("Using non-vector as vector: ",node->sons[0]->hashPointer->value,node->lineNumber); if(!isInteger(node->sons[0])) semanticError("Vector with index non-integer","",node->lineNumber);	break;			
 			case GET_REFERENCE: if(!isDeclared(node->sons[0]->hashPointer)) semanticError("Variable undeclared:",node->sons[0]->hashPointer->value,node->lineNumber);	break;		
 			case POINTER: 		if(!isScalar(node->sons[0])) semanticError("Using non-scalar as scalar: ",node->sons[0]->hashPointer->value,node->lineNumber);			break;				
 			case FUNCALL: 		funcallTest(node);									break;				

@@ -9,6 +9,7 @@ int isListBoolean(astreeNode * node);
 int isBoolean(astreeNode * node);
 void declareFunctions(astreeNode * node);
 void evaluate(astreeNode * node);
+int isPointerOperation(astreeNode * node);
 
 hashNode * currentFunction = NULL;
 
@@ -422,6 +423,36 @@ int isPointer(astreeNode * node)
 	else
 		return FALSE;
 }
+/* para saber se o nodo retorna um ponteiro por uma operação de ponteiro */
+int isPointerOperation(astreeNode * node)
+{
+	if(node)
+	{
+		if(node->type == ADD)
+		{
+			if(isPointer(node->sons[0]))
+			{
+				if(isInteger(node->sons[1]))
+					return TRUE;
+				else
+					return FALSE;
+			}
+			else if(isPointer(node->sons[1]))
+			{
+				if(isInteger(node->sons[0]))
+					return TRUE;
+				else
+					return FALSE;
+			}
+			else
+				return FALSE;
+		}	
+		else
+			return TRUE;
+	}
+	return FALSE;
+}
+
 int isVector(astreeNode * node)
 {
 	if(node)
@@ -498,7 +529,6 @@ void scalarWriteTest(astreeNode * node)
 			case T_INTEGER: if(!isInteger(node->sons[1])) semanticError("Incompatible atribution, right side should be integer","",node->lineNumber); break;
 		}
 		
-		evaluate(node->sons[1]);
 	}
 }	
 void vectorWriteTest(astreeNode * node)
@@ -514,7 +544,6 @@ void vectorWriteTest(astreeNode * node)
 			case T_BOOLEAN: if(!isBoolean(node->sons[2])) semanticError("Incompatible atribution, right side should be boolean","",node->lineNumber); break;
 			case T_INTEGER: if(!isInteger(node->sons[2])) semanticError("Incompatible atribution, right side should be integer","",node->lineNumber); break;
 		}
-		evaluate(node->sons[1]);
 	}
 }
 void pointerWriteTest(astreeNode * node)
@@ -525,7 +554,10 @@ void pointerWriteTest(astreeNode * node)
 		{
 			semanticError("Something not pointer used as pointer:",node->sons[0]->hashPointer->value,node->lineNumber);
 		}
-		evaluate(node->sons[1]);
+		else if(!isPointerOperation(node->sons[1]))
+		{
+			semanticError("Atributing non-pointer to pointer:",node->sons[0]->hashPointer->value,node->lineNumber);
+		}
 	}
 }
 void returnTest(astreeNode * node)
@@ -582,6 +614,7 @@ void evaluate(astreeNode * node)
 			case ARG_DECLARATION: 		break;	
 
 			/* expressões */
+			/* NOTA: as funçÕes auxiliares para avaliar os nodos NÃO CHAMAM evaluate para os nodos filhos, por isso o evaluate está aqui */
 			case ARGCALL: 			break;				
 			case SCALAR_READ:	if(!isScalar(node->sons[0])) semanticError("Using non-scalar as scalar: ",node->sons[0]->hashPointer->value,node->lineNumber);			break;			
 			case VECTOR_READ: 	if(!isVector(node->sons[0])) semanticError("Using non-vector as vector: ",node->sons[0]->hashPointer->value,node->lineNumber);			break;			
@@ -589,28 +622,29 @@ void evaluate(astreeNode * node)
 			case POINTER: 		if(!isScalar(node->sons[0])) semanticError("Using non-scalar as scalar: ",node->sons[0]->hashPointer->value,node->lineNumber);			break;				
 			case FUNCALL: 		funcallTest(node);									break;				
 			case PAR: 			evaluate(node->sons[0]);							break;					
-			case ADD: 			evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
-			case SUB: 			evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
-			case MUL: 			evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
-			case DIV: 			evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
-			case OR: 			evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
-			case AND: 			evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
-			case LE: 			evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
-			case GE: 			evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
-			case EQ: 			evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
-			case NE: 			evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
-			case GREATER: 		evaluate(node->sons[0]);evaluate(node->sons[1]);	break;				
-			case LESS: 			evaluate(node->sons[0]);evaluate(node->sons[1]);	break;
+			case ADD: 			if(!isInteger(node->sons[0]) || !isInteger(node->sons[1])) semanticError("Adding something not integer","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
+			case SUB: 			if(!isInteger(node->sons[0]) || !isInteger(node->sons[1])) semanticError("Subtracting something not integer","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
+			case MUL: 			if(!isInteger(node->sons[0]) || !isInteger(node->sons[1])) semanticError("Multiplying something not integer","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
+			case DIV: 			if(!isInteger(node->sons[0]) || !isInteger(node->sons[1])) semanticError("Dividing something not integer","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
+			case OR: 			if(!isBoolean(node->sons[0]) || !isBoolean(node->sons[1])) semanticError("OR with something not boolean","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
+			case AND: 			if(!isBoolean(node->sons[0]) || !isBoolean(node->sons[1])) semanticError("AND with something not boolean","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
+			case LE: 			if(!isInteger(node->sons[0]) || !isInteger(node->sons[1])) semanticError("<= with something not integer","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
+			case GE: 			if(!isInteger(node->sons[0]) || !isInteger(node->sons[1])) semanticError(">= with something not integer","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
+			case EQ: 			if(!isInteger(node->sons[0]) || !isInteger(node->sons[1])) semanticError("== with something not integer","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
+			case NE: 			if(!isInteger(node->sons[0]) || !isInteger(node->sons[1])) semanticError("!= with something not integer","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
+			case GREATER: 		if(!isInteger(node->sons[0]) || !isInteger(node->sons[1])) semanticError("> with something not integer","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;				
+			case LESS: 			if(!isInteger(node->sons[0]) || !isInteger(node->sons[1])) semanticError("< with something not integer","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;
 				
 			/* CMD e CMD_SEQ */	
+			/* NOTA: as funçÕes auxiliares para avaliar os nodos NÃO CHAMAM evaluate para os nodos filhos, por isso o evaluate está aqui */
 			case BLOCK: 		evaluate(node->sons[0]);							break;		
 			case OUTPUT_LIST: 	evaluate(node->sons[0]); evaluate(node->sons[1]);	break;			
-			case SCALAR_WRITE: 	scalarWriteTest(node);								break;		
-			case VECTOR_WRITE: 	vectorWriteTest(node);								break;		
-			case POINTER_WRITE: pointerWriteTest(node);								break;		
+			case SCALAR_WRITE: 	scalarWriteTest(node);	evaluate(node->sons[1]);	break;		
+			case VECTOR_WRITE: 	vectorWriteTest(node);	evaluate(node->sons[1]);	break;		
+			case POINTER_WRITE: pointerWriteTest(node);	evaluate(node->sons[1]);	break;		
 			case INPUT: 															break;				
 			case OUTPUT: 		evaluate(node->sons[0]);							break;				
-			case RETURN: 		returnTest(node);									break;				
+			case RETURN: 		returnTest(node); evaluate(node->sons[0]);			break;				
 			case IF_THEN: 		if(!isBoolean(node->sons[0])) semanticError("IF conditional is not boolean","",node->lineNumber); evaluate(node->sons[1]);							break;				
 			case IF_THEN_ELSE: 	if(!isBoolean(node->sons[0])) semanticError("IF conditional is not boolean","",node->lineNumber); evaluate(node->sons[1]); evaluate(node->sons[2]);	break;		
 			case LOOP: 			if(!isBoolean(node->sons[0])) semanticError("LOOP conditional is not boolean","",node->lineNumber); evaluate(node->sons[1]);						break;

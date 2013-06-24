@@ -1,5 +1,7 @@
 word a:0;
-word b:2;
+word b:'c';
+word vec[3]:2 2 2;
+word $pt:0;
 word main(byte k)
 {
 loop(a>b) {
@@ -7,5 +9,9 @@ a = 2;
 
 }
 ;
+a = main(1);
+output a+1, "salsicha", 12, true;
+a = vec[2];
+*pt = vec[&a];
 
 }

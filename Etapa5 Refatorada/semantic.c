@@ -19,7 +19,7 @@ int isIdentifierInteger(astreeNode * node)
 {
 	if(node && node->type == TK_IDENTIFIER)
 	{
-		if(node->hashPointer && node->hashPointer->dataType == T_INTEGER) 
+		if(node->hashPointer && node->hashPointer->dataType == T_INTEGER && node->hashPointer->type != ID_POINTER) 
 			return TRUE; 
 		else 
 			return FALSE; 
@@ -447,8 +447,12 @@ int isPointerOperation(astreeNode * node)
 			else
 				return FALSE;
 		}	
-		else
+		else if(node->type == GET_REFERENCE)
+		{
 			return TRUE;
+		}
+		else
+			return FALSE;
 	}
 	return FALSE;
 }
@@ -521,12 +525,20 @@ void scalarWriteTest(astreeNode * node)
 {
 	if(node)
 	{	
-		if(!isScalar(node->sons[0]))
-			semanticError("Left side variable is not scalar:",node->sons[0]->hashPointer->value,node->lineNumber);
-		switch(node->sons[0]->hashPointer->dataType)
+		if(!isScalar(node->sons[0]) && !isPointer(node->sons[0]))
+			semanticError("Left side variable is not scalar or pointer:",node->sons[0]->hashPointer->value,node->lineNumber);
+		if(isPointer(node->sons[0]))
 		{
-			case T_BOOLEAN: if(!isBoolean(node->sons[1])) semanticError("Incompatible atribution, right side should be boolean","",node->lineNumber); break;
-			case T_INTEGER: if(!isInteger(node->sons[1])) semanticError("Incompatible atribution, right side should be integer","",node->lineNumber); break;
+			if(!isPointerOperation(node->sons[1]))
+				semanticError("Incompatible atribution, right side should be pointer","",node->lineNumber);
+		}
+		else
+		{
+			switch(node->sons[0]->hashPointer->dataType)
+			{
+				case T_BOOLEAN: if(!isBoolean(node->sons[1])) semanticError("Incompatible atribution, right side should be boolean","",node->lineNumber); break;
+				case T_INTEGER: if(!isInteger(node->sons[1])) semanticError("Incompatible atribution, right side should be integer","",node->lineNumber); break;
+			}
 		}
 		
 	}
@@ -554,9 +566,9 @@ void pointerWriteTest(astreeNode * node)
 		{
 			semanticError("Something not pointer used as pointer:",node->sons[0]->hashPointer->value,node->lineNumber);
 		}
-		else if(!isPointerOperation(node->sons[1]))
+		else if(!isInteger(node->sons[1]) && !isBoolean(node->sons[1]))
 		{
-			semanticError("Atributing non-pointer to pointer:",node->sons[0]->hashPointer->value,node->lineNumber);
+			semanticError("Atributing non-value to pointer:",node->sons[0]->hashPointer->value,node->lineNumber);
 		}
 	}
 }
@@ -616,11 +628,11 @@ void evaluate(astreeNode * node)
 			/* expressões */
 			/* NOTA: as funçÕes auxiliares para avaliar os nodos NÃO CHAMAM evaluate para os nodos filhos, por isso o evaluate está aqui */
 			case ARGCALL: 		evaluate(node->sons[0]); evaluate(node->sons[1]);	break;				
-			case SCALAR_READ:	if(!isScalar(node->sons[0])) semanticError("Using non-scalar as scalar: ",node->sons[0]->hashPointer->value,node->lineNumber);			break;			
-			case VECTOR_READ: 	if(!isVector(node->sons[0])) semanticError("Using non-vector as vector: ",node->sons[0]->hashPointer->value,node->lineNumber); if(!isInteger(node->sons[0])) semanticError("Vector with index non-integer","",node->lineNumber);	break;			
+			case SCALAR_READ:	if(!isScalar(node->sons[0]) && !isPointer(node->sons[0])) semanticError("Using non-scalar as scalar: ",node->sons[0]->hashPointer->value,node->lineNumber);			break;			
+			case VECTOR_READ: 	if(!isVector(node->sons[0])) semanticError("Using non-vector as vector: ",node->sons[0]->hashPointer->value,node->lineNumber); if(!isInteger(node->sons[1])) semanticError("Vector with index non-integer","",node->lineNumber);	break;			
 			case GET_REFERENCE: if(!isDeclared(node->sons[0]->hashPointer)) semanticError("Variable undeclared:",node->sons[0]->hashPointer->value,node->lineNumber);	break;		
-			case POINTER: 		if(!isScalar(node->sons[0])) semanticError("Using non-scalar as scalar: ",node->sons[0]->hashPointer->value,node->lineNumber);			break;				
-			case FUNCALL: 		funcallTest(node);									break;				
+			case POINTER: 		if(!isPointer(node->sons[0])) semanticError("Using non-scalar as scalar: ",node->sons[0]->hashPointer->value,node->lineNumber);			break;				
+			case FUNCALL: 		funcallTest(node); evaluate(node->sons[1]);			break;				
 			case PAR: 			evaluate(node->sons[0]);							break;					
 			case ADD: 			if(!isInteger(node->sons[0]) || !isInteger(node->sons[1])) semanticError("Adding something not integer","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
 			case SUB: 			if(!isInteger(node->sons[0]) || !isInteger(node->sons[1])) semanticError("Subtracting something not integer","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);	break;					
@@ -645,9 +657,9 @@ void evaluate(astreeNode * node)
 			case INPUT: 															break;				
 			case OUTPUT: 		evaluate(node->sons[0]);							break;				
 			case RETURN: 		returnTest(node); evaluate(node->sons[0]);			break;				
-			case IF_THEN: 		if(!isBoolean(node->sons[0])) semanticError("IF conditional is not boolean","",node->lineNumber); evaluate(node->sons[1]);							break;				
-			case IF_THEN_ELSE: 	if(!isBoolean(node->sons[0])) semanticError("IF conditional is not boolean","",node->lineNumber); evaluate(node->sons[1]); evaluate(node->sons[2]);	break;		
-			case LOOP: 			if(!isBoolean(node->sons[0])) semanticError("LOOP conditional is not boolean","",node->lineNumber); evaluate(node->sons[1]);						break;
+			case IF_THEN: 		if(!isBoolean(node->sons[0])) semanticError("IF conditional is not boolean","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);							break;				
+			case IF_THEN_ELSE: 	if(!isBoolean(node->sons[0])) semanticError("IF conditional is not boolean","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]); evaluate(node->sons[2]);	break;		
+			case LOOP: 			if(!isBoolean(node->sons[0])) semanticError("LOOP conditional is not boolean","",node->lineNumber); evaluate(node->sons[0]);evaluate(node->sons[1]);						break;
 			case CMD_SEQ: 		evaluate(node->sons[0]); evaluate(node->sons[1]);	break;
 			
 			/* default? */

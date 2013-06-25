@@ -6,6 +6,7 @@ void doAll(astreeNode * node)
 	printAstreeNode(node);
 	semanticEvaluation(node);
 	printHash();
+	printTac(generateTac(node));
 }
 
 astreeNode * newAstreeNode(int type_, astreeNode * son1, astreeNode * son2, astreeNode * son3, astreeNode * son4, astreeNode * son5, hashNode * hashPointer_, int lineNumber_)

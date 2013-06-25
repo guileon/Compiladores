@@ -91,4 +91,13 @@
 #define TAC_GREATER				3021
 #define TAC_LESS				3022
 
+#define TAC_VEC_READ			3023
+#define TAC_IDENTIFIER			3024
+#define TAC_INTEGER				3025
+#define TAC_TRUE				3026
+#define TAC_FALSE				3027
+#define TAC_STRING				3028
+#define TAC_GET_ADDRESS			3029
+#define TAC_POINTER				3030
+
 #endif

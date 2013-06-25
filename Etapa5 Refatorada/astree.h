@@ -11,6 +11,7 @@
 #include "test.h"
 
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,6 +32,7 @@ struct astreeNode_s
 typedef struct astreeNode_s astreeNode;
 
 #include "semantic.h"
+#include "tac.h"
 
 /* variaveis usadas para acesso ao arquivo */
 FILE * pfile;

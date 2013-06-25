@@ -7,7 +7,6 @@
 
 #include "astree.h"
 #include "hash.h"
-#include "parser.tab.h"
 #include "test.h"
 
 struct tac_s;
@@ -21,6 +20,7 @@ struct tac_s{
 
 typedef struct tac_s tac;
 
+void printTac(tac * tacToBePrinted);
 tac * generateTac(astreeNode * node);
 
 

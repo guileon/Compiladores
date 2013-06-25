@@ -1,17 +1,13 @@
 word a:0;
-word b:'c';
-word vec[3]:2 2 2;
-word $pt:0;
+bool x:true;
 word main(byte k)
 {
-loop(a>b) {
-a = 2;
+a = 2+a;
+a = main(100);
+if(x) then {
+a = 0;
 
 }
 ;
-a = main(1);
-output a+1, "salsicha", 12, true;
-a = vec[2];
-*pt = vec[&a];
 
 }

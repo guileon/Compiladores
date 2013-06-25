@@ -4,7 +4,7 @@ word main(byte k)
 {
 	a =2 + a;
 	a = main(100);
-	if(x)then
+	loop(x)
 	{
 		a = 0;
 	};

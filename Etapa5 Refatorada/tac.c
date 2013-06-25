@@ -71,7 +71,10 @@ tac * declarationTacScalar(astreeNode * node)
 		tacSons[1] = generateTac(node->sons[2]);
 		
 		temp1 = tacSons[1]->target;
-		newTac = createTac(TAC_MOV,node->sons[1]->hashPointer,temp1,NULL);
+		if(node->sons[1] && node->sons[1]->hashPointer)
+			newTac = createTac(TAC_MOV,node->sons[1]->hashPointer,temp1,NULL);
+		else
+			newTac = NULL;
 		return mergeTac(mergeTac(tacSons[0],tacSons[1]),newTac);
 	}
 	else
@@ -90,7 +93,10 @@ tac * declarationTacVector(astreeNode * node)
 		tacSons[1] = generateTac(node->sons[3]);
 		
 		temp1 = tacSons[1]->target;
-		newTac = createTac(TAC_MOV,node->sons[1]->hashPointer,temp1,NULL);
+		if(node->sons[1] && node->sons[1]->hashPointer)
+			newTac = createTac(TAC_MOV,node->sons[1]->hashPointer,temp1,NULL);
+		else
+			newTac = NULL;
 		return mergeTac(mergeTac(tacSons[0],tacSons[1]),newTac);
 	}
 	else
@@ -236,6 +242,32 @@ tac * ifThenElse(astreeNode * node)
 	else
 		return NULL;
 }
+
+tac * loop(astreeNode * node)
+{
+	tac * tacLoop = NULL;
+	tac * newTac = NULL;
+	tac * tacElse = NULL;
+	tac * tacSons[1];
+	tac * tacJmp = NULL;
+	hashNode * loopLabel = NULL;
+	hashNode * elseLabel = NULL;
+	if(node)
+	{
+		tacSons[0] = generateTac(node->sons[0]);
+		loopLabel = newLabel();
+		elseLabel = newLabel();
+		tacLoop = createTac(TAC_LABEL,loopLabel,NULL,NULL);
+		tacElse = createTac(TAC_LABEL,elseLabel,NULL,NULL);
+		newTac = createTac(TAC_IFZ,elseLabel,tacSons[0]->target,NULL);
+		tacJmp = createTac(TAC_JMP,loopLabel,NULL,NULL);
+		return mergeTac(mergeTac(mergeTac(mergeTac(tacLoop,newTac),tacSons[0]),tacJmp),tacElse);
+	}
+	else
+		return NULL;
+	
+}
+
 tac * generateTac(astreeNode * node)
 {
 	tac * newTac = NULL;	
@@ -300,8 +332,8 @@ tac * generateTac(astreeNode * node)
 			case OUTPUT: 				break;
 			case RETURN: 				newTac = unop(node,TAC_RETURN);	break;
 			case IF_THEN: 				newTac = ifThenElse(node);	break;
-			case IF_THEN_ELSE: 			break;
-			case LOOP: 					break;
+			case IF_THEN_ELSE: 			newTac = ifThenElse(node);	break;
+			case LOOP: 					newTac = loop(node);		break;
 			case CMD_SEQ: 				newTac = mergeTac(generateTac(node->sons[0]),generateTac(node->sons[1]));			break;
 			
 			/* default? */

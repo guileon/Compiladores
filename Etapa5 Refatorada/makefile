@@ -31,4 +31,4 @@ parser.tab.c parser.tab.h: parser.y
 lex.yy.c : scanner.l
 	$(lex) scanner.l
 clean:
-	$(delete) hash.o main.o lex.yy.o parser.tab.o parser.tab.h $(executable) astree.o lex.yy.c parser.tab.c semantic.o
+	$(delete) hash.o main.o lex.yy.o parser.tab.o parser.tab.h $(executable) astree.o lex.yy.c parser.tab.c semantic.o tac.o

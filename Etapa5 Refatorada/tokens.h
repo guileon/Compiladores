@@ -99,5 +99,7 @@
 #define TAC_STRING				3028
 #define TAC_GET_ADDRESS			3029
 #define TAC_POINTER				3030
+#define TAC_OUTPUT				3031
+#define TAC_INPUT				3032
 
 #endif

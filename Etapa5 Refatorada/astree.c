@@ -72,8 +72,11 @@ void setFileName(char * filename_)
 void clearFile()
 {
 	pfile = fopen(filename,"w");
-	fprintf(pfile,"%s","");
-	fclose(pfile);
+	if(pfile)
+	{
+		fprintf(pfile,"%s","");
+		fclose(pfile);
+	}
 }
 
 
@@ -87,8 +90,11 @@ void printToFile(char* string)
 			firstTime=0;
 		}
 		pfile = fopen(filename,"a+");
-		fprintf(pfile,"%s",string);
-		fclose(pfile);
+		if(pfile)
+		{
+			fprintf(pfile,"%s",string);
+			fclose(pfile);
+		}
 	}
 
 }

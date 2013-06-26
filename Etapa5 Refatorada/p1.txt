@@ -1,11 +1,28 @@
 word a:0;
 bool x:true;
-word main(byte k)
+bool y:false;
+word vec[2]:0 0 0;
+word main(byte k, bool j, word i, word n)
 {
-	a =2 + a;
-	a = main(100);
-	loop(x)
+	loop(x||y)
 	{
 		a = 0;
 	};
+	if(x)then
+	{
+		a = 100;
+	}
+	else
+	{
+		a = 999;
+	};
+	output "salsicha:",a;
+	y = sabao();
+	a = main(1,true,2,3);
+	return vec[2];
+}
+
+bool sabao()
+{
+	return x;
 }

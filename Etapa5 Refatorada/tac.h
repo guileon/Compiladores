@@ -16,12 +16,16 @@ struct tac_s{
 	hashNode * op1;
 	hashNode * op2;
 	struct tac_s * prev;
+	struct tac_s * next;
 };
 
 typedef struct tac_s tac;
 
+tac * initializations;
+
 void printTac(tac * tacToBePrinted);
 tac * generateTac(astreeNode * node);
+
 
 
 

@@ -1,28 +1,38 @@
-word a:0;
-bool x:true;
-bool y:false;
-word vec[2]:0 0 0;
-word main(byte k, bool j, word i, word n)
+word a:12;
+word b:22;
+bool x:false;
+byte c:1;
+word main()
 {
-	loop(x||y)
+	x = true || x;
+	input a;
+	input b;
+	a = 10*a + b;
+	a = a *2;
+	output "lala ",a,"\n";
+	if(false && true) then
 	{
-		a = 0;
+		output "avaco";
 	};
-	if(x)then
+	b = b *2;
+	output b,"\n";
+	b = b /3;
+	output b,"\n";
+	a = 0;
+	b = 20;
+	loop(x)
 	{
-		a = 100;
-	}
-	else
-	{
-		a = 999;
+		x = a < b;
+		a = a + 1;
+		b = b - 1;
+		output "number ",c,"\n";
+		c = c+1;
+		
 	};
-	output "salsicha:",a;
-	y = sabao();
-	a = main(1,true,2,3);
-	return vec[2];
 }
 
-bool sabao()
+word foo()
 {
-	return x;
+	b = a + 10;
+	output "aba";
 }

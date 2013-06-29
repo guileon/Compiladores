@@ -1,12 +1,18 @@
 #include "astree.h"
 #include "parser.tab.h"
+#include "assembler.h"
 
 void doAll(astreeNode * node)
 {
+	tac * tacCode = NULL;
+	
 	printAstreeNode(node);
 	semanticEvaluation(node);
 	printHash();
-	printTac(generateTac(node));
+	tacCode = generateTac(node);
+	
+	printTac(tacCode);
+	assemble(tacCode);
 }
 
 astreeNode * newAstreeNode(int type_, astreeNode * son1, astreeNode * son2, astreeNode * son3, astreeNode * son4, astreeNode * son5, hashNode * hashPointer_, int lineNumber_)

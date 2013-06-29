@@ -23,6 +23,8 @@ void printToken(int token)
 		case BOOL:  				fprintf(stderr,"BOOL");			break;
 		case WORD:  				fprintf(stderr,"WORD");			break;
 		case BYTE:		 			fprintf(stderr,"BYTE");			break;
+		
+		default:					fprintf(stderr,"default");		break;
 	}
 }
 /* função de utilização de intList */
@@ -197,7 +199,6 @@ hashNode * insertHash(char * text, int type)
 		/* retorna o nodo já existente */
 		returnValue = existingNode;
 	}
-	
 	if(!returnValue)
 	{
 		fprintf(stderr,"CUIDADO : insert da Hash retornando valor NULL\n");

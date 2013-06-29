@@ -10,8 +10,10 @@ else
 delete = rm
 executable = $(name)
 endif
-$(name) : main.o hash.o parser.tab.o lex.yy.o astree.o semantic.o tac.o
-	$(compile-o) $(name) main.o hash.o parser.tab.o lex.yy.o astree.o semantic.o tac.o
+$(name) : main.o hash.o parser.tab.o lex.yy.o astree.o semantic.o tac.o assembler.o
+	$(compile-o) $(name) main.o hash.o parser.tab.o lex.yy.o astree.o semantic.o tac.o assembler.o
+assembler.o : assembler.c
+	$(compile-c) assembler.c
 tac.o : tac.c parser.tab.h
 	$(compile-c) tac.c
 semantic.o : semantic.c parser.tab.h
@@ -31,4 +33,4 @@ parser.tab.c parser.tab.h: parser.y
 lex.yy.c : scanner.l
 	$(lex) scanner.l
 clean:
-	$(delete) hash.o main.o lex.yy.o parser.tab.o parser.tab.h $(executable) astree.o lex.yy.c parser.tab.c semantic.o tac.o
+	$(delete) hash.o main.o lex.yy.o parser.tab.o parser.tab.h $(executable) astree.o lex.yy.c parser.tab.c semantic.o tac.o assembler.o

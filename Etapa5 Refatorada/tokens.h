@@ -72,8 +72,6 @@
 #define TAC_LABEL				3003
 #define TAC_JMP					3004
 #define TAC_IFZ					3005
-#define TAC_PRINT				3006
-#define TAC_READ				3007
 #define TAC_CALL				3008
 #define TAC_RETURN				3009
 #define TAC_ARG					3010
@@ -101,5 +99,8 @@
 #define TAC_POINTER				3030
 #define TAC_OUTPUT				3031
 #define TAC_INPUT				3032
+
+#define TAC_BEGIN_FUNCTION		3033
+#define TAC_END_FUNCTION		3034
 
 #endif

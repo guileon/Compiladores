@@ -163,6 +163,7 @@ CMD:		IDENTIFIER '=' EXPRESSION 							{ $$ = (astreeNode *)newAstreeNode(SCALAR
 	|		KW_IF '(' EXPRESSION ')' KW_THEN CMD %prec IFX				{ $$ = (astreeNode *)newAstreeNode(IF_THEN, $3, $6, NULL, NULL, NULL,NULL,getLineNumber()); }
 	|		KW_IF '(' EXPRESSION ')' KW_THEN CMD KW_ELSE CMD 	{ $$ = (astreeNode *)newAstreeNode(IF_THEN_ELSE, $3, $6, $8, NULL, NULL,NULL,getLineNumber()); }
 	|		KW_LOOP '(' EXPRESSION ')' CMD 						{ $$ = (astreeNode *)newAstreeNode(LOOP,$3,$5,NULL,NULL,NULL,NULL,getLineNumber()); }
+	|		IDENTIFIER '(' ARGUMENTS_CALL ')' 					{ $$ = (astreeNode *)newAstreeNode(FUNCALL,$1,$3,NULL,NULL,NULL,NULL,getLineNumber());}
 	|															{ $$ = NULL; }
 	;
 

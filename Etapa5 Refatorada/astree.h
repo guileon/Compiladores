@@ -34,6 +34,7 @@ typedef struct astreeNode_s astreeNode;
 #include "semantic.h"
 #include "tac.h"
 
+
 /* variaveis usadas para acesso ao arquivo */
 FILE * pfile;
 int firstTime;

@@ -1,6 +1,8 @@
 #include "tac.h"
 #include "parser.tab.h"
 
+tac * HELPgenerateTac(astreeNode * node);
+
 void printTokenTac(int token)
 {
 	switch(token)
@@ -10,8 +12,6 @@ void printTokenTac(int token)
 		case TAC_LABEL:	fprintf(stderr,"LABL"); break;
 		case TAC_JMP:		fprintf(stderr,"JUMP"); break;
 		case TAC_IFZ:		fprintf(stderr,"JIFZ"); break;
-		case TAC_PRINT	:	fprintf(stderr,"PRNT"); break;
-		case TAC_READ	:	fprintf(stderr,"READ"); break;
 		case TAC_CALL		:fprintf(stderr,"CALL"); break;
 		case TAC_RETURN		:fprintf(stderr,"TRET"); break;
 		case TAC_ARG		:fprintf(stderr,"TARG"); break;
@@ -39,6 +39,9 @@ void printTokenTac(int token)
 		case TAC_POINTER	:fprintf(stderr,"POIN"); break;
 		case TAC_OUTPUT		:fprintf(stderr,"OUTP"); break;
 		case TAC_INPUT		:fprintf(stderr,"INPU"); break;
+		
+		case TAC_BEGIN_FUNCTION:	fprintf(stderr,"BEGF");	break;
+		case TAC_END_FUNCTION:		fprintf(stderr,"ENDF"); break;
 	}
 }
 
@@ -62,6 +65,44 @@ void printTac(tac * tac1)
 	fprintf(stderr,"\n");
 }
 
+void printTacInverted(tac * tac1);
+void printInverted(tac * tac1);
+
+void printInverted(tac * tac1)
+{
+	tac * auxTac=NULL;
+	if(tac1)
+	{
+		for(auxTac = tac1 ; auxTac->prev ; auxTac = auxTac->prev);
+		printTacInverted(auxTac);
+	}
+}
+
+void printTacInverted(tac * tac1)
+{
+	fprintf(stderr,"Type:  ");
+	printTokenTac(tac1->type);
+	fprintf(stderr," | ");
+	fprintf(stderr,"Target: ");
+	if(tac1->target)
+		fprintf(stderr,"%s |",tac1->target->value);
+	fprintf(stderr,"Op1: ");
+	if(tac1->op1)
+		fprintf(stderr,"%s |",tac1->op1->value);
+	fprintf(stderr,"Op2: ");
+	if(tac1->op2)
+		fprintf(stderr,"%s |",tac1->op2->value);
+		
+	fprintf(stderr,"\n");
+	
+	
+	if(tac1->next)
+	{	
+		printTacInverted(tac1->next);
+	}
+		
+}
+
 tac * createTac(int type_, hashNode * target_, hashNode * op1_, hashNode * op2_)
 {
 	tac * newTac = (tac *)calloc(1,sizeof(tac));
@@ -70,6 +111,7 @@ tac * createTac(int type_, hashNode * target_, hashNode * op1_, hashNode * op2_)
 	newTac->op1 = op1_;
 	newTac->op2 = op2_;
 	newTac->prev = NULL;
+	newTac->next = NULL;
 	return newTac;
 }
 
@@ -77,13 +119,13 @@ tac * createTac(int type_, hashNode * target_, hashNode * op1_, hashNode * op2_)
 tac * mergeTac(tac * tac1, tac * tac2)
 {
 	tac * auxTac1 = NULL;
-
 	if(tac2)
 	{
 		if(tac1)
 		{
 			for(auxTac1 = tac2 ; auxTac1->prev ; auxTac1 = auxTac1->prev);
 			auxTac1->prev = tac1;
+			tac1->next = auxTac1;
 			return tac2;
 		}
 		else
@@ -104,21 +146,24 @@ tac * mergeTac(tac * tac1, tac * tac2)
 /* cria a tac para declarações */
 tac * declarationTacScalar(astreeNode * node)
 {
-	tac * newTac = NULL;	
+	tac * newTac = NULL; 
 	hashNode * temp1 = NULL;
 	tac * tacSons[2];
 	
 	if(node)
 	{
-		tacSons[0] = generateTac(node->sons[1]);
-		tacSons[1] = generateTac(node->sons[2]);
+		tacSons[0] = HELPgenerateTac(node->sons[1]);
+		tacSons[1] = HELPgenerateTac(node->sons[2]);
 		
 		temp1 = tacSons[1]->target;
 		if(node->sons[1] && node->sons[1]->hashPointer)
 			newTac = createTac(TAC_MOV,node->sons[1]->hashPointer,temp1,NULL);
 		else
 			newTac = NULL;
-		return mergeTac(mergeTac(tacSons[0],tacSons[1]),newTac);
+			
+			
+		initializations = mergeTac(initializations,newTac);
+		return mergeTac(tacSons[0],tacSons[1]);
 	}
 	else
 		return NULL;
@@ -132,10 +177,10 @@ tac * declarationTacVector(astreeNode * node)
 
 	if(node)
 	{
-		tacSons[0] = generateTac(node->sons[1]);
+		tacSons[0] = HELPgenerateTac(node->sons[1]);
 		if(node->sons[3])
 		{
-			tacSons[1] = generateTac(node->sons[3]);
+			tacSons[1] = HELPgenerateTac(node->sons[3]);
 		}
 		
 		if(tacSons[1])
@@ -163,8 +208,8 @@ tac * declarationTacPointer(astreeNode * node)
 	
 	if(node && node->sons[1] && node->sons[1]->hashPointer)
 	{
-		tacSons[0] = generateTac(node->sons[1]);
-		tacSons[1] = generateTac(node->sons[2]);
+		tacSons[0] = HELPgenerateTac(node->sons[1]);
+		tacSons[1] = HELPgenerateTac(node->sons[2]);
 		
 		temp1 = tacSons[1]->target;
 		newTac = createTac(TAC_I_MOV,node->sons[1]->hashPointer,temp1,NULL);
@@ -181,10 +226,10 @@ tac * argcallTac(astreeNode * node)
 	tac * tacSons[1];
 	if(node)
 	{		
-		tacSons[0] = generateTac(node->sons[0]);
+		tacSons[0] = HELPgenerateTac(node->sons[0]);
 		temp1 = tacSons[0]->target;
 		newTac = createTac(TAC_ARG,temp1,NULL,NULL);
-		return mergeTac(tacSons[0],mergeTac(newTac,generateTac(node->sons[1])));
+		return mergeTac(tacSons[0],mergeTac(newTac,HELPgenerateTac(node->sons[1])));
 	}
 	else
 		return NULL;
@@ -196,7 +241,7 @@ tac * vectorReadTac(astreeNode * node)
 	tac * tacSons[1];
 	if(node && node->sons[0] && node->sons[0]->hashPointer)
 	{
-		tacSons[0] = generateTac(node->sons[1]);
+		tacSons[0] = HELPgenerateTac(node->sons[1]);
 		newTac = createTac(TAC_VEC_READ,newTemp(),node->sons[0]->hashPointer,tacSons[0]->target);
 		return newTac;
 	}
@@ -212,7 +257,7 @@ tac * tacFuncall(astreeNode * node)
 
 	if(node && node->sons[0] && node->sons[0]->hashPointer)
 	{
-		tacSons[0] = generateTac(node->sons[1]);
+		tacSons[0] = HELPgenerateTac(node->sons[1]);
 		newTac = createTac(TAC_CALL,node->sons[0]->hashPointer,NULL,NULL);
 		
 		return mergeTac(tacSons[0],newTac);
@@ -227,8 +272,8 @@ tac * binop(astreeNode * node, int type)
 	tac * newTac = NULL;
 	if(node)
 	{
-		tacSons[0] = generateTac(node->sons[0]);
-		tacSons[1] = generateTac(node->sons[1]);
+		tacSons[0] = HELPgenerateTac(node->sons[0]);
+		tacSons[1] = HELPgenerateTac(node->sons[1]);
 		newTac = createTac(type,newTemp(),tacSons[0]->target,tacSons[1]->target);
 		return mergeTac(mergeTac(tacSons[0],tacSons[1]),newTac);
 	}
@@ -242,7 +287,7 @@ tac * unop(astreeNode * node, int type)
 	tac * newTac = NULL;
 	if(node)
 	{
-		tacSons[0] = generateTac(node->sons[0]);
+		tacSons[0] = HELPgenerateTac(node->sons[0]);
 		newTac = createTac(type,newTemp(),tacSons[0]->target,NULL);
 		return mergeTac(tacSons[0],newTac);
 	}
@@ -255,7 +300,7 @@ tac * scalarWriteTac(astreeNode * node)
 	tac * newTac = NULL;
 	if(node && node->sons[0] && node->sons[0]->hashPointer)
 	{
-		tacSons[0] = generateTac(node->sons[1]);
+		tacSons[0] = HELPgenerateTac(node->sons[1]);
 		newTac = createTac(TAC_MOV,node->sons[0]->hashPointer,tacSons[0]->target,NULL);
 		return mergeTac(tacSons[0],newTac);
 	}
@@ -266,30 +311,35 @@ tac * scalarWriteTac(astreeNode * node)
 tac * ifThenElse(astreeNode * node)
 {
 	hashNode * elseLabel = NULL;
+	hashNode * endIfLabel = NULL;
 	tac * tacSons[1];
 	tac * tacThen=NULL;
 	tac * tacElse=NULL;
 	tac * newTac = NULL;
+	tac * endIf = NULL;
 	if(node)
 	{
-		tacThen = generateTac(node->sons[1]);
-		tacSons[0] = generateTac(node->sons[0]);
+		endIfLabel = newLabel();
+		tacThen = HELPgenerateTac(node->sons[1]);
+		tacThen = mergeTac(tacThen,createTac(TAC_JMP,endIfLabel,NULL,NULL));
+		tacSons[0] = HELPgenerateTac(node->sons[0]);
 		elseLabel = newLabel();
-		
+		endIf = createTac(TAC_LABEL,endIfLabel,NULL,NULL);
 		if(node->sons[2]) /* if then else */
 		{
-			tacElse = generateTac(node->sons[2]);
+			tacElse = HELPgenerateTac(node->sons[2]);
 			tacElse = mergeTac(createTac(TAC_LABEL,elseLabel,NULL,NULL),tacElse);
+			tacElse = mergeTac(tacElse,endIf);
 			newTac = createTac(TAC_IFZ,elseLabel,tacSons[0]->target,NULL);
-			return mergeTac(mergeTac(newTac,tacThen),tacElse);
 			
 		}
 		else	/* if then */
 		{
 			tacElse = createTac(TAC_LABEL,elseLabel,NULL,NULL);
+			tacElse = mergeTac(tacElse,endIf);
 			newTac = createTac(TAC_IFZ,elseLabel,tacSons[0]->target,NULL);
-			return mergeTac(mergeTac(newTac,tacThen),tacElse);
 		}
+		return mergeTac(tacSons[0],mergeTac(mergeTac(newTac,tacThen),tacElse));
 	}
 	else
 		return NULL;
@@ -306,8 +356,8 @@ tac * loop(astreeNode * node)
 	hashNode * elseLabel = NULL;
 	if(node)
 	{
-		tacSons[0] = generateTac(node->sons[0]);
-		tacSons[1] = generateTac(node->sons[1]);
+		tacSons[0] = HELPgenerateTac(node->sons[0]);
+		tacSons[1] = HELPgenerateTac(node->sons[1]);
 		loopLabel = newLabel();
 		elseLabel = newLabel();
 		tacLoop = createTac(TAC_LABEL,loopLabel,NULL,NULL);
@@ -321,10 +371,37 @@ tac * loop(astreeNode * node)
 	
 }
 
-tac * generateTac(astreeNode * node)
+tac * declareFunctionTac(astreeNode * node)
+{
+	return 
+	mergeTac(
+		mergeTac(
+			mergeTac(
+				createTac(TAC_LABEL,node->sons[1]->hashPointer,NULL,NULL),
+				createTac(TAC_BEGIN_FUNCTION,node->sons[1]->hashPointer,NULL,NULL)),
+				HELPgenerateTac(node->sons[4])),
+				createTac(TAC_END_FUNCTION,node->sons[1]->hashPointer,NULL,NULL));
+}
+
+tac * outputList(astreeNode * node)
+{
+	if(node)
+	{
+		if(node->sons[0]->hashPointer)
+			return mergeTac(createTac(TAC_OUTPUT,node->sons[0]->hashPointer,NULL,NULL),HELPgenerateTac(node->sons[1]));
+		else if(node->sons[0]->sons[0]->hashPointer)
+			return mergeTac(createTac(TAC_OUTPUT,node->sons[0]->sons[0]->hashPointer,NULL,NULL),HELPgenerateTac(node->sons[1]));
+		else
+			return NULL;
+	}
+	else
+		return NULL;
+}
+
+tac * HELPgenerateTac(astreeNode * node)
 {
 	tac * newTac = NULL;	
-
+	
 	/* garantia de que não vai tentar imprimir nodo NULL */
 	if(node)
 	{
@@ -339,7 +416,7 @@ tac * generateTac(astreeNode * node)
 			case LIT_CHAR: 		newTac = createTac(TAC_INTEGER,node->hashPointer,NULL,NULL);		break;
 			
 			/* listas */
-			case PROGRAM: 		newTac = mergeTac(generateTac(node->sons[0]),generateTac(node->sons[1]));		break;
+			case PROGRAM: 		newTac = mergeTac(HELPgenerateTac(node->sons[0]),HELPgenerateTac(node->sons[1]));		break;
 			case LIT_LIST: 		break;
 
 			/* palavras reservadas de tipo */
@@ -351,17 +428,17 @@ tac * generateTac(astreeNode * node)
 			case DECLARATION_SCALAR:	newTac = declarationTacScalar(node);	break;
 			case DECLARATION_POINTER: 	newTac = declarationTacPointer(node);	break;
 			case DECLARATION_VECTOR: 	newTac = declarationTacVector(node);	break;
-			case DECLARATION_FUNCTION: 	newTac = mergeTac(createTac(TAC_LABEL,node->sons[1]->hashPointer,NULL,NULL),generateTac(node->sons[4]));break;
+			case DECLARATION_FUNCTION: 	newTac = declareFunctionTac(node);break;
 			case ARG_DECLARATION: 		break;
 
 			/* expressões */
 			case ARGCALL: 				newTac = argcallTac(node);	break;		
-			case SCALAR_READ:			newTac = generateTac(node->sons[0]);	break;	
+			case SCALAR_READ:			newTac = HELPgenerateTac(node->sons[0]);	break;	
 			case VECTOR_READ: 			newTac = vectorReadTac(node);	break;	
 			case GET_REFERENCE: 		newTac = unop(node,TAC_GET_ADDRESS);	break;
 			case POINTER: 				newTac = unop(node,TAC_POINTER);	break;		
 			case FUNCALL: 				newTac = tacFuncall(node);	break;		
-			case PAR: 					newTac = generateTac(node->sons[0]);	break;			
+			case PAR: 					newTac = HELPgenerateTac(node->sons[0]);	break;			
 			case ADD: 					newTac = binop(node,TAC_ADD);	break;			
 			case SUB: 					newTac = binop(node,TAC_SUB);	break;			
 			case MUL: 					newTac = binop(node,TAC_MUL);	break;			
@@ -376,22 +453,28 @@ tac * generateTac(astreeNode * node)
 			case LESS: 					newTac = binop(node,TAC_LESS);	break;
 				
 			/* CMD e CMD_SEQ */	
-			case BLOCK: 				newTac = generateTac(node->sons[0]);	break;
-			case OUTPUT_LIST: 			newTac = mergeTac(createTac(TAC_OUTPUT,node->sons[0]->hashPointer,NULL,NULL),generateTac(node->sons[1]));	break;
+			case BLOCK: 				newTac = HELPgenerateTac(node->sons[0]);	break;
+			case OUTPUT_LIST: 			newTac = outputList(node);				break;
 			case SCALAR_WRITE: 			newTac = scalarWriteTac(node); break;
 			case VECTOR_WRITE: 			break;
 			case POINTER_WRITE: 		break;
 			case INPUT: 				newTac = unop(node,TAC_INPUT);	break;
-			case OUTPUT: 				newTac = generateTac(node->sons[0]); break;
+			case OUTPUT: 				newTac = HELPgenerateTac(node->sons[0]); break;
 			case RETURN: 				newTac = unop(node,TAC_RETURN);	break;
 			case IF_THEN: 				newTac = ifThenElse(node);	break;
 			case IF_THEN_ELSE: 			newTac = ifThenElse(node);	break;
 			case LOOP: 					newTac = loop(node);		break;
-			case CMD_SEQ: 				newTac = mergeTac(generateTac(node->sons[0]),generateTac(node->sons[1]));			break;
+			case CMD_SEQ: 				newTac = mergeTac(HELPgenerateTac(node->sons[0]),HELPgenerateTac(node->sons[1]));			break;
 			
 			/* default? */
 			default : break;
 		}
 	}
 	return newTac;
+}
+
+tac * generateTac(astreeNode * node)
+{
+	initializations = NULL;
+	return HELPgenerateTac(node);
 }

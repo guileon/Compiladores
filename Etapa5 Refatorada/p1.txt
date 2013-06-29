@@ -1,38 +1,7 @@
+word $pt:14;
 word a:12;
-word b:22;
-bool x:false;
-byte c:1;
 word main()
 {
-	x = true || x;
-	input a;
-	input b;
-	a = 10*a + b;
-	a = a *2;
-	output "lala ",a,"\n";
-	if(false && true) then
-	{
-		output "avaco";
-	};
-	b = b *2;
-	output b,"\n";
-	b = b /3;
-	output b,"\n";
-	a = 0;
-	b = 20;
-	loop(x)
-	{
-		x = a < b;
-		a = a + 1;
-		b = b - 1;
-		output "number ",c,"\n";
-		c = c+1;
-		
-	};
-}
-
-word foo()
-{
-	b = a + 10;
-	output "aba";
+	pt = &a;
+	output *pt;
 }

@@ -213,7 +213,10 @@ tac * declarationTacPointer(astreeNode * node)
 		
 		temp1 = tacSons[1]->target;
 		newTac = createTac(TAC_I_MOV,node->sons[1]->hashPointer,temp1,NULL);
-		return mergeTac(mergeTac(tacSons[0],tacSons[1]),newTac);
+		
+		initializations = mergeTac(initializations,mergeTac(createTac(TAC_CALLOC,node->sons[1]->hashPointer,NULL,NULL),newTac));
+		
+		return mergeTac(tacSons[0],tacSons[1]);
 	}
 	else
 		return NULL;
@@ -385,12 +388,39 @@ tac * declareFunctionTac(astreeNode * node)
 
 tac * outputList(astreeNode * node)
 {
+	hashNode * hashPt = NULL;
+	tac * auxTac = NULL;
+	
 	if(node)
 	{
 		if(node->sons[0]->hashPointer)
-			return mergeTac(createTac(TAC_OUTPUT,node->sons[0]->hashPointer,NULL,NULL),HELPgenerateTac(node->sons[1]));
-		else if(node->sons[0]->sons[0]->hashPointer)
-			return mergeTac(createTac(TAC_OUTPUT,node->sons[0]->sons[0]->hashPointer,NULL,NULL),HELPgenerateTac(node->sons[1]));
+		{
+			hashPt = node->sons[0]->hashPointer;
+			return mergeTac(createTac(TAC_OUTPUT,hashPt,NULL,NULL),HELPgenerateTac(node->sons[1]));
+		}
+		else
+		{
+			auxTac = HELPgenerateTac(node->sons[0]);
+			hashPt = auxTac->target;
+			return mergeTac(auxTac,mergeTac(createTac(TAC_OUTPUT,hashPt,NULL,NULL),HELPgenerateTac(node->sons[1])));
+		}
+	}
+	else
+		return NULL;
+}
+
+tac * pointerWriteTac(astreeNode * node)
+{
+	if(node)
+	{
+		tac * tacSons[1];
+		tac * newTac = NULL;
+		if(node && node->sons[0] && node->sons[0]->hashPointer)
+		{
+			tacSons[0] = HELPgenerateTac(node->sons[1]);
+			newTac = createTac(TAC_I_MOV,node->sons[0]->hashPointer,tacSons[0]->target,NULL);
+			return mergeTac(tacSons[0],newTac);
+		}
 		else
 			return NULL;
 	}
@@ -457,7 +487,7 @@ tac * HELPgenerateTac(astreeNode * node)
 			case OUTPUT_LIST: 			newTac = outputList(node);				break;
 			case SCALAR_WRITE: 			newTac = scalarWriteTac(node); break;
 			case VECTOR_WRITE: 			break;
-			case POINTER_WRITE: 		break;
+			case POINTER_WRITE: 		newTac = pointerWriteTac(node);	break;
 			case INPUT: 				newTac = unop(node,TAC_INPUT);	break;
 			case OUTPUT: 				newTac = HELPgenerateTac(node->sons[0]); break;
 			case RETURN: 				newTac = unop(node,TAC_RETURN);	break;

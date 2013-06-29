@@ -102,5 +102,6 @@
 
 #define TAC_BEGIN_FUNCTION		3033
 #define TAC_END_FUNCTION		3034
+#define TAC_CALLOC				3035
 
 #endif

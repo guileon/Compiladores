@@ -108,6 +108,17 @@ void ASMdeclareScalar(hashNode * hashNode_)
 	}
 }
 
+void ASMdeclarePointer(hashNode * hashNode_)
+{
+	T"declarePointeR"L
+	if(hashNode_)
+	{
+		printToAssembler("	.comm ");
+		printToAssembler(variableName(hashNode_));
+		printToAssembler(" , 4 , 2\n");
+	}
+}
+
 void declareVariables()
 {
 
@@ -120,6 +131,14 @@ void declareVariables()
 			if(hashAux->type == ID_SCALAR || hashAux->type == TEMP)
 			{
 				ASMdeclareScalar(hashAux);
+			}
+		}
+		
+		for(hashAux = hashTable[i] ; hashAux ; hashAux = hashAux->next)
+		{
+			if(hashAux->type == ID_POINTER)
+			{
+				ASMdeclarePointer(hashAux);
 			}
 		}
 	}
@@ -339,6 +358,23 @@ void tacMov(tac * tac1)
 	}
 }
 
+void tacIMov(tac * tac1)
+{
+	if(tac1)
+	{
+		printToAssembler("// Move indirect\n");
+		printToAssembler("	movl ");
+		printOp(tac1->target);
+		printToAssembler(" , %eax\n");
+		
+		printToAssembler("	movl ");
+		printOp(tac1->op1);
+		printToAssembler(" , (%eax)\n");
+
+	}
+}
+
+
 void tacOutput(hashNode * hashPointer)
 {
 	if(hashPointer)
@@ -351,7 +387,7 @@ void tacOutput(hashNode * hashPointer)
 			printToAssembler(" , (%esp)\n");
 			printToAssembler("	call _printf\n");
 		}
-		else if(hashPointer->type == ID_SCALAR)
+		else
 		{
 			printToAssembler("	movl ");
 			printOp(hashPointer);
@@ -573,10 +609,56 @@ void tacInput(hashNode * hashPointer)
 {
 	if(hashPointer)
 	{
+		printToAssembler("// Input\n");
 		printToAssembler("	call _getchar\n");
 		printToAssembler("	subl	$48 , %eax\n");
 		printToAssembler("	movl %eax , ");
 		printOp(hashPointer);
+		printToAssembler("\n");
+	}
+}
+
+void tacPointer(tac * tac1)
+{
+	if(tac1)
+	{
+		printToAssembler("// Pointer\n");
+		printToAssembler("	movl ");
+		printOp(tac1->op1);
+		
+		printToAssembler(" , %eax\n");
+		printToAssembler("	movl (%eax), %ebx\n");
+		printToAssembler("	movl %ebx , ");
+		printOp(tac1->target);
+		printToAssembler("\n");
+	}	
+}
+
+void tacGetAddress(tac * tac1)
+{
+	if(tac1)
+	{
+		printToAssembler("// Get Address\n");
+		printToAssembler("	movl $");
+		printOp(tac1->op1);
+		
+		printToAssembler(" , %eax\n");
+		printToAssembler("	movl %eax , ");
+		printOp(tac1->target);
+		printToAssembler("\n");
+	}	
+}
+
+void tacCalloc(tac * tac1)
+{
+	if(tac1)
+	{
+		printToAssembler("// Alloc\n");
+		printToAssembler("	movl	$4, 4(%esp)\n");
+		printToAssembler("	movl	$1, (%esp)\n");
+		printToAssembler("	call	_calloc\n");
+		printToAssembler("	movl	%eax, ");
+		printOp(tac1->target);
 		printToAssembler("\n");
 	}
 }
@@ -588,7 +670,7 @@ void assembleTac(tac * tac1)
 		switch(tac1->type)
 		{
 			case TAC_MOV:		tacMov(tac1);	break; 
-			case TAC_I_MOV:		break;
+			case TAC_I_MOV:		tacIMov(tac1);	break;
 			case TAC_LABEL:		label(tac1->target); break;
 			case TAC_JMP:		tacJmp(tac1);		break;
 			case TAC_IFZ:		tacIf(tac1);	break;
@@ -615,13 +697,14 @@ void assembleTac(tac * tac1)
 			case TAC_TRUE		:break;
 			case TAC_FALSE		:break;
 			case TAC_STRING		:break;
-			case TAC_GET_ADDRESS:break;
-			case TAC_POINTER	:break;
+			case TAC_GET_ADDRESS:tacGetAddress(tac1);	break;
+			case TAC_POINTER	:tacPointer(tac1);	break;
 			case TAC_OUTPUT		:tacOutput(tac1->target);	break;
 			case TAC_INPUT		:tacInput(tac1->op1);	break;
 			
 			case TAC_BEGIN_FUNCTION:	begFun(tac1->target);	break;
 			case TAC_END_FUNCTION:		endFun(); break;
+			case TAC_CALLOC:			tacCalloc(tac1); break;
 		}
 	}
 	if(tac1->next)

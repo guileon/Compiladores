@@ -10,6 +10,7 @@ _i:
 	.long 1
 _x:
 	.long 1
+	.comm _pt , 4 , 2
 __temp2:
 	.long 1
 __temp0:
@@ -40,15 +41,24 @@ _main:
 	andl	$-16, %esp
 	subl	$32, %esp
 	call ___main
-// Move
-	movl $0 , %eax
-	movl %eax , _i
 // Alloc
 	movl $4, 4(%esp)
 	movl $10 , %ebx
 	movl %ebx, (%esp)
 	call _calloc
 	movl %eax, _a
+// Alloc
+	movl $4, 4(%esp)
+	movl $1, (%esp)
+	call _calloc
+	movl %eax, _pt
+// Move indirect
+	movl _pt , %eax
+	movl $0 , %ebx
+	movl %ebx , (%eax)
+// Move
+	movl $0 , %eax
+	movl %eax , _i
 // Move
 	movl $12 , %eax
 	movl %eax , _x

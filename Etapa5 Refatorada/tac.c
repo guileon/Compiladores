@@ -183,28 +183,18 @@ tac * declarationTacVector(astreeNode * node)
 {
 	tac * newTac = NULL;	
 	hashNode * temp1 = NULL;
-	tac * tacSons[3];
+	tac * tacSons[2];
 	
-	if(node && node->sons[1] && node->sons[1]->hashPointer && node->sons[2])
+	if(node && node->sons[1] && node->sons[1]->hashPointer)
 	{
 		tacSons[0] = HELPgenerateTac(node->sons[1]);
-		tacSons[1] = HELPgenerateTac(node->sons[2]);;
+		tacSons[1] = HELPgenerateTac(node->sons[2]);
 		
-		temp1 = tacSons[1]->target;
-		if(node->sons[3])
-		{
-			newTac = createTac(TAC_I_MOV,node->sons[1]->hashPointer,temp1,NULL);
-		}
-		if(tacSons[1])
-		{
-			initializations = mergeTac(initializations,mergeTac(tacSons[2],mergeTac(createTac(TAC_CALLOC,node->sons[1]->hashPointer,tacSons[1]->target,NULL),newTac)));
-		}
-		else if(node->sons[2]->hashPointer)
-		{
-			initializations = mergeTac(initializations,mergeTac(tacSons[2],mergeTac(createTac(TAC_CALLOC,node->sons[1]->hashPointer,node->sons[2]->hashPointer,NULL),newTac)));
-		}
+
 		
-		return NULL;//mergeTac(tacSons[0],tacSons[1]);
+		initializations = mergeTac(initializations,mergeTac(createTac(TAC_CALLOC,node->sons[1]->hashPointer,node->sons[2]->hashPointer,NULL),newTac));
+		
+		return tacSons[0];
 	}
 	else
 		return NULL;	

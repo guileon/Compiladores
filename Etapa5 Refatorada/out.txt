@@ -1,6 +1,7 @@
 word x:12;
-word a[10];
 word i:0;
+word $pt:0;
+word a[10];
 word main()
 {
 loop(i<10) {

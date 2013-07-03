@@ -16,10 +16,4 @@ word main()
 		output a[i],"\n";
 		i = i -1;
 	};	
-	if(false || true)then
-	{
-		output "true ou false\n";
-	}
-	else
-		output "false\n";
 }

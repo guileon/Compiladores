@@ -58,10 +58,6 @@ char * removeSlash(char * string)
 	{
 		if(string[i] == '\\')
 			auxString[i] = '_';
-		else if(string[i] == ':')
-			auxString[i] = '_';
-		else if(string[i] == ' ')
-			auxString[i] = '_';
 		else
 			auxString[i] = string[i];
 	}

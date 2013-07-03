@@ -110,7 +110,6 @@ void ASMdeclareScalar(hashNode * hashNode_)
 
 void ASMdeclarePointer(hashNode * hashNode_)
 {
-	T"declarePointeR"L
 	if(hashNode_)
 	{
 		printToAssembler("	.comm ");
@@ -136,7 +135,7 @@ void declareVariables()
 		
 		for(hashAux = hashTable[i] ; hashAux ; hashAux = hashAux->next)
 		{
-			if(hashAux->type == ID_POINTER)
+			if(hashAux->type == ID_POINTER || hashAux->type == ID_VECTOR)
 			{
 				ASMdeclarePointer(hashAux);
 			}
@@ -362,15 +361,49 @@ void tacIMov(tac * tac1)
 {
 	if(tac1)
 	{
-		printToAssembler("// Move indirect\n");
-		printToAssembler("	movl ");
-		printOp(tac1->target);
-		printToAssembler(" , %eax\n");
+		if(tac1->op2)
+		{
+			printToAssembler("// Move indirect with offset\n");
+			
+			
+			printToAssembler("	movl $4 , %eax\n");
+			printToAssembler("	movl ");
+			printOp(tac1->op2);
+			printToAssembler(" , %ebx\n");
+			printToAssembler("	mul %ebx\n");
+			printToAssembler("	movl %eax , %ebx\n");
+			
+			
+			printToAssembler("	movl ");
+			printOp(tac1->target);
+			printToAssembler(" , %eax\n");
+			printToAssembler("	addl %ebx , %eax\n");
+			
+			printToAssembler("	movl ");
+			printOp(tac1->op1);
+			printToAssembler(" , %ecx\n");
+			printToAssembler("	movl %ecx , (%eax)\n");
 		
-		printToAssembler("	movl ");
-		printOp(tac1->op1);
-		printToAssembler(" , (%eax)\n");
-
+		
+	/*
+	movl $4 , %eax
+	movl $1 , %ebx
+	mul %ebx
+	movl	%eax , __temp0
+	*/
+		}
+		else
+		{
+			printToAssembler("// Move indirect\n");
+			printToAssembler("	movl ");
+			printOp(tac1->target);
+			printToAssembler(" , %eax\n");
+			
+			printToAssembler("	movl ");
+			printOp(tac1->op1);
+			printToAssembler(" , %ebx\n");
+			printToAssembler("	movl %ebx , (%eax)\n");
+		}
 	}
 }
 
@@ -654,10 +687,46 @@ void tacCalloc(tac * tac1)
 	if(tac1)
 	{
 		printToAssembler("// Alloc\n");
-		printToAssembler("	movl	$4, 4(%esp)\n");
-		printToAssembler("	movl	$1, (%esp)\n");
-		printToAssembler("	call	_calloc\n");
-		printToAssembler("	movl	%eax, ");
+		printToAssembler("	movl $4, 4(%esp)\n");
+		if(tac1->op1)
+		{
+			printToAssembler("	movl ");
+			printOp(tac1->op1);
+			printToAssembler(" , %ebx\n");
+			printToAssembler("	movl %ebx, (%esp)\n");
+		}
+		else
+		{
+			printToAssembler("	movl $1, (%esp)\n");
+		}
+		printToAssembler("	call _calloc\n");
+		printToAssembler("	movl %eax, ");
+		printOp(tac1->target);
+		printToAssembler("\n");
+	}
+}
+
+void tacVecRead(tac * tac1)
+{
+	if(tac1)
+	{
+		printToAssembler("// Pointer ( vector read )\n");
+		
+		printToAssembler("	movl $4 , %eax\n");
+		printToAssembler("	movl ");
+		printOp(tac1->op2);
+		printToAssembler(" , %ebx\n");
+		printToAssembler("	mul %ebx\n");
+		printToAssembler("	movl %eax , %ebx\n");
+		
+		
+		printToAssembler("	movl ");
+		printOp(tac1->op1);
+		printToAssembler(" , %eax\n");
+		printToAssembler("	addl %ebx , %eax\n");
+		
+		printToAssembler("	movl (%eax), %ebx\n");
+		printToAssembler("	movl %ebx , ");
 		printOp(tac1->target);
 		printToAssembler("\n");
 	}
@@ -691,7 +760,7 @@ void assembleTac(tac * tac1)
 			case TAC_GREATER:	tacGreater(tac1);	break;
 			case TAC_LESS	:	tacLess(tac1);		break;
 
-			case TAC_VEC_READ	:break;
+			case TAC_VEC_READ	: tacVecRead(tac1);	break;
 			case TAC_IDENTIFIER	:break;
 			case TAC_INTEGER	:break;
 			case TAC_TRUE		:break;
